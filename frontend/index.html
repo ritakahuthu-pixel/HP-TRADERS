@@ -1,1458 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HPTraders — The Future of Automated Trading</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HPTraders App</title>
 
-    :root {
-      --navy:    #050d1a;
-      --navy2:   #0d1b2e;
-      --navy3:   #112036;
-      --cyan:    #00d4ff;
-      --cyan2:   #00a8cc;
-      --purple:  #8b5cf6;
-      --green:   #22c55e;
-      --green2:  #16a34a;
-      --gold:    #f59e0b;
-      --red:     #ef4444;
-      --white:   #f0f6ff;
-      --muted:   #7a9bbf;
-      --border:  rgba(0,212,255,0.12);
-      --radius:  14px;
-    }
+<style>
+body {
+  margin:0;
+  font-family: Inter, sans-serif;
+  background:#050d1a;
+  color:#fff;
+}
 
-    html { scroll-behavior: smooth; }
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  padding:15px 5%;
+  background:#0d1b2e;
+  position:sticky;
+  top:0;
+}
+.logo{font-weight:700;color:#00d4ff}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--navy);
-      color: var(--white);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+/* BUTTONS */
+button{
+  padding:10px 16px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+}
+.btn{background:#22c55e;color:#fff}
+.btn-outline{background:transparent;border:1px solid #00d4ff;color:#00d4ff}
 
-    h1, h2, h3, h4, h5, .display { font-family: 'Space Grotesk', sans-serif; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
+/* SECTIONS */
+section{padding:40px 5%}
+.hidden{display:none}
 
-    /* ── STARFIELD ───────────────────────────────────────── */
-    #stars {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
+/* LOGIN BOX */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.box{
+  background:#0d1b2e;
+  padding:25px;
+  border-radius:12px;
+  width:300px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #00d4ff;
+  background:#050d1a;
+  color:#fff;
+}
 
-    /* ── SCROLLBAR ───────────────────────────────────────── */
-    * { scrollbar-width: thin; scrollbar-color: rgba(0,212,255,0.2) transparent; }
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 3px; }
+/* HUB GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
 
-    /* ── NAV ─────────────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      height: 68px;
-      background: rgba(5,13,26,0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
+.card{
+  padding:20px;
+  background:#0d1b2e;
+  border-radius:12px;
+  border:1px solid #112036;
+  text-align:center;
+}
+.card:hover{border-color:#00d4ff}
 
-    .logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      text-decoration: none;
-    }
-    .logo .hp   { color: var(--cyan); }
-    .logo .rest { color: var(--white); }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: 0.88rem;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: var(--white); }
-
-    .nav-actions { display: flex; gap: 10px; align-items: center; }
-
-    .btn-outline {
-      padding: 8px 22px;
-      border: 1.5px solid var(--cyan);
-      color: var(--cyan);
-      background: transparent;
-      border-radius: 8px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, color .2s, box-shadow .2s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-outline:hover {
-      background: var(--cyan);
-      color: var(--navy);
-      box-shadow: 0 0 16px rgba(0,212,255,0.35);
-    }
-
-    .btn-solid {
-      padding: 8px 22px;
-      background: linear-gradient(135deg, var(--green), var(--green2));
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity .2s, transform .15s, box-shadow .2s;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 0 0 rgba(34,197,94,0);
-    }
-    .btn-solid:hover {
-      opacity: .9;
-      transform: translateY(-1px);
-      box-shadow: 0 0 18px rgba(34,197,94,0.35);
-    }
-
-    /* ── HERO ────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 110px 5% 90px;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    .trusted-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      font-size: 0.82rem;
-      color: var(--muted);
-      background: rgba(0,212,255,0.05);
-      margin-bottom: 36px;
-      animation: fadeUp .6s ease both;
-    }
-    .trusted-badge svg { width: 15px; height: 15px; fill: var(--cyan); flex-shrink: 0; }
-
-    .hero h1 {
-      font-size: clamp(3rem, 9vw, 5.8rem);
-      font-weight: 700;
-      letter-spacing: -0.035em;
-      line-height: 1.04;
-      margin-bottom: 22px;
-      animation: fadeUp .7s .1s ease both;
-    }
-    .hero h1 .hp    { color: var(--cyan); }
-    .hero h1 .plain { color: var(--white); }
-    .hero h1 .grad  {
-      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-sub {
-      font-size: clamp(1rem, 2.5vw, 1.3rem);
-      color: var(--muted);
-      margin-bottom: 20px;
-      animation: fadeUp .7s .2s ease both;
-    }
-
-    .hero-desc {
-      font-size: 0.97rem;
-      color: #94afc8;
-      line-height: 1.75;
-      max-width: 700px;
-      margin: 0 auto 14px;
-      animation: fadeUp .7s .3s ease both;
-    }
-    .hero-desc + .hero-desc { margin-bottom: 44px; }
-
-    .hero-cta-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      animation: fadeUp .7s .4s ease both;
-    }
-
-    .btn-hero {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 17px 40px;
-      background: linear-gradient(135deg, var(--green), var(--green2));
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 0 32px rgba(34,197,94,0.32);
-      text-decoration: none;
-    }
-    .btn-hero:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 48px rgba(34,197,94,0.55);
-    }
-    .btn-hero svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-    .hero-checks {
-      display: flex;
-      gap: 22px;
-      flex-wrap: wrap;
-      justify-content: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .hero-checks span { display: flex; align-items: center; gap: 7px; }
-    .hero-checks .tick { color: var(--green); font-size: 0.9rem; }
-
-    /* ── LIVE TICKER ─────────────────────────────────────── */
-    .ticker-wrap {
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      background: rgba(0,212,255,0.04);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0;
-      margin-bottom: 80px;
-    }
-    .ticker-track {
-      display: flex;
-      gap: 48px;
-      width: max-content;
-      animation: ticker 28s linear infinite;
-    }
-    .ticker-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .ticker-sym  { color: var(--muted); }
-    .ticker-val  { color: var(--white); font-weight: 600; }
-    .ticker-up   { color: var(--green); }
-    .ticker-down { color: var(--red); }
-    .ticker-dot  { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-    .ticker-dot.up   { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .ticker-dot.down { background: var(--red);   box-shadow: 0 0 6px var(--red);   }
-
-    @keyframes ticker {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ── STATS ───────────────────────────────────────────── */
-    .stats-grid {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      max-width: 960px;
-      margin: 0 auto 90px;
-      padding: 0 5%;
-    }
-    .stat-card {
-      background: var(--navy2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      text-align: center;
-      transition: border-color .25s, box-shadow .25s, transform .2s;
-    }
-    .stat-card:hover {
-      border-color: rgba(0,212,255,0.4);
-      box-shadow: 0 0 24px rgba(0,212,255,0.1);
-      transform: translateY(-3px);
-    }
-    .stat-val {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--white), var(--cyan));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
-
-    /* ── SECTION SHARED ──────────────────────────────────── */
-    section { position: relative; z-index: 1; }
-
-    .section-head {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 52px;
-      padding: 0 5%;
-    }
-    .section-eyebrow {
-      display: inline-block;
-      font-size: 0.75rem;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 14px;
-      padding: 5px 14px;
-      border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 50px;
-      background: rgba(0,212,255,0.06);
-    }
-    .section-head h2 {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      margin-bottom: 16px;
-    }
-    .section-head p { font-size: 0.97rem; color: var(--muted); line-height: 1.7; }
-
-    /* ── FEATURES ────────────────────────────────────────── */
-    .features { padding: 90px 5%; }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .feat-card {
-      background: linear-gradient(145deg, var(--navy2), #0a1525);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 34px 28px;
-      transition: border-color .25s, transform .22s, box-shadow .25s;
-      position: relative;
-      overflow: hidden;
-    }
-    .feat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 120px; height: 120px;
-      border-radius: 0 18px 0 100%;
-      opacity: 0;
-      transition: opacity .3s;
-    }
-    .feat-card:hover { transform: translateY(-5px); }
-    .feat-card:hover::before { opacity: 1; }
-    .feat-card.cyan:hover   { border-color: rgba(0,212,255,0.45);  box-shadow: 0 8px 32px rgba(0,212,255,0.1); }
-    .feat-card.green:hover  { border-color: rgba(34,197,94,0.45);  box-shadow: 0 8px 32px rgba(34,197,94,0.1); }
-    .feat-card.purple:hover { border-color: rgba(139,92,246,0.45); box-shadow: 0 8px 32px rgba(139,92,246,0.1); }
-    .feat-card.gold:hover   { border-color: rgba(245,158,11,0.45); box-shadow: 0 8px 32px rgba(245,158,11,0.1); }
-    .feat-card.cyan::before   { background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%); }
-    .feat-card.green::before  { background: radial-gradient(circle, rgba(34,197,94,0.12), transparent 70%); }
-    .feat-card.purple::before { background: radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%); }
-    .feat-card.gold::before   { background: radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%); }
-
-    .feat-icon {
-      width: 54px; height: 54px;
-      border-radius: 15px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 22px;
-      font-size: 1.5rem;
-    }
-    .feat-icon.cyan   { background: rgba(0,212,255,0.12);  border: 1px solid rgba(0,212,255,0.2); }
-    .feat-icon.green  { background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.2); }
-    .feat-icon.purple { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2); }
-    .feat-icon.gold   { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2); }
-
-    .feat-card h3 {
-      font-size: 1.08rem;
-      font-weight: 600;
-      margin-bottom: 7px;
-    }
-    .feat-accent {
-      font-size: 0.76rem;
-      font-weight: 600;
-      margin-bottom: 13px;
-      letter-spacing: .04em;
-    }
-    .feat-accent.cyan   { color: var(--cyan); }
-    .feat-accent.green  { color: var(--green); }
-    .feat-accent.purple { color: #a78bfa; }
-    .feat-accent.gold   { color: var(--gold); }
-    .feat-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
-
-    /* ── DASHBOARD PREVIEW ───────────────────────────────── */
-    .preview-section {
-      padding: 90px 5%;
-      background: linear-gradient(180deg, transparent, rgba(13,27,46,0.5) 50%, transparent);
-    }
-    .preview-window {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 0 60px rgba(0,212,255,0.1), 0 40px 80px rgba(0,0,0,0.5);
-    }
-    .preview-titlebar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      background: rgba(0,212,255,0.06);
-      border-bottom: 1px solid var(--border);
-    }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot.red    { background: #ef4444; }
-    .dot.yellow { background: #f59e0b; }
-    .dot.green  { background: #22c55e; }
-    .preview-url {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin: 0 12px;
-    }
-    .preview-body {
-      padding: 20px;
-      display: flex;
-      gap: 16px;
-    }
-    .preview-sidebar {
-      width: 140px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .preview-nav-item {
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: default;
-    }
-    .preview-nav-item.active {
-      background: rgba(0,212,255,0.1);
-      color: var(--cyan);
-      border: 1px solid rgba(0,212,255,0.2);
-    }
-    .preview-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-    .preview-main { flex: 1; display: flex; flex-direction: column; gap: 12px; }
-    .preview-row { display: flex; gap: 10px; }
-    .preview-metric {
-      flex: 1;
-      background: var(--navy3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-    .preview-metric .pm-label { font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; }
-    .preview-metric .pm-val   { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; }
-    .preview-metric .pm-val.up   { color: var(--green); }
-    .preview-metric .pm-val.cyan { color: var(--cyan); }
-    .preview-chart {
-      flex: 1;
-      background: var(--navy3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      min-height: 100px;
-      position: relative;
-      overflow: hidden;
-    }
-    .preview-chart .pc-label { font-size: 0.65rem; color: var(--muted); margin-bottom: 8px; }
-    .chart-svg { width: 100%; height: 70px; }
-
-    /* ── TESTIMONIALS ────────────────────────────────────── */
-    .testimonials {
-      padding: 90px 5%;
-    }
-    .testi-avg-wrap { text-align: center; margin-bottom: 44px; }
-    .testi-avg {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--navy2);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 10px 22px;
-      font-size: 0.88rem;
-      color: var(--muted);
-    }
-    .stars { color: var(--gold); letter-spacing: 2px; font-size: 1rem; }
-    .testi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .testi-card {
-      background: linear-gradient(145deg, var(--navy2), #0a1525);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 30px;
-      transition: border-color .25s, box-shadow .25s;
-    }
-    .testi-card:hover {
-      border-color: rgba(0,212,255,0.3);
-      box-shadow: 0 4px 24px rgba(0,212,255,0.08);
-    }
-    .testi-avatar {
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      border: 2px solid rgba(0,212,255,0.3);
-      margin-bottom: 18px;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .testi-quote {
-      font-size: 0.92rem;
-      color: #b0c8e0;
-      line-height: 1.75;
-      font-style: italic;
-      margin-bottom: 22px;
-    }
-    .testi-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-    .testi-role { font-size: 0.78rem; color: var(--cyan); margin: 3px 0 10px; }
-    .testi-stars { font-size: 0.85rem; letter-spacing: 1px; color: var(--gold); }
-
-    /* ── WHY CHOOSE ──────────────────────────────────────── */
-    .why { padding: 90px 5%; }
-    .why-box {
-      max-width: 780px;
-      margin: 0 auto;
-      background: linear-gradient(145deg, var(--navy2), #0a1525);
-      border: 1px solid rgba(0,212,255,0.18);
-      border-radius: 22px;
-      padding: clamp(28px,6vw,52px);
-      box-shadow: 0 0 60px rgba(0,212,255,0.07);
-    }
-    .why-box h2 {
-      font-size: clamp(1.6rem,3vw,2.3rem);
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .why-sub {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 38px;
-    }
-    .why-list { display: flex; flex-direction: column; gap: 12px; }
-    .why-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: var(--navy3);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 14px 20px;
-      font-size: 0.93rem;
-      transition: border-color .2s, transform .15s;
-    }
-    .why-item:hover {
-      border-color: rgba(34,197,94,0.4);
-      transform: translateX(4px);
-    }
-    .why-check {
-      width: 30px; height: 30px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--green), var(--green2));
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 0 10px rgba(34,197,94,0.3);
-    }
-    .why-check svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 2.5; fill: none; }
-
-    /* ── CTA BAND ────────────────────────────────────────── */
-    .cta-band { padding: 90px 5%; text-align: center; }
-    .cta-inner {
-      max-width: 740px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(139,92,246,0.06));
-      border: 1px solid rgba(0,212,255,0.22);
-      border-radius: 26px;
-      padding: clamp(36px,6vw,60px) clamp(24px,5vw,48px);
-      box-shadow: 0 0 80px rgba(0,212,255,0.07);
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-inner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-inner h2 {
-      font-size: clamp(1.8rem,4vw,2.7rem);
-      font-weight: 700;
-      margin-bottom: 16px;
-      position: relative;
-    }
-    .cta-inner p { color: var(--muted); font-size: 0.97rem; margin-bottom: 36px; position: relative; }
-    .cta-checks {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-top: 24px;
-      font-size: 0.84rem;
-      color: var(--muted);
-      position: relative;
-    }
-    .cta-checks span { display: flex; align-items: center; gap: 7px; }
-    .cta-checks .tick { color: var(--green); font-weight: 700; }
-
-    /* ── DISCLAIMER ──────────────────────────────────────── */
-    .disclaimer {
-      max-width: 1100px;
-      margin: 0 auto 70px;
-      padding: 30px 32px;
-      background: rgba(245,158,11,0.05);
-      border: 1px solid rgba(245,158,11,0.22);
-      border-radius: 16px;
-      position: relative;
-      z-index: 1;
-    }
-    .disclaimer-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--gold);
-      margin-bottom: 13px;
-    }
-    .disclaimer p { font-size: 0.85rem; color: #94a3b8; line-height: 1.7; margin-bottom: 13px; }
-    .disclaimer ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .disclaimer li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.83rem;
-      color: #94a3b8;
-      line-height: 1.6;
-    }
-    .disclaimer li::before { content: '⚠'; font-size: 0.8rem; margin-top: 2px; }
-
-    /* ── FOOTER ──────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 36px 5% 28px;
-      position: relative;
-      z-index: 1;
-    }
-    .footer-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 32px;
-      max-width: 1100px;
-      margin: 0 auto 28px;
-    }
-    .footer-brand p { font-size: 0.84rem; color: var(--muted); max-width: 280px; line-height: 1.6; margin-top: 8px; }
-    .footer-links h4 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 12px;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-    }
-    .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .footer-links a { font-size: 0.84rem; color: var(--muted); text-decoration: none; transition: color .2s; }
-    .footer-links a:hover { color: var(--cyan); }
-    .footer-bottom {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    /* ── LOGIN MODAL ─────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5,13,26,0.85);
-      backdrop-filter: blur(8px);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: linear-gradient(145deg, #0d1b2e, #0a1525);
-      border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 22px;
-      padding: 36px 32px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 8px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.05);
-      position: relative;
-      animation: modalIn .25s ease;
-    }
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(.96) translateY(8px); }
-      to   { opacity: 1; transform: scale(1)  translateY(0); }
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px; right: 20px;
-      background: none; border: none;
-      color: var(--muted); font-size: 1.4rem; cursor: pointer;
-      transition: color .2s;
-      line-height: 1;
-    }
-    .modal-close:hover { color: var(--white); }
-    .modal-brand {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .modal-logo-ring {
-      width: 60px; height: 60px;
-      border-radius: 16px;
-      margin: 0 auto 14px;
-      display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(139,92,246,0.18));
-      border: 1px solid rgba(0,212,255,0.3);
-      box-shadow: 0 0 24px rgba(0,212,255,0.2);
-    }
-    .modal-logo-ring span {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .modal-brand h2 {
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-    .modal-brand p { font-size: 0.82rem; color: var(--muted); }
-
-    .modal-tabs {
-      display: flex;
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      padding: 3px;
-      margin-bottom: 26px;
-      gap: 2px;
-    }
-    .modal-tab {
-      flex: 1; padding: 9px;
-      border-radius: 8px; border: none; cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.88rem; font-weight: 600;
-      background: transparent;
-      color: var(--muted);
-      transition: all .2s;
-    }
-    .modal-tab.active {
-      background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(139,92,246,0.12));
-      color: var(--cyan);
-      box-shadow: 0 0 12px rgba(0,212,255,0.15);
-      border-bottom: 1px solid rgba(0,212,255,0.4);
-    }
-
-    .form-panel { display: none; flex-direction: column; gap: 15px; }
-    .form-panel.active { display: flex; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 0.8rem; color: var(--muted); }
-    .form-input {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 9px;
-      color: var(--white);
-      padding: 11px 14px;
-      font-size: 0.92rem;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-      width: 100%;
-    }
-    .form-input:focus {
-      border-color: rgba(0,212,255,0.5);
-      box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
-    }
-    .form-input::placeholder { color: rgba(122,155,191,0.6); }
-
-    .form-agree {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.5;
-      min-height: 44px;
-    }
-    .form-agree input { margin-top: 3px; accent-color: var(--cyan); flex-shrink: 0; }
-    .form-agree a { color: var(--cyan); text-decoration: none; }
-
-    .btn-form {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, var(--green), var(--green2));
-      color: #fff;
-      border: none;
-      border-radius: 9px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity .2s, box-shadow .2s;
-      box-shadow: 0 0 20px rgba(34,197,94,0.28);
-    }
-    .btn-form:hover { opacity: .9; box-shadow: 0 0 28px rgba(34,197,94,0.45); }
-
-    .form-switch {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .form-switch a { color: var(--cyan); cursor: pointer; font-weight: 600; }
-
-    /* ── ANIMATIONS ──────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.25); }
-      50%       { box-shadow: 0 0 36px rgba(0,212,255,0.5); }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-7px); }
-    }
-
-    /* ── RESPONSIVE ──────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .preview-sidebar { display: none; }
-      .footer-top { flex-direction: column; }
-    }
-    @media (max-width: 500px) {
-      nav { padding: 0 4%; }
-      .hero { padding: 80px 4% 60px; }
-      .why-box { padding: 24px 18px; }
-      .cta-inner { padding: 32px 20px; }
-      .modal { padding: 28px 20px; }
-      .disclaimer { margin: 0 4% 60px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-    }
-  </style>
+/* RESPONSIVE */
+@media(max-width:600px){
+  nav{flex-direction:column;gap:10px}
+}
+</style>
 </head>
+
 <body>
 
-<!-- ── Starfield Canvas ─────────────────────────────────── -->
-<canvas id="stars"></canvas>
-
-<!-- ── Login/Register Modal ────────────────────────────── -->
-<div class="modal-overlay" id="authModal" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">&times;</button>
-    <div class="modal-brand">
-      <div class="modal-logo-ring"><span>HP</span></div>
-      <h2><span style="color:var(--cyan)">HP</span><span>Traders</span></h2>
-      <p>AI-Powered Trading Platform</p>
-    </div>
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-login"    onclick="switchTab('login')">Sign In</button>
-      <button class="modal-tab"        id="tab-register" onclick="switchTab('register')">Register</button>
-    </div>
-
-    <!-- Login -->
-    <div class="form-panel active" id="panel-login">
-      <div class="form-group">
-        <label>Username</label>
-        <input class="form-input" type="text" placeholder="your_username" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input class="form-input" type="password" placeholder="••••••••" />
-      </div>
-      <button class="btn-form">Sign In</button>
-      <p class="form-switch">Don't have an account? <a onclick="switchTab('register')">Register free</a></p>
-    </div>
-
-    <!-- Register -->
-    <div class="form-panel" id="panel-register">
-      <div class="form-group">
-        <label>Username</label>
-        <input class="form-input" type="text" placeholder="choose_username" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input class="form-input" type="password" placeholder="Min 8 characters" />
-      </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
-        <input class="form-input" type="password" placeholder="Re-enter password" />
-      </div>
-      <div class="form-agree">
-        <input type="checkbox" id="agree" />
-        <label for="agree">I agree to the <a href="#">User Agreement</a> and <a href="#">Privacy Policy</a>. Trading involves risk.</label>
-      </div>
-      <button class="btn-form">Create Account</button>
-      <p class="form-switch">Already have an account? <a onclick="switchTab('login')">Sign in</a></p>
-    </div>
-
-    <p style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:14px">
-      🎁 Start with $10,000 demo balance — no deposit required
-    </p>
-  </div>
-</div>
-
-<!-- ── Nav ─────────────────────────────────────────────── -->
 <nav>
-  <a href="#" class="logo"><span class="hp">HP</span><span class="rest">Traders</span></a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#testimonials">Reviews</a></li>
-    <li><a href="#why">Why Us</a></li>
-    <li><a href="#disclaimer">Risk Info</a></li>
-  </ul>
-  <div class="nav-actions">
-    <button class="btn-outline" onclick="openModal('login')">Log in</button>
-    <button class="btn-solid"   onclick="openModal('register')">Sign up free</button>
+  <div class="logo">HPTraders</div>
+  <div>
+    <button class="btn-outline" onclick="logout()">Logout</button>
   </div>
 </nav>
 
-<!-- ── Hero ────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="trusted-badge">
-    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-    Trusted by 50,000+ Traders Worldwide
-  </div>
-
-  <h1>
-    <span class="hp">HP</span><span class="plain">Traders</span><br />
-    <span class="plain">The Future of </span><span class="grad">Automated Trading</span>
-  </h1>
-
-  <p class="hero-sub">
-    Harness AI-driven bots, real-time analytics, and copy trading to maximize your profits.
-  </p>
-  <p class="hero-desc">
-    Build, test, and launch automated strategies from one clean workspace. HPTraders brings market scanning,
-    bot automation, account tools, and trading insights together so you can move faster with more confidence.
-  </p>
-  <p class="hero-desc">
-    Start with a virtual account, learn the platform, then scale your approach when you are ready.
-    You stay in control of risk, stake size, trade settings, and every bot you run.
-  </p>
-
-  <div class="hero-cta-wrap">
-    <button class="btn-hero" onclick="openModal('register')">
-      Start Trading Now
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-    <div class="hero-checks">
-      <span><span class="tick">✓</span> No Credit Card Required</span>
-      <span><span class="tick">✓</span> $10,000 Virtual Account</span>
-      <span><span class="tick">✓</span> Full Platform Access</span>
-    </div>
-  </div>
-</section>
-
-<!-- ── Live Market Ticker ───────────────────────────────── -->
-<div class="ticker-wrap">
-  <div class="ticker-track" id="tickerTrack"></div>
-</div>
-
-<!-- ── Stats ────────────────────────────────────────────── -->
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-val">50.0K+</div>
-    <div class="stat-label">Active Traders</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-val">$2.5B+</div>
-    <div class="stat-label">Trading Volume</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-val">99.9%</div>
-    <div class="stat-label">Platform Uptime</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-val">150+</div>
-    <div class="stat-label">Trading Pairs</div>
+<!-- LOGIN -->
+<div id="loginPage" class="modal">
+  <div class="box">
+    <h3>Login</h3>
+    <input id="user" placeholder="Username"/>
+    <input id="pass" type="password" placeholder="Password"/>
+    <button class="btn" onclick="login()">Login</button>
   </div>
 </div>
 
-<!-- ── Features ─────────────────────────────────────────── -->
-<section class="features" id="features">
-  <div class="section-head">
-    <span class="section-eyebrow">What we offer</span>
-    <h2>Powerful Features for Modern Traders</h2>
-    <p>Everything you need to succeed in today's fast-paced markets. Whether you prefer manual decisions,
-       automated bots, or copy trading — HPTraders gives you the edge.</p>
-  </div>
-  <div class="features-grid">
-    <div class="feat-card cyan">
-      <div class="feat-icon cyan">🤖</div>
-      <h3>AI-Powered Trading Bots</h3>
-      <div class="feat-accent cyan">Automate Your Success</div>
-      <p>Deploy intelligent trading strategies with our advanced bot system. No coding required — configure, test, and let bots work 24/7.</p>
-    </div>
-    <div class="feat-card green">
-      <div class="feat-icon green">📊</div>
-      <h3>Real-Time Market Analysis</h3>
-      <div class="feat-accent green">Data-Driven Decisions</div>
-      <p>Access professional-grade charts, indicators, and analytics. Track market trends, identify opportunities, and execute with confidence.</p>
-    </div>
-    <div class="feat-card purple">
-      <div class="feat-icon purple">👥</div>
-      <h3>Copy Trading Network</h3>
-      <div class="feat-accent purple">Follow Top Performers</div>
-      <p>Mirror successful traders automatically. Transparent performance metrics, full capital control, and instant execution.</p>
-    </div>
-    <div class="feat-card gold">
-      <div class="feat-icon gold">🛡️</div>
-      <h3>Risk Management Tools</h3>
-      <div class="feat-accent gold">Protect Your Capital</div>
-      <p>Advanced stop-loss, take-profit, and position sizing tools. Set your risk parameters and trade with peace of mind.</p>
-    </div>
-  </div>
-</section>
+<!-- APP -->
+<div id="app" class="hidden">
 
-<!-- ── Dashboard Preview ────────────────────────────────── -->
-<section class="preview-section">
-  <div class="section-head">
-    <span class="section-eyebrow">Platform Preview</span>
-    <h2>A Workspace Built for Traders</h2>
-    <p>Everything visible at a glance — balance, live P&amp;L, bots status, and market feeds.</p>
-  </div>
-  <div class="preview-window">
-    <div class="preview-titlebar">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
-      <div class="preview-url">hptraders.app/dashboard</div>
-    </div>
-    <div class="preview-body">
-      <div class="preview-sidebar">
-        <div class="preview-nav-item active"><div class="preview-nav-dot"></div>Dashboard</div>
-        <div class="preview-nav-item"><div class="preview-nav-dot"></div>Bot Builder</div>
-        <div class="preview-nav-item"><div class="preview-nav-dot"></div>Manual Trader</div>
-        <div class="preview-nav-item"><div class="preview-nav-dot"></div>AI Analysis</div>
-        <div class="preview-nav-item"><div class="preview-nav-dot"></div>Copy Trader</div>
-        <div class="preview-nav-item"><div class="preview-nav-dot"></div>Trade Journal</div>
-      </div>
-      <div class="preview-main">
-        <div class="preview-row">
-          <div class="preview-metric">
-            <div class="pm-label">Balance</div>
-            <div class="pm-val cyan">$10,247.50</div>
-          </div>
-          <div class="preview-metric">
-            <div class="pm-label">Today's P&amp;L</div>
-            <div class="pm-val up">+$247.50</div>
-          </div>
-          <div class="preview-metric">
-            <div class="pm-label">Active Bots</div>
-            <div class="pm-val cyan">3 / 5</div>
-          </div>
-          <div class="preview-metric">
-            <div class="pm-label">Win Rate</div>
-            <div class="pm-val up">68.4%</div>
-          </div>
-        </div>
-        <div class="preview-row">
-          <div class="preview-chart" style="flex:2">
-            <div class="pc-label">P&amp;L Trend (30 days)</div>
-            <svg class="chart-svg" viewBox="0 0 300 70" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stop-color="#22c55e" stop-opacity="0.35"/>
-                  <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path d="M0,60 L15,55 L30,50 L50,52 L70,45 L90,40 L110,42 L130,35 L150,30 L170,25 L190,28 L210,20 L230,18 L250,12 L270,8 L300,5" fill="none" stroke="#22c55e" stroke-width="2"/>
-              <path d="M0,60 L15,55 L30,50 L50,52 L70,45 L90,40 L110,42 L130,35 L150,30 L170,25 L190,28 L210,20 L230,18 L250,12 L270,8 L300,5 L300,70 L0,70 Z" fill="url(#chartGrad)"/>
-            </svg>
-          </div>
-          <div class="preview-chart">
-            <div class="pc-label">Bot Status</div>
-            <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
-              <div style="display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--muted)">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0"></div>
-                Volatility 75 Bot
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--muted)">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0"></div>
-                Rise/Fall Strategy
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--muted)">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold);flex-shrink:0"></div>
-                Digit Match Bot
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h2>Welcome, <span id="name"></span> 👋</h2>
+    <p>Choose where to go:</p>
 
-<!-- ── Testimonials ──────────────────────────────────────── -->
-<section class="testimonials" id="testimonials">
-  <div class="section-head">
-    <span class="section-eyebrow">Social proof</span>
-    <h2>Trusted by Traders Worldwide</h2>
-    <p>Join thousands of successful traders who have transformed their performance with HPTraders.</p>
-  </div>
-  <div class="testi-avg-wrap">
-    <div class="testi-avg">
-      <span class="stars">★★★★★</span>
-      4.9 average rating &nbsp;|&nbsp; 50,000+ traders
-    </div>
-  </div>
-  <div class="testi-grid">
-    <div class="testi-card">
-      <div class="testi-avatar" style="background:linear-gradient(135deg,#00a8cc,#6366f1)">MG</div>
-      <p class="testi-quote">"HPTraders transformed my trading. The automated bots handle my strategies flawlessly, and I've seen consistent profits. The platform is intuitive and powerful."</p>
-      <div class="testi-name">Mark Gonzales</div>
-      <div class="testi-role">Professional Day Trader</div>
-      <div class="testi-stars">★★★★★</div>
-    </div>
-    <div class="testi-card">
-      <div class="testi-avatar" style="background:linear-gradient(135deg,#22c55e,#0ea5e9)">KM</div>
-      <p class="testi-quote">"Copy trading feature is incredible! I follow top performers and my portfolio has grown 40% in 3 months. The transparency and control are unmatched."</p>
-      <div class="testi-name">Kelvin Maxwell</div>
-      <div class="testi-role">Crypto Investor</div>
-      <div class="testi-stars">★★★★★</div>
-    </div>
-    <div class="testi-card">
-      <div class="testi-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">DG</div>
-      <p class="testi-quote">"Lightning-fast execution and professional-grade tools. The risk management features saved me from major losses. This is the future of trading."</p>
-      <div class="testi-name">Delvoux Glen</div>
-      <div class="testi-role">Forex Specialist</div>
-      <div class="testi-stars">★★★★★</div>
-    </div>
-  </div>
-</section>
+    <button class="btn" onclick="show('hub')">Go to Trading Hub</button>
+  </section>
 
-<!-- ── Why Choose ────────────────────────────────────────── -->
-<section class="why" id="why">
-  <div class="why-box">
-    <h2>Why Choose HPTraders?</h2>
-    <p class="why-sub">Join the platform that's redefining automated trading</p>
-    <div class="why-list">
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Bank-grade security with encrypted sessions
-      </div>
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Lightning-fast execution under 50ms
-      </div>
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Virtual account for risk-free testing ($10,000 demo)
-      </div>
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        24/7 customer support and trading resources
-      </div>
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Multi-asset trading across forex, crypto, and indices
-      </div>
-      <div class="why-item">
-        <div class="why-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Mobile-ready — trade from any device, anywhere
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- HUB -->
+  <section id="hub" class="hidden">
+    <h2>Trading Hub</h2>
 
-<!-- ── CTA Band ───────────────────────────────────────────── -->
-<section class="cta-band">
-  <div class="cta-inner">
-    <h2>Ready to Transform Your Trading?</h2>
-    <p>Join 50,000+ traders already profiting with HPTraders. Start with a free virtual account today.</p>
-    <button class="btn-hero" onclick="openModal('register')">
-      Start Free Trial
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-    <div class="cta-checks">
-      <span><span class="tick">✓</span> No Credit Card</span>
-      <span><span class="tick">✓</span> $10K Virtual Money</span>
-      <span><span class="tick">✓</span> Full Platform Access</span>
+    <div class="grid">
+      <div class="card">📊 Live Charts</div>
+      <div class="card">🤖 Bot Builder</div>
+      <div class="card">🧠 Free AI Bot</div>
+      <div class="card">📈 Analytics</div>
+      <div class="card">✋ Manual Trader</div>
+      <div class="card">📦 Bulk Trader</div>
+      <div class="card">💹 HP Markets</div>
+      <div class="card">📁 Dashboard</div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── Risk Disclaimer ───────────────────────────────────── -->
-<div class="disclaimer" id="disclaimer">
-  <div class="disclaimer-head">⚠️ Risk Disclaimer</div>
-  <p>HPTraders offers complex derivatives, such as options and contracts for difference ("CFDs"). These products may not be suitable for all clients, and trading them puts you at risk. Please make sure that you understand the following risks before trading HPTraders products:</p>
-  <ul>
-    <li>You may lose some or all of the money you invest in the trade.</li>
-    <li>If your trade involves currency conversion, exchange rates will affect your profit and loss.</li>
-    <li>You should never trade with borrowed money or with money that you cannot afford to lose.</li>
-  </ul>
 </div>
-
-<!-- ── Footer ────────────────────────────────────────────── -->
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="logo"><span class="hp">HP</span><span class="rest">Traders</span></div>
-      <p>AI-powered automated trading platform. Trade smarter with bots, analytics, and copy trading tools built for modern traders.</p>
-    </div>
-    <div class="footer-links">
-      <h4>Platform</h4>
-      <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Bot Builder</a></li>
-        <li><a href="#">Manual Trader</a></li>
-        <li><a href="#">AI Analysis</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Legal</h4>
-      <ul>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Risk Disclosure</a></li>
-        <li><a href="#">Cookie Policy</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    © 2026 HPTraders. All rights reserved. Trading involves risk. Past performance is not indicative of future results.
-  </div>
-</footer>
 
 <script>
-/* ── STARFIELD (3D warp-speed) ──────────────────────────── */
-(function () {
-  const canvas = document.getElementById('stars');
-  const ctx    = canvas.getContext('2d');
-  let W, H, stars = [];
-  const COUNT = 200, SPEED = 0.35;
 
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
+// LOGIN
+function login(){
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
 
-  function mkStar() {
-    return {
-      x: (Math.random() - 0.5) * W * 2,
-      y: (Math.random() - 0.5) * H * 2,
-      z: Math.random() * W,
-      px: 0, py: 0,
-    };
-  }
+  if(!u || !p) return alert("Fill all fields");
 
-  function init() {
-    resize();
-    stars = Array.from({ length: COUNT }, mkStar);
-  }
+  localStorage.setItem("hp_user", u);
 
-  function draw() {
-    ctx.fillStyle = 'rgba(5,13,26,0.16)';
-    ctx.fillRect(0, 0, W, H);
-    const cx = W / 2, cy = H / 2;
-
-    for (const s of stars) {
-      s.z -= SPEED;
-      if (s.z <= 0) { Object.assign(s, mkStar()); s.z = W; s.px = 0; s.py = 0; }
-
-      const sx = (s.x / s.z) * W + cx;
-      const sy = (s.y / s.z) * H + cy;
-      const r  = Math.max(0.3, (1 - s.z / W) * 2.4);
-      const a  = 1 - s.z / W;
-
-      if (s.px) {
-        ctx.beginPath();
-        ctx.moveTo(s.px, s.py);
-        ctx.lineTo(sx, sy);
-        const roll = (Math.abs(s.x + s.y) % 9);
-        ctx.strokeStyle = roll < 2
-          ? `rgba(139,92,246,${a * 0.5})`
-          : roll < 4
-            ? `rgba(0,212,255,${a * 0.55})`
-            : `rgba(200,225,255,${a * 0.4})`;
-        ctx.lineWidth = r * 0.55;
-        ctx.stroke();
-      }
-
-      ctx.beginPath();
-      ctx.arc(sx, sy, r, 0, Math.PI * 2);
-      const roll = (Math.abs(s.x + s.y) % 9);
-      ctx.fillStyle = roll < 2
-        ? `rgba(139,92,246,${a})`
-        : roll < 4
-          ? `rgba(0,212,255,${a})`
-          : `rgba(210,230,255,${a * 0.85})`;
-      ctx.fill();
-
-      s.px = sx; s.py = sy;
-    }
-    requestAnimationFrame(draw);
-  }
-
-  init();
-  draw();
-  window.addEventListener('resize', () => { init(); });
-})();
-
-/* ── LIVE TICKER ────────────────────────────────────────── */
-(function () {
-  const MARKETS = [
-    { sym: 'V75',    base: 75432.12 },
-    { sym: 'V100',   base: 5421.80  },
-    { sym: 'V25',    base: 241.56   },
-    { sym: 'V50',    base: 1982.44  },
-    { sym: 'V10',    base: 98.34    },
-    { sym: 'EURUSD', base: 1.0847   },
-    { sym: 'BTCUSD', base: 67342.0  },
-    { sym: 'ETHUSD', base: 3481.0   },
-    { sym: 'GBPUSD', base: 1.2734   },
-    { sym: 'USDJPY', base: 157.44   },
-    { sym: 'XAUUSD', base: 2334.50  },
-    { sym: 'NZDUSD', base: 0.6112   },
-  ];
-
-  let prices = MARKETS.map(m => ({ ...m, price: m.base, pct: 0 }));
-
-  function jitter(p) {
-    return prices.map(m => {
-      const chg = (Math.random() - 0.499) * m.base * 0.0006;
-      m.price = parseFloat((m.price + chg).toFixed(m.price > 1000 ? 2 : m.price > 10 ? 3 : 5));
-      m.pct   = parseFloat(((m.price - m.base) / m.base * 100).toFixed(2));
-      return m;
-    });
-  }
-
-  function buildItems(data) {
-    return data.map(m => `
-      <div class="ticker-item">
-        <div class="ticker-dot ${m.pct >= 0 ? 'up' : 'down'}"></div>
-        <span class="ticker-sym">${m.sym}</span>
-        <span class="ticker-val">${m.price.toLocaleString()}</span>
-        <span class="${m.pct >= 0 ? 'ticker-up' : 'ticker-down'}">${m.pct >= 0 ? '+' : ''}${m.pct}%</span>
-      </div>
-    `).join('');
-  }
-
-  function render() {
-    prices = jitter(prices);
-    const html = buildItems(prices) + buildItems(prices); // duplicate for seamless loop
-    document.getElementById('tickerTrack').innerHTML = html;
-  }
-
-  render();
-  setInterval(render, 2000);
-})();
-
-/* ── MODAL ──────────────────────────────────────────────── */
-function openModal(tab) {
-  document.getElementById('authModal').classList.add('open');
-  switchTab(tab || 'login');
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("name").innerText = u;
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('authModal'))
-    document.getElementById('authModal').classList.remove('open');
+// LOGOUT
+function logout(){
+  localStorage.removeItem("hp_user");
+  location.reload();
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('panel-' + tab).classList.add('active');
+// NAV
+function show(page){
+  document.querySelectorAll("#app section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(page).classList.remove("hidden");
 }
 
-/* ── ESC to close modal ─────────────────────────────────── */
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.getElementById('authModal').classList.remove('open');
-});
+// AUTO LOGIN
+window.onload = () => {
+  const user = localStorage.getItem("hp_user");
 
-/* ── Scroll-reveal for section heads ───────────────────── */
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.animation = 'fadeUp .7s ease both';
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.15 });
+  if(user){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("name").innerText = user;
+  }
+}
 
-document.querySelectorAll('.section-head, .feat-card, .testi-card, .stat-card, .why-item')
-  .forEach(el => { el.style.opacity = '1'; observer.observe(el); });
 </script>
+
 </body>
 </html>
