@@ -1,5 +1,1 @@
-PORT=5000
-DERIV_API_TOKEN=YOUR_TOKEN_HERE
-MPESA_KEY=xxx
-MPESA_SECRET=xxx
-DATABASE_URL=postgresql://user:pass@localhost:5432/hptraders
+
