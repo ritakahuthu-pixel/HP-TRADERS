@@ -1,5 +1,6 @@
 import express from "express";
-import { DerivEngine } from "../services/deriv-engine/deriv.js";
+// ✅ correct
+import { DerivEngine } from "../../services/deriv-engine/deriv.js";
 
 const router = express.Router();
 
