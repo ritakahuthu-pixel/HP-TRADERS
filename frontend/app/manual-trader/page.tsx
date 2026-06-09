@@ -6,7 +6,8 @@ export default function ManualTrader() {
   const [stake, setStake] = useState(1);
 
   const trade = async (type: string) => {
-    await fetch("http://localhost:5000/api/trade/buy", {
+    // ✅ works in production
+await fetch("https://your-render-app.onrender.com/api/trade/buy", { {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
