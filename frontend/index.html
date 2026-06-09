@@ -3,173 +3,349 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HPTraders App</title>
+<title>HPTraders Platform</title>
 
 <style>
-body {
+body{
   margin:0;
-  font-family: Inter, sans-serif;
+  font-family:Arial, sans-serif;
   background:#050d1a;
-  color:#fff;
+  color:white;
 }
 
 /* NAV */
 nav{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   padding:15px 5%;
   background:#0d1b2e;
-  position:sticky;
-  top:0;
 }
-.logo{font-weight:700;color:#00d4ff}
-
-/* BUTTONS */
-button{
-  padding:10px 16px;
-  border-radius:8px;
-  border:none;
+.logo{color:#00d4ff;font-weight:bold;font-size:18px}
+.login-icon{
   cursor:pointer;
+  font-size:20px;
 }
-.btn{background:#22c55e;color:#fff}
-.btn-outline{background:transparent;border:1px solid #00d4ff;color:#00d4ff}
 
-/* SECTIONS */
-section{padding:40px 5%}
-.hidden{display:none}
+/* LANDING */
+#landing{
+  text-align:center;
+  padding:80px 20px;
+}
+#landing h1{
+  font-size:2.5rem;
+}
+#landing p{
+  color:#7a9bbf;
+}
 
-/* LOGIN BOX */
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
+  background:rgba(0,0,0,0.75);
+  display:none;
   align-items:center;
+  justify-content:center;
 }
 .box{
+  width:340px;
   background:#0d1b2e;
-  padding:25px;
+  padding:20px;
   border-radius:12px;
-  width:300px;
 }
+
+/* TABS */
+.tabs{
+  display:flex;
+  margin-bottom:15px;
+}
+.tab{
+  flex:1;
+  padding:10px;
+  cursor:pointer;
+  text-align:center;
+  background:#050d1a;
+  color:#7a9bbf;
+}
+.tab.active{
+  background:#00d4ff;
+  color:#000;
+  font-weight:bold;
+}
+
+/* INPUTS */
 input{
   width:100%;
   padding:10px;
   margin:8px 0;
-  border-radius:6px;
+  border-radius:8px;
   border:1px solid #00d4ff;
   background:#050d1a;
-  color:#fff;
+  color:white;
 }
 
-/* HUB GRID */
+/* BUTTON */
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+.primary{background:#22c55e;color:white}
+
+/* APP */
+.hidden{display:none}
+
+/* DASHBOARD */
+#app{
+  padding:30px 5%;
+}
+
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-top:20px;
 }
 
+/* CARDS */
 .card{
-  padding:20px;
-  background:#0d1b2e;
-  border-radius:12px;
+  background:linear-gradient(145deg,#0d1b2e,#0a1525);
   border:1px solid #112036;
-  text-align:center;
+  padding:20px;
+  border-radius:14px;
+  transition:0.3s;
+  cursor:pointer;
 }
-.card:hover{border-color:#00d4ff}
+.card:hover{
+  transform:translateY(-5px);
+  border-color:#00d4ff;
+}
 
-/* RESPONSIVE */
-@media(max-width:600px){
-  nav{flex-direction:column;gap:10px}
+/* ICON */
+.icon{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+/* TEXT */
+.card h3{
+  margin:0;
+}
+.card p{
+  font-size:12px;
+  color:#7a9bbf;
+}
+
+/* TOP BAR IN APP */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logout{
+  background:transparent;
+  border:1px solid red;
+  color:red;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="logo">HPTraders</div>
-  <div>
-    <button class="btn-outline" onclick="logout()">Logout</button>
-  </div>
+  <div class="login-icon" onclick="openModal()">🔐 Login</div>
 </nav>
 
-<!-- LOGIN -->
-<div id="loginPage" class="modal">
+<!-- LANDING PAGE -->
+<div id="landing">
+  <h1>Welcome to HPTraders</h1>
+  <p>AI trading, bots, analytics and smart market tools all in one platform.</p>
+</div>
+
+<!-- LOGIN / REGISTER MODAL -->
+<div class="modal" id="modal">
+
   <div class="box">
-    <h3>Login</h3>
-    <input id="user" placeholder="Username"/>
-    <input id="pass" type="password" placeholder="Password"/>
-    <button class="btn" onclick="login()">Login</button>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <input id="lUser" placeholder="Username"/>
+      <input id="lPass" type="password" placeholder="Password"/>
+      <button class="primary" onclick="login()">Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerBox" class="hidden">
+      <input id="rUser" placeholder="Username"/>
+      <input id="rPass" type="password" placeholder="Password"/>
+      <input id="rConfirm" type="password" placeholder="Confirm Password"/>
+      <button class="primary" onclick="register()">Create Account</button>
+    </div>
+
   </div>
 </div>
 
-<!-- APP -->
+<!-- APP DASHBOARD -->
 <div id="app" class="hidden">
 
-  <!-- DASHBOARD -->
-  <section id="dashboard">
-    <h2>Welcome, <span id="name"></span> 👋</h2>
-    <p>Choose where to go:</p>
+  <div class="topbar">
+    <h2>Welcome, <span id="user"></span> 👋</h2>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 
-    <button class="btn" onclick="show('hub')">Go to Trading Hub</button>
-  </section>
+  <p style="color:#7a9bbf">Your trading dashboard is ready.</p>
 
-  <!-- HUB -->
-  <section id="hub" class="hidden">
-    <h2>Trading Hub</h2>
+  <div class="grid">
 
-    <div class="grid">
-      <div class="card">📊 Live Charts</div>
-      <div class="card">🤖 Bot Builder</div>
-      <div class="card">🧠 Free AI Bot</div>
-      <div class="card">📈 Analytics</div>
-      <div class="card">✋ Manual Trader</div>
-      <div class="card">📦 Bulk Trader</div>
-      <div class="card">💹 HP Markets</div>
-      <div class="card">📁 Dashboard</div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Live Charts</h3>
+      <p>Track real-time market movements and signals.</p>
     </div>
-  </section>
 
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h3>Bot Builder</h3>
+      <p>Create automated trading bots easily.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🧠</div>
+      <h3>AI Analysis</h3>
+      <p>AI-powered market prediction tools.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">📈</div>
+      <h3>Analytics</h3>
+      <p>Deep insights into your trading performance.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">✋</div>
+      <h3>Manual Trader</h3>
+      <p>Execute trades manually with precision.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">📦</div>
+      <h3>Bulk Trader</h3>
+      <p>Place multiple trades instantly.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">💹</div>
+      <h3>HP Markets</h3>
+      <p>Access global asset markets.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">📁</div>
+      <h3>Dashboard</h3>
+      <p>Your trading overview and stats.</p>
+    </div>
+
+  </div>
 </div>
 
 <script>
 
-// LOGIN
-function login(){
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
-
-  if(!u || !p) return alert("Fill all fields");
-
-  localStorage.setItem("hp_user", u);
-
-  document.getElementById("loginPage").style.display="none";
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("name").innerText = u;
+/* OPEN MODAL */
+function openModal(){
+  document.getElementById("modal").style.display="flex";
 }
 
-// LOGOUT
+/* CLOSE ON OUTSIDE CLICK */
+window.onclick = function(e){
+  if(e.target.id==="modal"){
+    document.getElementById("modal").style.display="none";
+  }
+}
+
+/* SWITCH TABS */
+function switchTab(type){
+  if(type==="login"){
+    document.getElementById("loginBox").classList.remove("hidden");
+    document.getElementById("registerBox").classList.add("hidden");
+  } else {
+    document.getElementById("registerBox").classList.remove("hidden");
+    document.getElementById("loginBox").classList.add("hidden");
+  }
+}
+
+/* REGISTER */
+function register(){
+  const u=document.getElementById("rUser").value;
+  const p=document.getElementById("rPass").value;
+  const c=document.getElementById("rConfirm").value;
+
+  if(!u||!p) return alert("Fill all fields");
+  if(p!==c) return alert("Passwords do not match");
+
+  let users=JSON.parse(localStorage.getItem("users"))||[];
+
+  if(users.find(x=>x.user===u)){
+    return alert("User already exists");
+  }
+
+  users.push({user:u,pass:p});
+  localStorage.setItem("users",JSON.stringify(users));
+
+  alert("Account created! Please login.");
+  switchTab("login");
+}
+
+/* LOGIN */
+function login(){
+  const u=document.getElementById("lUser").value;
+  const p=document.getElementById("lPass").value;
+
+  let users=JSON.parse(localStorage.getItem("users"))||[];
+
+  let found=users.find(x=>x.user===u && x.pass===p);
+
+  if(!found){
+    return alert("Invalid credentials. Please register first.");
+  }
+
+  localStorage.setItem("currentUser",u);
+  loadApp(u);
+}
+
+/* LOAD APP */
+function loadApp(user){
+  document.getElementById("modal").style.display="none";
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("user").innerText=user;
+}
+
+/* LOGOUT */
 function logout(){
-  localStorage.removeItem("hp_user");
+  localStorage.removeItem("currentUser");
   location.reload();
 }
 
-// NAV
-function show(page){
-  document.querySelectorAll("#app section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(page).classList.remove("hidden");
-}
-
-// AUTO LOGIN
-window.onload = () => {
-  const user = localStorage.getItem("hp_user");
-
+/* AUTO LOGIN */
+window.onload=function(){
+  let user=localStorage.getItem("currentUser");
   if(user){
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("app").classList.remove("hidden");
-    document.getElementById("name").innerText = user;
+    loadApp(user);
   }
 }
 
