@@ -30,11 +30,10 @@ app.use("/api/mpesa", mpesa);
 app.use("/api/ai", ai);
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, "../../../frontend")));
+app.use(express.static(path.join(__dirname, "../../frontend")));
 
-// All other routes serve index.html
 app.get("*", (_, res) => {
-  res.sendFile(path.join(__dirname, "../../../frontend/index.html"));
+  res.sendFile(path.join(__dirname, "../../frontend/index.html"));
 });
 
 const PORT = process.env.PORT || 5000;
