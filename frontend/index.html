@@ -1,173 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>HP TRADERS | Best AI Powered Trading Platform</title>
+<title>HP TRADERS | AI Trading Platform</title>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-body{
-background:#041122;
-color:white;
-overflow-x:hidden;
+body {
+  background: #041122;
+  color: white;
+  overflow-x: hidden;
 }
 
 /* NAVBAR */
-
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 50px;
-background:#081a33;
-border-bottom:1px solid #00ff88;
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background: #081a33;
+  border-bottom: 1px solid #00ff88;
 }
 
-.logo{
-font-size:32px;
-font-weight:bold;
-color:#00ff88;
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+  color: #00ff88;
 }
 
-.nav-buttons{
-display:flex;
-gap:15px;
-}
-
-.btn{
-padding:12px 28px;
-background:#00ff88;
-color:black;
-text-decoration:none;
-border:none;
-border-radius:30px;
-font-weight:bold;
-cursor:pointer;
+.btn {
+  padding: 12px 25px;
+  background: #00ff88;
+  color: black;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 /* HERO */
-
-.hero{
-min-height:90vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
+.hero {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
 }
 
-.hero h1{
-font-size:72px;
-color:#00ff88;
-margin-bottom:15px;
+.hero h1 {
+  font-size: 65px;
+  color: #00ff88;
+  margin-bottom: 10px;
 }
 
-.hero h2{
-font-size:36px;
-margin-bottom:20px;
+.hero h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
 }
 
-.hero p{
-max-width:800px;
-font-size:20px;
-line-height:1.8;
-margin-bottom:30px;
+.hero p {
+  max-width: 750px;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
 }
 
 /* FEATURES */
-
-.features{
-padding:80px 30px;
-text-align:center;
+.features {
+  padding: 60px 20px;
+  text-align: center;
 }
 
-.features h2{
-color:#00ff88;
-margin-bottom:40px;
+.features h2 {
+  color: #00ff88;
+  margin-bottom: 30px;
 }
 
-.feature-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
 }
 
-.card{
-background:#081a33;
-padding:30px;
-border-radius:15px;
-border:1px solid #00ff88;
-}
-
-/* STATS */
-
-.stats{
-padding:80px 30px;
-display:flex;
-justify-content:center;
-gap:60px;
-flex-wrap:wrap;
-text-align:center;
-}
-
-.stats h2{
-color:#00ff88;
-font-size:50px;
+.card {
+  background: #081a33;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #00ff88;
 }
 
 /* FOOTER */
-
-footer{
-padding:30px;
-text-align:center;
-background:#081a33;
-margin-top:50px;
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #081a33;
+  margin-top: 40px;
 }
-
-@media(max-width:768px){
-
-nav{
-padding:20px;
-}
-
-.hero h1{
-font-size:48px;
-}
-
-.hero h2{
-font-size:28px;
-}
-
-.hero p{
-font-size:16px;
-}
-
-}
-
 </style>
 
 <script>
 function login() {
+  const clientId = "33v14eEMV3YTKjPu9KNQk";
 
-const clientId = "33v14eEMV3YTKjPu9KNQk";
+  const redirectUri = "https://hp-traders-v5ey.onrender.com/callback";
 
-const redirectUri =
-"https://hp-traders-v5ey.onrender.com/callback";
-
-window.location.href =
-`https://auth.deriv.com/oauth2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-
+  window.location.href =
+    `https://auth.deriv.com/oauth2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 }
 </script>
 
@@ -176,110 +124,56 @@ window.location.href =
 <body>
 
 <nav>
+  <div class="logo">🚀 HP TRADERS</div>
 
-<div class="logo">
-🚀 HP TRADERS
-</div>
-
-<div class="nav-buttons">
-
-<button class="btn" onclick="login()">
-Connect Deriv
-</button>
-
-</div>
-
+  <button class="btn" onclick="login()">
+    Connect Deriv
+  </button>
 </nav>
 
 <section class="hero">
+  <h1>HP TRADERS</h1>
+  <h2>AI POWERED TRADING PLATFORM</h2>
 
-<h1>HP TRADERS</h1>
+  <p>
+    Trade smarter using AI signals, live market data, volatility indices tracking,
+    and automated trading tools built for speed and accuracy.
+  </p>
 
-<h2>BEST AI POWERED TRADING PLATFORM</h2>
-
-<p>
-Trade smarter with advanced AI analytics, live market monitoring,
-volatility indices tracking, automated strategies, and professional
-risk management tools.
-</p>
-
-<button class="btn" onclick="login()">
-START TRADING
-</button>
-
+  <button class="btn" onclick="login()">
+    START TRADING
+  </button>
 </section>
 
 <section class="features">
+  <h2>Why Choose HP Traders?</h2>
 
-<h2>Why Choose HP Traders?</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>🤖 AI Signals</h3>
+      <p>Smart trading insights powered by AI.</p>
+    </div>
 
-<div class="feature-grid">
+    <div class="card">
+      <h3>📊 Live Markets</h3>
+      <p>Real-time volatility index monitoring.</p>
+    </div>
 
-<div class="card">
-<h3>🤖 AI Signals</h3>
-<p>
-Advanced AI market analysis and trading insights.
-</p>
-</div>
+    <div class="card">
+      <h3>⚡ Fast Execution</h3>
+      <p>Instant trade execution with low latency.</p>
+    </div>
 
-<div class="card">
-<h3>📈 Live Markets</h3>
-<p>
-Monitor Volatility 10, 25, 50, 75 and 100 indices in real time.
-</p>
-</div>
-
-<div class="card">
-<h3>⚡ Fast Execution</h3>
-<p>
-Instant order processing and real-time market updates.
-</p>
-</div>
-
-<div class="card">
-<h3>🔒 Secure Platform</h3>
-<p>
-Protected authentication and account integration.
-</p>
-</div>
-
-</div>
-
-</section>
-
-<section class="stats">
-
-<div>
-<h2>50K+</h2>
-<p>Active Traders</p>
-</div>
-
-<div>
-<h2>99.9%</h2>
-<p>Platform Uptime</p>
-</div>
-
-<div>
-<h2>24/7</h2>
-<p>Market Monitoring</p>
-</div>
-
+    <div class="card">
+      <h3>🔒 Secure Login</h3>
+      <p>Protected Deriv OAuth authentication.</p>
+    </div>
+  </div>
 </section>
 
 <footer>
-
-<h2 style="color:#00ff88;">
-HP TRADERS
-</h2>
-
-<p>
-Best AI Powered Trading Platform
-</p>
-
-<p>
-© 2026 HP Traders. All Rights Reserved.
-</p>
-
+  <h3 style="color:#00ff88;">HP TRADERS</h3>
+  <p>© 2026 All Rights Reserved</p>
 </footer>
 
 </body>
