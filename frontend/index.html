@@ -1,271 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HPTraders Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter;
-}
-
-body{
-background:#0b1220;
-color:#fff;
-display:flex;
-min-height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-width:240px;
-background:#0f1a2e;
-padding:20px;
-border-right:1px solid rgba(255,255,255,0.05);
-}
-
-.logo{
-color:#00d4ff;
-font-weight:700;
-font-size:18px;
-margin-bottom:30px;
-}
-
-.nav-item{
-padding:12px;
-border-radius:8px;
-cursor:pointer;
-color:#9fb3c8;
-margin-bottom:8px;
-transition:0.2s;
-}
-
-.nav-item:hover{
-background:#16233d;
-color:#00d4ff;
-}
-
-/* MAIN */
-.main{
-flex:1;
-display:flex;
-flex-direction:column;
-}
-
-/* TOPBAR */
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 20px;
-background:#0f1a2e;
-border-bottom:1px solid rgba(255,255,255,0.05);
-}
-
-.balance{
-background:#00d4ff;
-color:#001018;
-padding:6px 12px;
-border-radius:8px;
-font-weight:700;
-}
-
-/* STATS */
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-padding:20px;
-}
-
-.card{
-background:#111c33;
-padding:15px;
-border-radius:10px;
-border:1px solid rgba(255,255,255,0.05);
-}
-
-.card h3{
-color:#00d4ff;
-margin-bottom:5px;
-}
-
-/* BOT PANEL */
-.bot-panel{
-margin:0 20px;
-padding:15px;
-background:#111c33;
-border-radius:10px;
-border:1px solid rgba(255,255,255,0.05);
-}
-
-.bot-panel button{
-margin-top:10px;
-padding:10px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-background:#00d4ff;
-color:#001018;
-font-weight:600;
-}
-
-/* TABLE */
-.table{
-margin:20px;
-background:#111c33;
-border-radius:10px;
-overflow:hidden;
-border:1px solid rgba(255,255,255,0.05);
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:12px;
-text-align:left;
-font-size:14px;
-}
-
-th{
-background:#0f1a2e;
-color:#00d4ff;
-}
-
-tr:nth-child(even){
-background:#0c1527;
-}
-
-.win{color:#00ff99}
-.loss{color:#ff4d4d}
-
-/* STATUS */
-.status{
-font-size:13px;
-color:#9fb3c8;
-}
-
-.online{
-color:#00ff99;
-}
-</style>
-
-</head>
-
-<body>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="logo">HPTRADERS</div>
-
-  <div class="nav-item">Dashboard</div>
-  <div class="nav-item">Bots</div>
-  <div class="nav-item">Trades</div>
-  <div class="nav-item">Analytics</div>
-  <div class="nav-item">Wallet</div>
-  <div class="nav-item">Settings</div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="status">Market Status: <span class="online">LIVE</span></div>
-    <div class="balance">$12,450.00</div>
-  </div>
-
-  <!-- STATS -->
-  <div class="stats">
-
-    <div class="card">
-      <h3>Profit Today</h3>
-      <p>+$320</p>
-    </div>
-
-    <div class="card">
-      <h3>Active Bots</h3>
-      <p>3 Running</p>
-    </div>
-
-    <div class="card">
-      <h3>Total Trades</h3>
-      <p>148</p>
-    </div>
-
-    <div class="card">
-      <h3>Win Rate</h3>
-      <p>76%</p>
-    </div>
-
-  </div>
-
-  <!-- BOT PANEL -->
-  <div class="bot-panel">
-    <h3 style="color:#00d4ff;">AI Trading Bot</h3>
-    <p style="color:#9fb3c8;font-size:14px;margin-top:5px;">
-      Configure and start automated trading engine.
-    </p>
-
-    <button onclick="startBot()">Start Bot</button>
-    <button style="background:#ff4d4d;margin-left:10px;color:white;" onclick="stopBot()">Stop</button>
-
-    <p id="botStatus" style="margin-top:10px;color:#9fb3c8;font-size:13px;">Bot Status: Idle</p>
-  </div>
-
-  <!-- TRADES TABLE -->
-  <div class="table">
-    <table>
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Asset</th>
-          <th>Type</th>
-          <th>Stake</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-
-      <tbody id="tradeTable">
-        <tr>
-          <td>10:12</td>
-          <td>Volatility 75</td>
-          <td>CALL</td>
-          <td>$10</td>
-          <td class="win">WIN</td>
-        </tr>
-
-        <tr>
-          <td>10:18</td>
-          <td>Step Index</td>
-          <td>PUT</td>
-          <td>$5</td>
-          <td class="loss">LOSS</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
 <script>
-function startBot(){
-document.getElementById("botStatus").innerText = "Bot Status: Running...";
+const API_URL = "https://hp-traders-v5ey.onrender.com";
+
+// Load dashboard data
+async function loadDashboard() {
+  try {
+
+    // AI Signals
+    const aiRes = await fetch(`${API_URL}/api/ai`);
+    const aiData = await aiRes.json();
+
+    // Trades
+    const tradeRes = await fetch(`${API_URL}/api/trade`);
+    const trades = await tradeRes.json();
+
+    // Populate trade table
+    const table = document.getElementById("tradeTable");
+    table.innerHTML = "";
+
+    trades.forEach(trade => {
+      table.innerHTML += `
+        <tr>
+          <td>${trade.time}</td>
+          <td>${trade.asset}</td>
+          <td>${trade.type}</td>
+          <td>$${trade.stake}</td>
+          <td class="${trade.result === 'WIN' ? 'win':'loss'}">
+            ${trade.result}
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch(err){
+    console.error(err);
+  }
 }
 
-function stopBot(){
-document.getElementById("botStatus").innerText = "Bot Status: Stopped";
+// Start Bot
+async function startBot(){
+
+  try{
+
+    const res = await fetch(`${API_URL}/api/bot/start`,{
+      method:"POST"
+    });
+
+    const data = await res.json();
+
+    document.getElementById("botStatus").innerText =
+      "Bot Status: Running";
+
+  }catch(err){
+    console.error(err);
+  }
+
 }
+
+// Stop Bot
+async function stopBot(){
+
+  try{
+
+    const res = await fetch(`${API_URL}/api/bot/stop`,{
+      method:"POST"
+    });
+
+    const data = await res.json();
+
+    document.getElementById("botStatus").innerText =
+      "Bot Status: Stopped";
+
+  }catch(err){
+    console.error(err);
+  }
+
+}
+
+loadDashboard();
+setInterval(loadDashboard,10000);
 </script>
-
-</body>
-</html>
