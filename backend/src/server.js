@@ -2,6 +2,17 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import WebSocket from "ws";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve frontend
+app.use(express.static(path.join(process.cwd(), "../frontend")));
+app.get("*", (_, res) => {
+  res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
+});
 
 dotenv.config();
 
