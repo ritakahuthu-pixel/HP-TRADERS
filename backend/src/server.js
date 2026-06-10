@@ -32,12 +32,14 @@ process.on("unhandledRejection", (err) => {
 });
 
 /* =========================
-   SAFE DEBUG (REMOVE LATER IF YOU WANT)
+   SAFE DEBUG (OPTIONAL)
+   REMOVE IN PRODUCTION LATER
 ========================= */
 try {
   console.log("📁 ROOT:", fs.readdirSync(rootDir));
   console.log("📁 ROUTES:", fs.readdirSync(routesDir));
   console.log("📁 SERVICES:", fs.readdirSync(servicesDir));
+  console.log("📁 FRONTEND:", fs.readdirSync(frontendDir));
 } catch (err) {
   console.error("🔥 FILE STRUCTURE ERROR:", err.message);
 }
@@ -49,7 +51,7 @@ app.use(cors());
 app.use(express.json());
 
 /* =========================
-   STATIC FRONTEND (IMPORTANT FIX)
+   STATIC FRONTEND (IMPORTANT)
 ========================= */
 app.use(express.static(frontendDir));
 
@@ -77,7 +79,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
-   PAGES ROUTES (FRONTEND)
+   FRONTEND ROUTES
 ========================= */
 
 // Landing page
@@ -91,7 +93,7 @@ app.get("/dashboard", (req, res) => {
 });
 
 /* =========================
-   CALLBACK ROUTE (DERIV LOGIN)
+   CALLBACK ROUTE (DERIV OAUTH)
 ========================= */
 app.get("/callback", (req, res) => {
   const { code } = req.query;
@@ -143,6 +145,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("🚀 Server running on port:", PORT);
+
   console.log("🔍 ENV CHECK:");
   console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
   console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ⚠️ (DO NOT EXPOSE)" : "MISSING ❌");
