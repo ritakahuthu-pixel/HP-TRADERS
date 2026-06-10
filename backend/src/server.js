@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 /* =========================
-   PATH RESOLUTION (SAFE)
+   PATH RESOLUTION
 ========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -74,7 +74,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
-   CALLBACK ROUTE (FIX ADDED)
+   CALLBACK ROUTE
 ========================= */
 app.get("/callback", (req, res) => {
   const { code } = req.query;
@@ -83,7 +83,7 @@ app.get("/callback", (req, res) => {
     return res.status(400).send("Missing authorization code");
   }
 
-  res.send(`
+  return res.send(`
     <html>
       <body style="background:#041122;color:white;text-align:center;padding:50px">
         <h1>Login Successful 🚀</h1>
@@ -110,7 +110,7 @@ app.get("/health", (req, res) => {
 });
 
 /* =========================
-   START DERIV STREAM (SAFE)
+   START DERIV STREAM
 ========================= */
 try {
   startDerivStream();
@@ -125,7 +125,7 @@ try {
 ========================= */
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log("🚀 Server running on port:", PORT);
 
   console.log("🔍 ENV CHECK:");
@@ -141,9 +141,9 @@ const server = app.listen(PORT, () => {
 });
 
 /* =========================
-   SERVER ERROR HANDLING
+   FIX: CATCH-ALL ROUTE (IMPORTANT)
+   MUST BE LAST
 ========================= */
-server.on("error", (err) => {
-  console.error("🔥 SERVER ERROR:");
-  console.error(err);
+app.get("*", (req, res) => {
+  res.redirect("/");
 });
