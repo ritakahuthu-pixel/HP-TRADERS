@@ -1,62 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>HP Traders Login</title>
+<meta charset="UTF-8">
+<title>HP Traders</title>
 
 <style>
 body{
-background:#041122;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+margin:0;
 font-family:Arial;
-}
-
-.card{
-background:#081a33;
-padding:40px;
-border-radius:20px;
-text-align:center;
+background:#041122;
 color:white;
 }
 
-button{
-padding:15px 30px;
-border:none;
-border-radius:20px;
-background:#00ff88;
-font-size:18px;
+nav{
+display:flex;
+justify-content:space-between;
+padding:20px 60px;
+background:#081a33;
+}
+
+.logo{
+font-size:32px;
 font-weight:bold;
-cursor:pointer;
+color:#00ff88;
+}
+
+.hero{
+height:80vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+.hero h1{
+font-size:70px;
+margin:0;
+}
+
+.hero p{
+width:700px;
+max-width:90%;
+}
+
+.btn{
+padding:15px 35px;
+background:#00ff88;
+color:black;
+text-decoration:none;
+border-radius:30px;
+font-weight:bold;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="card">
+<nav>
+<div class="logo">HP Traders</div>
 
-<h2>Login with Deriv</h2>
+<a href="login.html" class="btn">
+Login Now
+</a>
 
-<button onclick="loginDeriv()">
-Connect Deriv Account
-</button>
+</nav>
+
+<div class="hero">
+
+<h1>HP Traders</h1>
+
+<h2>The Future Of Automated Trading</h2>
+
+<p>
+Harness the power of AI-driven bots, real-time analytics and
+copy trading to maximize your profits.
+</p>
+
+<a href="login.html" class="btn">
+Start Trading
+</a>
 
 </div>
-
-<script>
-
-function loginDeriv(){
-
-const clientId = "YOUR_DERIV_CLIENT_ID";
-
-window.location.href=
-`https://oauth.deriv.com/oauth2/authorize?app_id=${clientId}`;
-
-}
-
-</script>
 
 </body>
 </html>
