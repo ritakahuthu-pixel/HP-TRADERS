@@ -2,11 +2,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import deriv from "../routes/deriv.routes.js";
-import trade from "../routes/trade.routes.js";
-import bot from "../routes/bot.routes.js";
-import mpesa from "../routes/mpesa.routes.js";
-import ai from "../routes/ai.routes.js";
+import deriv from "./routes/deriv.routes.js";
+import trade from "./routes/trade.routes.js";
+import bot from "./routes/bot.routes.js";
+import mpesa from "./routes/mpesa.routes.js";
+import ai from "./routes/ai.routes.js";
 
 dotenv.config();
 
