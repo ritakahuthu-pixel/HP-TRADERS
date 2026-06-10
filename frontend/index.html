@@ -1,81 +1,162 @@
-<script>
-const API_URL = "https://hp-traders-v5ey.onrender.com";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HP TRADERS</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
 
-// Load dashboard data
-async function loadDashboard() {
-  try {
+  <canvas id="particles"></canvas>
 
-    // AI Signals
-    const aiRes = await fetch(`${API_URL}/api/ai`);
-    const aiData = await aiRes.json();
+  <div class="container">
+    <h1>HP TRADERS 🚀</h1>
 
-    // Trades
-    const tradeRes = await fetch(`${API_URL}/api/trade`);
-    const trades = await tradeRes.json();
+    <!-- AI Signal -->
+    <div class="card" id="aiSignalCard">
+      <h2>AI Signal</h2>
+      <p>Signal: <strong id="aiSignal">--</strong></p>
+      <p>Confidence: <strong id="aiConfidence">--</strong></p>
+      <p>Trend: <strong id="aiTrend">--</strong></p>
+      <p>Market: <strong id="aiMarket">--</strong></p>
+    </div>
 
-    // Populate trade table
-    const table = document.getElementById("tradeTable");
-    table.innerHTML = "";
+    <!-- Deriv Account -->
+    <div class="card" id="derivCard">
+      <h2>Deriv Account</h2>
+      <p>Account: <strong id="derivAccount">--</strong></p>
+      <p>Balance: <strong id="derivBalance">--</strong></p>
+      <p>Currency: <strong id="derivCurrency">--</strong></p>
+      <p>Status: <strong id="derivStatus">--</strong></p>
+    </div>
 
-    trades.forEach(trade => {
-      table.innerHTML += `
-        <tr>
-          <td>${trade.time}</td>
-          <td>${trade.asset}</td>
-          <td>${trade.type}</td>
-          <td>$${trade.stake}</td>
-          <td class="${trade.result === 'WIN' ? 'win':'loss'}">
-            ${trade.result}
-          </td>
-        </tr>
-      `;
-    });
+    <!-- Bot Controls -->
+    <div class="card">
+      <h2>Trading Bot</h2>
+      <p id="botStatus">Bot Status: Idle</p>
+      <button onclick="startBot()">▶ Start Bot</button>
+      <button onclick="stopBot()">⏹ Stop Bot</button>
+    </div>
 
-  } catch(err){
-    console.error(err);
-  }
-}
+    <!-- M-Pesa -->
+    <div class="card">
+      <h2>M-Pesa</h2>
+      <input id="mpesaPhone" type="text" placeholder="Phone e.g. 2547XXXXXXXX" />
+      <input id="mpesaAmount" type="number" placeholder="Amount (KES)" />
+      <button onclick="mpesaDeposit()">Deposit</button>
+      <button onclick="mpesaWithdraw()">Withdraw</button>
+      <p id="mpesaStatus"></p>
+    </div>
 
-// Start Bot
-async function startBot(){
+    <!-- Trade History -->
+    <div class="card">
+      <h2>Trade History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Asset</th>
+            <th>Type</th>
+            <th>Stake</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody id="tradeTable"></tbody>
+      </table>
+    </div>
 
-  try{
+  </div>
 
-    const res = await fetch(`${API_URL}/api/bot/start`,{
-      method:"POST"
-    });
+  <script src="app.js"></script>
+  <script>
+    const API_URL = "https://hp-traders-v5ey.onrender.com";
 
-    const data = await res.json();
+    async function loadDashboard() {
+      try {
+        // AI Signals
+        const aiRes = await fetch(`${API_URL}/api/ai`);
+        const aiData = await aiRes.json();
+        document.getElementById("aiSignal").innerText = aiData.signal || "--";
+        document.getElementById("aiConfidence").innerText = aiData.confidence || "--";
+        document.getElementById("aiTrend").innerText = aiData.trend || "--";
+        document.getElementById("aiMarket").innerText = aiData.market || "--";
 
-    document.getElementById("botStatus").innerText =
-      "Bot Status: Running";
+        // Deriv
+        const derivRes = await fetch(`${API_URL}/api/deriv`);
+        const derivData = await derivRes.json();
+        document.getElementById("derivAccount").innerText = derivData.account || "--";
+        document.getElementById("derivBalance").innerText = derivData.balance || "--";
+        document.getElementById("derivCurrency").innerText = derivData.currency || "--";
+        document.getElementById("derivStatus").innerText = derivData.marketStatus || "--";
 
-  }catch(err){
-    console.error(err);
-  }
+        // Trades
+        const tradeRes = await fetch(`${API_URL}/api/trade`);
+        const trades = await tradeRes.json();
+        const table = document.getElementById("tradeTable");
+        table.innerHTML = "";
+        trades.forEach(trade => {
+          table.innerHTML += `
+            <tr>
+              <td>${trade.time}</td>
+              <td>${trade.asset}</td>
+              <td>${trade.type}</td>
+              <td>$${trade.stake}</td>
+              <td class="${trade.result === 'WIN' ? 'win' : 'loss'}">${trade.result}</td>
+            </tr>
+          `;
+        });
+      } catch(err) {
+        console.error(err);
+      }
+    }
 
-}
+    async function startBot() {
+      try {
+        const res = await fetch(`${API_URL}/api/bot/start`, { method: "POST" });
+        await res.json();
+        document.getElementById("botStatus").innerText = "Bot Status: Running ✅";
+      } catch(err) { console.error(err); }
+    }
 
-// Stop Bot
-async function stopBot(){
+    async function stopBot() {
+      try {
+        const res = await fetch(`${API_URL}/api/bot/stop`, { method: "POST" });
+        await res.json();
+        document.getElementById("botStatus").innerText = "Bot Status: Stopped ⏹";
+      } catch(err) { console.error(err); }
+    }
 
-  try{
+    async function mpesaDeposit() {
+      const phone = document.getElementById("mpesaPhone").value;
+      const amount = document.getElementById("mpesaAmount").value;
+      try {
+        const res = await fetch(`${API_URL}/api/mpesa/deposit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, amount })
+        });
+        const data = await res.json();
+        document.getElementById("mpesaStatus").innerText = data.message;
+      } catch(err) { console.error(err); }
+    }
 
-    const res = await fetch(`${API_URL}/api/bot/stop`,{
-      method:"POST"
-    });
+    async function mpesaWithdraw() {
+      const phone = document.getElementById("mpesaPhone").value;
+      const amount = document.getElementById("mpesaAmount").value;
+      try {
+        const res = await fetch(`${API_URL}/api/mpesa/withdraw`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, amount })
+        });
+        const data = await res.json();
+        document.getElementById("mpesaStatus").innerText = data.message;
+      } catch(err) { console.error(err); }
+    }
 
-    const data = await res.json();
-
-    document.getElementById("botStatus").innerText =
-      "Bot Status: Stopped";
-
-  }catch(err){
-    console.error(err);
-  }
-
-}
-
-loadDashboard();
-setInterval(loadDashboard,10000);
-</script>
+    loadDashboard();
+    setInterval(loadDashboard, 10000);
+  </script>
+</body>
+</html>
