@@ -1,21 +1,31 @@
 import express from "express";
-// ✅ correct
-import { DerivEngine } from "../../services/deriv-engine/deriv.js";
 
 const router = express.Router();
 
-let engine;
-
-router.post("/connect", (req, res) => {
-  engine = new DerivEngine(req.body.token);
-  engine.connect();
-
-  res.json({ status: "connected" });
-});
-
-router.post("/buy", (req, res) => {
-  engine.buy(req.body);
-  res.json({ status: "trade_sent" });
+router.get("/", (req, res) => {
+  res.json([
+    {
+      time: "10:12",
+      asset: "Volatility 75",
+      type: "CALL",
+      stake: 10,
+      result: "WIN"
+    },
+    {
+      time: "10:18",
+      asset: "Step Index",
+      type: "PUT",
+      stake: 5,
+      result: "LOSS"
+    },
+    {
+      time: "10:22",
+      asset: "Volatility 100",
+      type: "CALL",
+      stake: 15,
+      result: "WIN"
+    }
+  ]);
 });
 
 export default router;
