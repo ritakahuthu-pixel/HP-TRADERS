@@ -83,13 +83,14 @@ app.get("/callback", async (req, res) => {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
-        grant_type: "authorization_code",
-        client_id: process.env.DERIV_CLIENT_ID,
-        code,
-        code_verifier: state,
-        redirect_uri: process.env.REDIRECT_URI
-      })
-  );
+  grant_type: "authorization_code",
+  client_id: process.env.DERIV_CLIENT_ID,
+  code,
+  code_verifier: state,
+  redirect_uri: process.env.REDIRECT_URI
+})
+}
+);
 
   const data = await response.json();
 
