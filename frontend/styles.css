@@ -1,204 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HP TRADERS</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(0,212,255,0.1); font-size: 0.9rem; }
-    th { color: #00d4ff; font-weight: 600; }
-    .win { color: #22c55e; font-weight: bold; }
-    .loss { color: #ef4444; font-weight: bold; }
-    input { background: #0a1628; border: 1px solid rgba(0,212,255,0.2); color: white; padding: 8px 12px; border-radius: 8px; margin: 6px 4px 6px 0; width: 100%; }
-    button { background: #00d4ff; color: #050d1a; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; margin: 6px 4px 0 0; transition: 0.3s; }
-    button:hover { background: #00b8d9; transform: translateY(-2px); }
-    .stat-value { font-size: 1.4rem; font-weight: 700; color: #00d4ff; margin-top: 6px; }
-    .card h2 { font-family: "Space Grotesk", sans-serif; font-size: 1rem; color: rgba(255,255,255,0.6); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-    .card p { margin: 6px 0; font-size: 0.9rem; opacity: 0.8; }
-    .card strong { color: white; }
-    #botStatus { font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: #f59e0b; }
-    #mpesaStatus { margin-top: 10px; color: #22c55e; font-weight: 600; }
-    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
-    .badge.buy { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid #22c55e; }
-    .badge.bullish { background: rgba(34,197,94,0.1); color: #22c55e; }
-  </style>
-</head>
-<body>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap');
 
-  <canvas id="particles"></canvas>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="logo">⚡ HP TRADERS</div>
-    <div>
-      <a href="#">Dashboard</a>
-      <a href="#">Trades</a>
-      <a href="#">Bot</a>
-      <a href="#">M-Pesa</a>
-    </div>
-  </nav>
+body {
+  font-family: "Inter", sans-serif;
+  background: #050d1a;
+  color: white;
+  overflow-x: hidden;
+}
 
-  <!-- HERO -->
-  <div class="hero">
-    <h1>Binary Trading Dashboard</h1>
-    <p>Powered by Deriv API · AI Signals · M-Pesa Payments</p>
-  </div>
+/* NAV */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(13, 27, 46, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: #00d4ff;
+  letter-spacing: 2px;
+  font-size: 1.2rem;
+}
+.nav a {
+  color: rgba(255,255,255,0.7);
+  margin-left: 20px;
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+.nav a:hover { color: #00d4ff; }
 
-  <!-- STATS GRID -->
-  <div class="grid">
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 50px 20px 30px;
+}
+.hero h1 {
+  font-size: 2.2rem;
+  font-family: "Space Grotesk", sans-serif;
+  background: linear-gradient(135deg, #00d4ff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  opacity: 0.5;
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
 
-    <!-- AI Signal Card -->
-    <div class="card">
-      <h2>🤖 AI Signal</h2>
-      <div class="stat-value" id="aiSignal">--</div>
-      <p>Confidence: <strong id="aiConfidence">--</strong></p>
-      <p>Trend: <strong id="aiTrend">--</strong></p>
-      <p>Market: <strong id="aiMarket">--</strong></p>
-    </div>
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  padding: 20px 40px;
+}
 
-    <!-- Deriv Account Card -->
-    <div class="card">
-      <h2>📈 Deriv Account</h2>
-      <div class="stat-value" id="derivBalance">--</div>
-      <p>Account: <strong id="derivAccount">--</strong></p>
-      <p>Currency: <strong id="derivCurrency">--</strong></p>
-      <p>Status: <strong class="live" id="derivStatus">--</strong></p>
-    </div>
+/* CARD */
+.card {
+  background: #0d1b2e;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  transition: 0.3s;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+}
+.card h2 {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+.card p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+}
+.card strong { color: white; }
 
-    <!-- Bot Control Card -->
-    <div class="card">
-      <h2>🤖 Trading Bot</h2>
-      <p id="botStatus">Bot Status: Idle</p>
-      <button onclick="startBot()">▶ Start Bot</button>
-      <button onclick="stopBot()" style="background:#ef4444;">⏹ Stop Bot</button>
-    </div>
+/* STAT VALUE */
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #00d4ff;
+  margin: 8px 0 14px;
+  font-family: "Space Grotesk", sans-serif;
+}
 
-    <!-- M-Pesa Card -->
-    <div class="card">
-      <h2>💚 M-Pesa</h2>
-      <input id="mpesaPhone" type="text" placeholder="Phone e.g. 2547XXXXXXXX" />
-      <input id="mpesaAmount" type="number" placeholder="Amount (KES)" />
-      <button onclick="mpesaDeposit()">⬇ Deposit</button>
-      <button onclick="mpesaWithdraw()" style="background:#f59e0b; color:#050d1a;">⬆ Withdraw</button>
-      <p id="mpesaStatus"></p>
-    </div>
+/* TABLE */
+table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+th {
+  color: #00d4ff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+  text-align: left;
+}
+td {
+  padding: 12px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.8);
+}
+tr:hover td { background: rgba(0,212,255,0.03); }
 
-  </div>
+/* RESULTS */
+.win { color: #22c55e; font-weight: 700; }
+.loss { color: #ef4444; font-weight: 700; }
+.live { color: #f59e0b; font-weight: 700; }
+.profit { color: #22c55e; }
 
-  <!-- TRADE HISTORY -->
-  <div style="padding: 0 40px 60px;">
-    <div class="card">
-      <h2>📊 Trade History</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Asset</th>
-            <th>Type</th>
-            <th>Stake</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody id="tradeTable">
-          <tr><td colspan="5" style="text-align:center; opacity:0.5;">Loading trades...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+/* INPUTS */
+input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(0,212,255,0.2);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin: 6px 0;
+  width: 100%;
+  font-size: 0.9rem;
+  outline: none;
+  transition: 0.3s;
+}
+input:focus { border-color: #00d4ff; background: rgba(0,212,255,0.05); }
+input::placeholder { color: rgba(255,255,255,0.3); }
 
-  <script src="app.js"></script>
-  <script>
-    const API_URL = "https://hp-traders-v5ey.onrender.com";
+/* BUTTONS */
+button {
+  background: #00d4ff;
+  color: #050d1a;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 6px 6px 0 0;
+  transition: 0.3s;
+}
+button:hover { opacity: 0.85; transform: translateY(-2px); }
 
-    async function loadDashboard() {
-      try {
-        const [aiData, derivData, trades] = await Promise.all([
-          fetch(`${API_URL}/api/ai`).then(r => r.json()),
-          fetch(`${API_URL}/api/deriv`).then(r => r.json()),
-          fetch(`${API_URL}/api/trade`).then(r => r.json())
-        ]);
+/* BOT STATUS */
+#botStatus {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #f59e0b;
+}
+#mpesaStatus {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #22c55e;
+  font-size: 0.9rem;
+}
 
-        // AI
-        document.getElementById("aiSignal").innerText = aiData.signal || "--";
-        document.getElementById("aiConfidence").innerText = aiData.confidence || "--";
-        document.getElementById("aiTrend").innerText = aiData.trend || "--";
-        document.getElementById("aiMarket").innerText = aiData.market || "--";
+/* TRADE SECTION */
+.trade-section { padding: 20px 40px 60px; }
 
-        // Deriv
-        document.getElementById("derivBalance").innerText = `$${derivData.balance || "--"}`;
-        document.getElementById("derivAccount").innerText = derivData.account || "--";
-        document.getElementById("derivCurrency").innerText = derivData.currency || "--";
-        document.getElementById("derivStatus").innerText = derivData.marketStatus || "--";
+/* PARTICLES */
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
 
-        // Trades
-        const table = document.getElementById("tradeTable");
-        table.innerHTML = "";
-        trades.forEach(trade => {
-          table.innerHTML += `
-            <tr>
-              <td>${trade.time}</td>
-              <td>${trade.asset}</td>
-              <td>${trade.type}</td>
-              <td>$${trade.stake}</td>
-              <td class="${trade.result === 'WIN' ? 'win' : 'loss'}">${trade.result}</td>
-            </tr>`;
-        });
-      } catch(err) {
-        console.error("Dashboard load error:", err);
-      }
-    }
-
-    async function startBot() {
-      try {
-        await fetch(`${API_URL}/api/bot/start`, { method: "POST" });
-        document.getElementById("botStatus").innerText = "Bot Status: Running ✅";
-        document.getElementById("botStatus").style.color = "#22c55e";
-      } catch(err) { console.error(err); }
-    }
-
-    async function stopBot() {
-      try {
-        await fetch(`${API_URL}/api/bot/stop`, { method: "POST" });
-        document.getElementById("botStatus").innerText = "Bot Status: Stopped ⏹";
-        document.getElementById("botStatus").style.color = "#ef4444";
-      } catch(err) { console.error(err); }
-    }
-
-    async function mpesaDeposit() {
-      const phone = document.getElementById("mpesaPhone").value;
-      const amount = document.getElementById("mpesaAmount").value;
-      try {
-        const res = await fetch(`${API_URL}/api/mpesa/deposit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone, amount })
-        });
-        const data = await res.json();
-        document.getElementById("mpesaStatus").innerText = "✅ " + data.message;
-      } catch(err) { console.error(err); }
-    }
-
-    async function mpesaWithdraw() {
-      const phone = document.getElementById("mpesaPhone").value;
-      const amount = document.getElementById("mpesaAmount").value;
-      try {
-        const res = await fetch(`${API_URL}/api/mpesa/withdraw`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone, amount })
-        });
-        const data = await res.json();
-        document.getElementById("mpesaStatus").innerText = "✅ " + data.message;
-      } catch(err) { console.error(err); }
-    }
-
-    loadDashboard();
-    setInterval(loadDashboard, 10000);
-  </script>
-
-</body>
-</html>
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .nav { padding: 16px 20px; }
+  .grid { padding: 16px 20px; gap: 16px; }
+  .trade-section { padding: 16px 20px 40px; }
+  .hero h1 { font-size: 1.6rem; }
+}
