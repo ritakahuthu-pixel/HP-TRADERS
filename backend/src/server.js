@@ -11,17 +11,33 @@ import ai from "../routes/ai.routes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Allow frontend access
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
+// Health check
 app.get("/", (_, res) => {
-  res.json({ status: "HP TRADERS API LIVE 🚀" });
+  res.json({
+    status: "HP TRADERS API LIVE 🚀"
+  });
 });
 
+// Routes
 app.use("/api/deriv", deriv);
 app.use("/api/trade", trade);
 app.use("/api/bot", bot);
 app.use("/api/mpesa", mpesa);
 app.use("/api/ai", ai);
 
-app.listen(5000, () => console.log("Backend running on port 5000"));
+// Render Port
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
+});
