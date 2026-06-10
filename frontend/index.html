@@ -1,117 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HP Traders Live</title>
+  <title>IQ Trading Terminal</title>
+
   <style>
     body {
+      margin: 0;
       font-family: Arial;
-      text-align: center;
-      background: #0f172a;
+      background: #0b1220;
       color: white;
     }
 
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      height: 100vh;
+    }
+
+    .chart iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .panel {
+      background: #111a2e;
+      padding: 20px;
+    }
+
+    .price {
+      font-size: 28px;
+      color: #00ff99;
+    }
+
     button {
-      padding: 12px 20px;
-      margin: 10px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
       border: none;
       border-radius: 8px;
+      color: white;
       cursor: pointer;
-      font-size: 16px;
     }
 
-    .buy { background: green; color: white; }
-    .sell { background: red; color: white; }
-    .login { background: #2563eb; color: white; }
-
-    #price {
-      font-size: 32px;
-      margin: 20px;
-      color: #22c55e;
-    }
-
-    .container {
-      margin-top: 50px;
-    }
+    .buy { background: green; }
+    .sell { background: red; }
+    .login { background: #2563eb; }
   </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="layout">
 
-  <h1>📊 HP Traders Live Trading</h1>
+  <div class="chart">
+    <iframe src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1"></iframe>
+  </div>
 
-  <!-- LOGIN -->
-  <button class="login" onclick="login()">Login with Deriv</button>
+  <div class="panel">
 
-  <h2 id="status">Not logged in</h2>
+    <h2>IQ Trading</h2>
 
-  <!-- LIVE PRICE -->
-  <h2 id="price">Loading price...</h2>
+    <button class="login" onclick="login()">Login</button>
 
-  <!-- TRADE BUTTONS -->
-  <button class="buy" onclick="trade('CALL')">BUY (CALL)</button>
-  <button class="sell" onclick="trade('PUT')">SELL (PUT)</button>
+    <h3 id="status">Not logged in</h3>
+
+    <div class="price" id="price">Loading...</div>
+
+    <button class="buy" onclick="trade('CALL')">BUY</button>
+    <button class="sell" onclick="trade('PUT')">SELL</button>
+
+  </div>
 
 </div>
 
 <script>
-const BASE_URL = "https://hp-traders-v5ey.onrender.com";
-const CLIENT_ID = "YOUR_CLIENT_ID"; // 🔴 REPLACE THIS
+const BASE = "https://hp-traders-v5ey.onrender.com";
+const CLIENT_ID = "YOUR_CLIENT_ID";
 
-// ========================
-// LOGIN WITH DERIV OAUTH
-// ========================
+/* LOGIN */
 function login() {
   const verifier = crypto.randomUUID();
-  sessionStorage.setItem("verifier", verifier);
-
   const challenge = btoa(verifier).replace(/\W/g, "");
 
-  const url =
+  window.location.href =
     `https://auth.deriv.com/oauth2/auth` +
     `?response_type=code` +
     `&client_id=${CLIENT_ID}` +
-    `&redirect_uri=${BASE_URL}/callback` +
+    `&redirect_uri=${BASE}/callback` +
     `&scope=trade+account_manage` +
     `&state=${verifier}` +
     `&code_challenge=${challenge}` +
     `&code_challenge_method=S256`;
-
-  window.location.href = url;
 }
 
-// ========================
-// LIVE PRICE STREAM
-// ========================
-const eventSource = new EventSource(`${BASE_URL}/api/price-stream`);
+/* PRICE STREAM */
+const es = new EventSource(`${BASE}/api/price-stream`);
 
-eventSource.onmessage = (event) => {
-  const data = JSON.parse(event.data);
+es.onmessage = (e) => {
+  const data = JSON.parse(e.data);
   document.getElementById("price").innerText = "Price: " + data.price;
 };
 
-// ========================
-// TRADE FUNCTION
-// ========================
+/* TRADE */
 function trade(type) {
-  fetch(`${BASE_URL}/api/trade`, {
+  fetch(`${BASE}/api/trade`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       amount: 10,
       contract_type: type
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    alert(data.message || data.error || "Trade executed");
-  })
-  .catch(() => {
-    alert("Trade failed");
-  });
+  .then(r => r.json())
+  .then(d => alert(JSON.stringify(d)));
 }
 </script>
 
