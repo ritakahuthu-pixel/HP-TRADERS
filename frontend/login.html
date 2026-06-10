@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HP Traders Login</title>
+
+<style>
+body{
+background:#041122;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:Arial;
+}
+
+.card{
+background:#081a33;
+padding:40px;
+border-radius:20px;
+text-align:center;
+color:white;
+}
+
+button{
+padding:15px 30px;
+border:none;
+border-radius:20px;
+background:#00ff88;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Login with Deriv</h2>
+
+<button onclick="loginDeriv()">
+Connect Deriv Account
+</button>
+
+</div>
+
+<script>
+
+function loginDeriv(){
+
+const clientId = "YOUR_DERIV_CLIENT_ID";
+
+window.location.href=
+`https://oauth.deriv.com/oauth2/authorize?app_id=${clientId}`;
+
+}
+
+</script>
+
+</body>
+</html>
