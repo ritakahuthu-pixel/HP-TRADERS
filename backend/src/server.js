@@ -73,7 +73,7 @@ app.get("/api/price-stream", (req, res) => {
 ========================= */
 app.get("/callback", async (req, res) => {
   try {
-    const { code, state } = req.query;
+    const { code } = req.query;
 
     if (!code) {
       return res.status(400).send("Missing authorization code");
@@ -86,9 +86,8 @@ app.get("/callback", async (req, res) => {
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
-        client_id: process.env.DERIV_CLIENT_ID,
+        app_id: process.env.DERIV_APP_ID,
         code: code.toString(),
-        code_verifier: state, // ⚠️ only correct if you stored verifier in state
         redirect_uri: process.env.REDIRECT_URI,
       }),
     });
@@ -99,11 +98,12 @@ app.get("/callback", async (req, res) => {
       return res.status(400).json(data);
     }
 
-    global.userToken = data.access_token; // safer than undeclared variable
+    // FIX: use ONE consistent variable
+    global.userToken = data.access_token;
 
-    res.redirect("https://hp-traders-v5ey.onrender.com/dashboard.html");
+    return res.redirect("https://hp-traders-v5ey.onrender.com/dashboard.html");
   } catch (err) {
-    console.error("Callback error:", err);
+    console.error(err);
     return res.status(500).send("Server error");
   }
 });
