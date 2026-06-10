@@ -72,20 +72,33 @@ app.get("/api/price-stream", (req, res) => {
    OAUTH CALLBACK
 ========================= */
 app.get("/callback", async (req, res) => {
+
   const { code, state } = req.query;
 
-  const response = await fetch("https://auth.deriv.com/oauth2/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      client_id: process.env.DERIV_CLIENT_ID,
-      code,
-      code_verifier: state,
-      redirect_uri: process.env.REDIRECT_URI
-    })
-  });
+  const response = await fetch(
+    "https://auth.deriv.com/oauth2/token",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        client_id: process.env.DERIV_CLIENT_ID,
+        code,
+        code_verifier: state,
+        redirect_uri: process.env.REDIRECT_URI
+      })
+    }
+  );
 
+  const data = await response.json();
+
+  userToken = data.access_token;
+
+  res.redirect("/dashboard.html");
+
+});
   const data = await response.json();
   userToken = data.access_token;
 
