@@ -4,26 +4,28 @@ import dotenv from "dotenv";
 import WebSocket from "ws";
 import path from "path";
 import { fileURLToPath } from "url";
+
 import derivRoutes from "../routes/deriv.routes.js";
 import botRoutes from "../routes/bot.routes.js";
 import aiRoutes from "../routes/ai.routes.js";
 import tradeRoutes from "../routes/trade.routes.js";
 import mpesaRoutes from "../routes/mpesa.routes.js";
 
-
 dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+
+// routes
 app.use("/api/deriv", derivRoutes);
 app.use("/api/bot", botRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/trade", tradeRoutes);
 app.use("/api/mpesa", mpesaRoutes);
-app.use(express.json());
 
-let userToken = null;
 let priceClients = [];
+global.userToken = null;
 
 /* =========================
    DERIV MARKET STREAM
@@ -35,10 +37,12 @@ const ws = new WebSocket(
 ws.on("open", () => {
   console.log("✅ Connected to Deriv market");
 
-  ws.send(JSON.stringify({
-    ticks: "R_100",
-    subscribe: 1
-  }));
+  ws.send(
+    JSON.stringify({
+      ticks: "R_100",
+      subscribe: 1,
+    })
+  );
 });
 
 ws.on("message", (data) => {
@@ -46,13 +50,12 @@ ws.on("message", (data) => {
 
   if (msg.tick) {
     const price = msg.tick.quote;
-
-    priceClients.forEach(fn => fn(price));
+    priceClients.forEach((fn) => fn(price));
   }
 });
 
 /* =========================
-   PRICE STREAM (FRONTEND)
+   PRICE STREAM
 ========================= */
 app.get("/api/price-stream", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -64,7 +67,7 @@ app.get("/api/price-stream", (req, res) => {
   priceClients.push(send);
 
   req.on("close", () => {
-    priceClients = priceClients.filter(f => f !== send);
+    priceClients = priceClients.filter((f) => f !== send);
   });
 });
 
@@ -76,21 +79,24 @@ app.get("/callback", async (req, res) => {
     const { code } = req.query;
 
     if (!code) {
-      return res.status(400).send("Missing authorization code");
+      return res.status(400).send("Missing code");
     }
 
-    const response = await fetch("https://auth.deriv.com/oauth2/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        app_id: process.env.DERIV_APP_ID,
-        code: code.toString(),
-        redirect_uri: process.env.REDIRECT_URI,
-      }),
-    });
+    const response = await fetch(
+      "https://auth.deriv.com/oauth2/token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          app_id: process.env.DERIV_APP_ID,
+          code: code.toString(),
+          redirect_uri: process.env.REDIRECT_URI,
+        }),
+      }
+    );
 
     const data = await response.json();
 
@@ -98,10 +104,11 @@ app.get("/callback", async (req, res) => {
       return res.status(400).json(data);
     }
 
-    // FIX: use ONE consistent variable
     global.userToken = data.access_token;
 
-    return res.redirect("https://hp-traders-v5ey.onrender.com/dashboard.html");
+    return res.redirect(
+      "https://hp-traders-v5ey.onrender.com/dashboard.html"
+    );
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server error");
@@ -109,53 +116,62 @@ app.get("/callback", async (req, res) => {
 });
 
 /* =========================
-   REAL TRADE EXECUTION
+   TRADE ROUTE
 ========================= */
 app.post("/api/trade", async (req, res) => {
-  if (!global.userToken) {
-    return res.json({ error: "User not logged in" });
-  }
+  try {
+    if (!global.userToken) {
+      return res.json({ error: "User not logged in" });
+    }
 
-  const { amount, contract_type } = req.body;
+    const { amount, contract_type } = req.body;
 
-  const response = await fetch("https://api.derivws.com/trading/v1/buy", {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${global.userToken}`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    amount,
-    contract_type
-  })
-});
-      body: JSON.stringify({
-        price: amount,
-        parameters: {
+    const response = await fetch(
+      "https://api.derivws.com/trading/v1/buy",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${global.userToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           amount,
           basis: "stake",
           contract_type,
           currency: "USD",
           duration: 5,
           duration_unit: "t",
-          symbol: "R_100"
-        }
-      })
-    }
-  );
+          symbol: "R_100",
+        }),
+      }
+    );
 
-  const data = await response.json();
-  res.json(data);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+/* =========================
+   SERVE FRONTEND
+========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve frontend
 app.use(express.static(path.join(process.cwd(), "../frontend")));
-app.get("*", (_, res) => {
-  res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
+
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(process.cwd(), "../frontend", "index.html")
+  );
 });
 
-
+/* =========================
+   START SERVER
+========================= */
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log("🚀 IQ Engine running on", PORT));
+
+app.listen(PORT, () => {
+  console.log("🚀 IQ Engine running on", PORT);
+});
