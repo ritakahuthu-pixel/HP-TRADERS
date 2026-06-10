@@ -31,10 +31,9 @@ app.use("/api/ai", ai);
 
 // Serve frontend static files
 // Serve frontend static files
-app.use(express.static(path.join(process.cwd(), "frontend")));
-
+app.use(express.static(path.join(process.cwd(), "../frontend")));
 app.get("*", (_, res) => {
-  res.sendFile(path.join(process.cwd(), "frontend", "index.html"));
+  res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
 });
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
