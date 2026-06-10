@@ -1,210 +1,38 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HP TRADERS</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css" />
-  <style>
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(0,212,255,0.1); font-size: 0.9rem; }
-    th { color: #00d4ff; font-weight: 600; }
-    .win { color: #22c55e; font-weight: bold; }
-    .loss { color: #ef4444; font-weight: bold; }
-    input { background: #0a1628; border: 1px solid rgba(0,212,255,0.2); color: white; padding: 8px 12px; border-radius: 8px; margin: 6px 4px 6px 0; width: 100%; }
-    button { background: #00d4ff; color: #050d1a; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; margin: 6px 4px 0 0; transition: 0.3s; }
-    button:hover { background: #00b8d9; transform: translateY(-2px); }
-    .stat-value { font-size: 1.4rem; font-weight: 700; color: #00d4ff; margin-top: 6px; }
-    .card h2 { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-    .card p { margin: 6px 0; font-size: 0.9rem; opacity: 0.8; }
-    .card strong { color: white; opacity: 1; }
-    #botStatus { font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: #f59e0b; }
-    #mpesaStatus { margin-top: 10px; color: #22c55e; font-weight: 600; }
-    .trade-section { padding: 0 40px 60px; }
-  </style>
+  <title>HP Traders Live</title>
 </head>
 <body>
 
-  <canvas id="particles"></canvas>
+<h1>📊 Deriv Live Trading</h1>
 
-  <!-- NAV -->
- <nav class="nav">
-  <div class="logo">⚡ HP TRADERS</div>
-  <div>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#trades">Trades</a>
-    <a href="#bot">Bot</a>
-    <a href="#mpesa">M-Pesa</a>
-  </div>
-</nav>
+<h2 id="price">Loading price...</h2>
 
-  <!-- HERO -->
-  <div class="hero">
-    <h1>Binary Trading Dashboard</h1>
-    <p>Powered by Deriv API · AI Signals · M-Pesa Payments</p>
-  </div>
-  <!-- Hero becomes dashboard -->
-  <div class="hero" id="dashboard">
+<button onclick="trade('CALL')">BUY (CALL)</button>
+<button onclick="trade('PUT')">SELL (PUT)</button>
 
-<!-- Bot card -->
-  <div class="card" id="bot">
+<script>
+const eventSource = new EventSource("https://hp-traders-v5ey.onrender.com/api/price-stream");
 
-<!-- M-Pesa card -->
-  <div class="card" id="mpesa">
+eventSource.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  document.getElementById("price").innerText = "Price: " + data.price;
+};
 
-<!-- Trade history -->
-  <div class="trade-section" id="trades">
-
-  <!-- CARDS GRID -->
-  <div class="grid">
-
-    <!-- AI Signal -->
-    <div class="card">
-      <h2>🤖 AI Signal</h2>
-      <div class="stat-value" id="aiSignal">--</div>
-      <p>Confidence: <strong id="aiConfidence">--</strong></p>
-      <p>Trend: <strong id="aiTrend">--</strong></p>
-      <p>Market: <strong id="aiMarket">--</strong></p>
-    </div>
-
-    <!-- Deriv Account -->
-    <div class="card">
-      <h2>📈 Deriv Account</h2>
-      <div class="stat-value" id="derivBalance">--</div>
-      <p>Account: <strong id="derivAccount">--</strong></p>
-      <p>Currency: <strong id="derivCurrency">--</strong></p>
-      <p>Status: <strong class="live" id="derivStatus">--</strong></p>
-    </div>
-
-    <!-- Bot Controls -->
-    <div class="card">
-      <h2>🤖 Trading Bot</h2>
-      <p id="botStatus">Bot Status: Idle</p>
-      <button onclick="startBot()">▶ Start Bot</button>
-      <button onclick="stopBot()" style="background:#ef4444;">⏹ Stop Bot</button>
-    </div>
-
-    <!-- M-Pesa -->
-    <div class="card">
-      <h2>💚 M-Pesa</h2>
-      <input id="mpesaPhone" type="text" placeholder="Phone e.g. 2547XXXXXXXX" />
-      <input id="mpesaAmount" type="number" placeholder="Amount (KES)" />
-      <button onclick="mpesaDeposit()">⬇ Deposit</button>
-      <button onclick="mpesaWithdraw()" style="background:#f59e0b; color:#050d1a;">⬆ Withdraw</button>
-      <p id="mpesaStatus"></p>
-    </div>
-
-  </div>
-
-  <!-- TRADE HISTORY -->
-  <div class="trade-section">
-    <div class="card">
-      <h2>📊 Trade History</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Asset</th>
-            <th>Type</th>
-            <th>Stake</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody id="tradeTable">
-          <tr><td colspan="5" style="text-align:center; opacity:0.5; padding:20px;">Loading trades...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <script src="/app.js"></script>
-  <script>
-    const API_URL = "https://hp-traders-v5ey.onrender.com";
-
-    async function loadDashboard() {
-      try {
-        const [aiData, derivData, trades] = await Promise.all([
-          fetch(`${API_URL}/api/ai`).then(r => r.json()),
-          fetch(`${API_URL}/api/deriv`).then(r => r.json()),
-          fetch(`${API_URL}/api/trade`).then(r => r.json())
-        ]);
-
-        document.getElementById("aiSignal").innerText = aiData.signal || "--";
-        document.getElementById("aiConfidence").innerText = aiData.confidence || "--";
-        document.getElementById("aiTrend").innerText = aiData.trend || "--";
-        document.getElementById("aiMarket").innerText = aiData.market || "--";
-
-        document.getElementById("derivBalance").innerText = `$${derivData.balance}`;
-        document.getElementById("derivAccount").innerText = derivData.account || "--";
-        document.getElementById("derivCurrency").innerText = derivData.currency || "--";
-        document.getElementById("derivStatus").innerText = derivData.marketStatus || "--";
-
-        const table = document.getElementById("tradeTable");
-        table.innerHTML = "";
-        trades.forEach(trade => {
-          table.innerHTML += `
-            <tr>
-              <td>${trade.time}</td>
-              <td>${trade.asset}</td>
-              <td>${trade.type}</td>
-              <td>$${trade.stake}</td>
-              <td class="${trade.result === 'WIN' ? 'win' : 'loss'}">${trade.result}</td>
-            </tr>`;
-        });
-      } catch(err) {
-        console.error("Dashboard error:", err);
-      }
-    }
-
-    async function startBot() {
-      try {
-        await fetch(`${API_URL}/api/bot/start`, { method: "POST" });
-        document.getElementById("botStatus").innerText = "Bot Status: Running ✅";
-        document.getElementById("botStatus").style.color = "#22c55e";
-      } catch(err) { console.error(err); }
-    }
-
-    async function stopBot() {
-      try {
-        await fetch(`${API_URL}/api/bot/stop`, { method: "POST" });
-        document.getElementById("botStatus").innerText = "Bot Status: Stopped ⏹";
-        document.getElementById("botStatus").style.color = "#ef4444";
-      } catch(err) { console.error(err); }
-    }
-
-    async function mpesaDeposit() {
-      const phone = document.getElementById("mpesaPhone").value;
-      const amount = document.getElementById("mpesaAmount").value;
-      try {
-        const res = await fetch(`${API_URL}/api/mpesa/deposit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone, amount })
-        });
-        const data = await res.json();
-        document.getElementById("mpesaStatus").innerText = "✅ " + data.message;
-      } catch(err) { console.error(err); }
-    }
-
-    async function mpesaWithdraw() {
-      const phone = document.getElementById("mpesaPhone").value;
-      const amount = document.getElementById("mpesaAmount").value;
-      try {
-        const res = await fetch(`${API_URL}/api/mpesa/withdraw`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone, amount })
-        });
-        const data = await res.json();
-        document.getElementById("mpesaStatus").innerText = "✅ " + data.message;
-      } catch(err) { console.error(err); }
-    }
-
-    loadDashboard();
-    setInterval(loadDashboard, 10000);
-  </script>
+function trade(type) {
+  fetch("https://hp-traders-v5ey.onrender.com/api/trade", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount: 10,
+      contract_type: type
+    })
+  }).then(res => res.json())
+    .then(data => alert(data.message));
+}
+</script>
 
 </body>
 </html>
