@@ -3,99 +3,159 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HPTraders Pro</title>
+<title>HPTraders Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:#0b1220;color:#fff;overflow-x:hidden}
-
-/* NAV */
-nav{
-display:flex;justify-content:space-between;align-items:center;
-padding:15px 6%;background:#0f1a2e;position:sticky;top:0;z-index:1000;
-border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.logo{font-weight:700;color:#00d4ff;font-size:20px;letter-spacing:1px}
-.nav-right button{
-background:#00d4ff;border:none;padding:8px 14px;border-radius:8px;
-cursor:pointer;font-weight:600;color:#001018;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter;
 }
 
-/* LANDING */
-.hero{
-min-height:90vh;display:flex;flex-direction:column;
-align-items:center;justify-content:center;text-align:center;
-padding:40px;
+body{
+background:#0b1220;
+color:#fff;
+display:flex;
+min-height:100vh;
 }
 
-.hero h1{font-size:45px}
-.hero p{color:#9fb3c8;margin-top:10px;max-width:600px;line-height:1.6}
+/* SIDEBAR */
+.sidebar{
+width:240px;
+background:#0f1a2e;
+padding:20px;
+border-right:1px solid rgba(255,255,255,0.05);
+}
 
-.cta{margin-top:25px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.logo{
+color:#00d4ff;
+font-weight:700;
+font-size:18px;
+margin-bottom:30px;
+}
 
-.cta button{
-padding:12px 20px;
-border-radius:10px;
-border:none;
-font-weight:600;
+.nav-item{
+padding:12px;
+border-radius:8px;
 cursor:pointer;
+color:#9fb3c8;
+margin-bottom:8px;
 transition:0.2s;
 }
 
-.cta .primary{
-background:#00d4ff;
-color:#001018;
-}
-
-.cta .primary:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 25px rgba(0,212,255,0.2);
-}
-
-.cta .secondary{
-background:transparent;
-border:1px solid #00d4ff;
+.nav-item:hover{
+background:#16233d;
 color:#00d4ff;
 }
 
-.cta .secondary:hover{
-background:#00d4ff;
-color:#001018;
+/* MAIN */
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
 }
 
-/* FEATURES */
-.features{
+/* TOPBAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+background:#0f1a2e;
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.balance{
+background:#00d4ff;
+color:#001018;
+padding:6px 12px;
+border-radius:8px;
+font-weight:700;
+}
+
+/* STATS */
+.stats{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-padding:60px 6%;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+padding:20px;
 }
 
 .card{
 background:#111c33;
-padding:20px;
-border-radius:12px;
+padding:15px;
+border-radius:10px;
 border:1px solid rgba(255,255,255,0.05);
-transition:0.2s;
 }
 
-.card:hover{
-transform:translateY(-5px);
-border-color:#00d4ff;
-box-shadow:0 10px 25px rgba(0,212,255,0.1);
+.card h3{
+color:#00d4ff;
+margin-bottom:5px;
 }
 
-.card h3{color:#00d4ff;margin-bottom:8px}
+/* BOT PANEL */
+.bot-panel{
+margin:0 20px;
+padding:15px;
+background:#111c33;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.05);
+}
 
-/* FOOTER */
-footer{
-text-align:center;
-padding:30px;
-color:#7f93ad;
+.bot-panel button{
+margin-top:10px;
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#00d4ff;
+color:#001018;
+font-weight:600;
+}
+
+/* TABLE */
+.table{
+margin:20px;
+background:#111c33;
+border-radius:10px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,0.05);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+text-align:left;
 font-size:14px;
-border-top:1px solid rgba(255,255,255,0.05);
+}
+
+th{
+background:#0f1a2e;
+color:#00d4ff;
+}
+
+tr:nth-child(even){
+background:#0c1527;
+}
+
+.win{color:#00ff99}
+.loss{color:#ff4d4d}
+
+/* STATUS */
+.status{
+font-size:13px;
+color:#9fb3c8;
+}
+
+.online{
+color:#00ff99;
 }
 </style>
 
@@ -103,48 +163,109 @@ border-top:1px solid rgba(255,255,255,0.05);
 
 <body>
 
-<nav>
+<!-- SIDEBAR -->
+<div class="sidebar">
   <div class="logo">HPTRADERS</div>
-  <div class="nav-right">
-    <button>Login</button>
-  </div>
-</nav>
 
-<section class="hero">
-  <h1>Trade Smarter with HPTraders</h1>
-  <p>Automated trading bots, real-time analytics, and AI-powered market insights built for modern traders.</p>
+  <div class="nav-item">Dashboard</div>
+  <div class="nav-item">Bots</div>
+  <div class="nav-item">Trades</div>
+  <div class="nav-item">Analytics</div>
+  <div class="nav-item">Wallet</div>
+  <div class="nav-item">Settings</div>
+</div>
 
-  <div class="cta">
-    <button class="primary">Start Trading</button>
-    <button class="secondary">View Demo</button>
-  </div>
-</section>
+<!-- MAIN -->
+<div class="main">
 
-<section class="features">
-  <div class="card">
-    <h3>AI Bots</h3>
-    <p>Automate trades using intelligent strategies.</p>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="status">Market Status: <span class="online">LIVE</span></div>
+    <div class="balance">$12,450.00</div>
   </div>
 
-  <div class="card">
-    <h3>Live Charts</h3>
-    <p>Track market movement in real-time.</p>
+  <!-- STATS -->
+  <div class="stats">
+
+    <div class="card">
+      <h3>Profit Today</h3>
+      <p>+$320</p>
+    </div>
+
+    <div class="card">
+      <h3>Active Bots</h3>
+      <p>3 Running</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Trades</h3>
+      <p>148</p>
+    </div>
+
+    <div class="card">
+      <h3>Win Rate</h3>
+      <p>76%</p>
+    </div>
+
   </div>
 
-  <div class="card">
-    <h3>Risk Tools</h3>
-    <p>Control exposure and protect your capital.</p>
+  <!-- BOT PANEL -->
+  <div class="bot-panel">
+    <h3 style="color:#00d4ff;">AI Trading Bot</h3>
+    <p style="color:#9fb3c8;font-size:14px;margin-top:5px;">
+      Configure and start automated trading engine.
+    </p>
+
+    <button onclick="startBot()">Start Bot</button>
+    <button style="background:#ff4d4d;margin-left:10px;color:white;" onclick="stopBot()">Stop</button>
+
+    <p id="botStatus" style="margin-top:10px;color:#9fb3c8;font-size:13px;">Bot Status: Idle</p>
   </div>
 
-  <div class="card">
-    <h3>Copy Trading</h3>
-    <p>Follow top-performing traders instantly.</p>
-  </div>
-</section>
+  <!-- TRADES TABLE -->
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Asset</th>
+          <th>Type</th>
+          <th>Stake</th>
+          <th>Result</th>
+        </tr>
+      </thead>
 
-<footer>
-  © 2026 HPTraders. All rights reserved.
-</footer>
+      <tbody id="tradeTable">
+        <tr>
+          <td>10:12</td>
+          <td>Volatility 75</td>
+          <td>CALL</td>
+          <td>$10</td>
+          <td class="win">WIN</td>
+        </tr>
+
+        <tr>
+          <td>10:18</td>
+          <td>Step Index</td>
+          <td>PUT</td>
+          <td>$5</td>
+          <td class="loss">LOSS</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+function startBot(){
+document.getElementById("botStatus").innerText = "Bot Status: Running...";
+}
+
+function stopBot(){
+document.getElementById("botStatus").innerText = "Bot Status: Stopped";
+}
+</script>
 
 </body>
 </html>
