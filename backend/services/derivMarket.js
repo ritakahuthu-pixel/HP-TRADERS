@@ -1,109 +1,112 @@
-import WebSocket from "ws";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-/**
- * Price subscribers (SSE clients or internal listeners)
- */
-let subscribers = [];
+import derivRoutes from "../routes/deriv.routes.js";
+import tradeRoutes from "../routes/trade.routes.js";
+import botRoutes from "../routes/bot.routes.js";
+import aiRoutes from "../routes/ai.routes.js";
+import mpesaRoutes from "../routes/mpesa.routes.js";
 
-/**
- * WebSocket instance
- */
-let ws = null;
+import { startDerivStream } from "../services/derivMarket.js";
 
-/**
- * Reconnect tracking
- */
-let reconnectAttempts = 0;
+dotenv.config();
+
+const app = express();
 
 /* =========================
-   PUBLIC: START STREAM
+   GLOBAL ERROR HANDLERS
 ========================= */
-export function startDerivStream() {
-  const appId = process.env.DERIV_APP_ID;
 
-  if (!appId) {
-    console.error("❌ DERIV_APP_ID missing. Stream not started.");
-    return;
-  }
+process.on("uncaughtException", (err) => {
+  console.error("🔥 UNCAUGHT EXCEPTION:");
+  console.error(err);
+});
 
-  connect(appId);
+process.on("unhandledRejection", (err) => {
+  console.error("🔥 UNHANDLED REJECTION:");
+  console.error(err);
+});
+
+/* =========================
+   DEBUG FILE STRUCTURE (SAFE)
+========================= */
+
+try {
+  console.log("📁 ROOT:", fs.readdirSync("."));
+  console.log("📁 ROUTES:", fs.readdirSync("./routes"));
+  console.log("📁 SERVICES:", fs.readdirSync("./services"));
+} catch (err) {
+  console.error("🔥 FILE STRUCTURE ERROR:");
+  console.error(err.message);
 }
 
 /* =========================
-   INTERNAL: CONNECT WS
+   MIDDLEWARE
 ========================= */
-function connect(appId) {
-  ws = new WebSocket(
-    `wss://ws.derivws.com/websockets/v3?app_id=${appId}`
-  );
 
-  ws.on("open", () => {
-    console.log("✅ Deriv market connected");
+app.use(cors());
+app.use(express.json());
 
-    reconnectAttempts = 0;
+/* =========================
+   API ROUTES
+========================= */
 
-    ws.send(
-      JSON.stringify({
-        ticks: "R_100",
-        subscribe: 1,
-      })
-    );
+app.use("/api/deriv", derivRoutes);
+app.use("/api/trade", tradeRoutes);
+app.use("/api/bot", botRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/mpesa", mpesaRoutes);
+
+/* =========================
+   HEALTH CHECK (Render)
+========================= */
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "OK",
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    env: {
+      DERIV_APP_ID: !!process.env.DERIV_APP_ID,
+      DERIV_API_TOKEN: !!process.env.DERIV_API_TOKEN,
+    },
   });
+});
 
-  ws.on("message", (data) => {
-    try {
-      const msg = JSON.parse(data.toString());
+/* =========================
+   START DERIV STREAM SAFELY
+========================= */
 
-      if (msg.tick?.quote) {
-        broadcastPrice(msg.tick.quote);
-      }
-    } catch (err) {
-      console.error("⚠️ Invalid tick data:", err.message);
-    }
-  });
-
-  ws.on("error", (err) => {
-    console.error("❌ Deriv WebSocket error:", err.message);
-  });
-
-  ws.on("close", () => {
-    reconnectAttempts++;
-
-    const delay = Math.min(1000 * reconnectAttempts, 15000);
-
-    console.log(`⚠️ Disconnected. Reconnecting in ${delay}ms...`);
-
-    setTimeout(() => {
-      connect(appId);
-    }, delay);
-  });
+try {
+  startDerivStream();
+} catch (err) {
+  console.error("🔥 Failed to start Deriv stream:");
+  console.error(err);
 }
 
 /* =========================
-   PUBLIC: SUBSCRIBE CLIENT
+   SERVER START
 ========================= */
-export function addPriceSubscriber(res) {
-  subscribers.push(res);
-}
+
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(PORT, () => {
+  console.log("🚀 Server running on port:", PORT);
+
+  console.log("🔍 ENV CHECK:");
+  console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
+  console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ✅" : "MISSING ❌");
+});
 
 /* =========================
-   PUBLIC: REMOVE CLIENT
+   SERVER ERROR HANDLING
 ========================= */
-export function removePriceSubscriber(res) {
-  subscribers = subscribers.filter((s) => s !== res);
-}
 
-/* =========================
-   INTERNAL: BROADCAST PRICE
-========================= */
-function broadcastPrice(price) {
-  const payload = `data: ${JSON.stringify({ price })}\n\n`;
-
-  subscribers.forEach((res) => {
-    try {
-      res.write(payload);
-    } catch (err) {
-      removePriceSubscriber(res);
-    }
-  });
-}
+server.on("error", (err) => {
+  console.error("🔥 SERVER ERROR:");
+  console.error(err);
+});
