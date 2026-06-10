@@ -12,14 +12,14 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (_, res) => {
-  res.json({
-    status: "HP TRADERS API LIVE 🚀"
-  });
-});
+app.use(cors({
+  origin: [
+    'https://hp-traders.vercel.app',
+    'https://hp-traders-ivy7.vercel.app',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 
 app.use("/api/deriv", deriv);
 app.use("/api/trade", trade);
