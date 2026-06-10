@@ -89,7 +89,6 @@ app.get("/callback", async (req, res) => {
         code_verifier: state,
         redirect_uri: process.env.REDIRECT_URI
       })
-    }
   );
 
   const data = await response.json();
