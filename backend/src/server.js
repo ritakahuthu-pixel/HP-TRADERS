@@ -159,14 +159,11 @@ app.post("/api/trade", async (req, res) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(process.cwd(), "../frontend")));
+app.use(express.static(path.join(__dirname, "../../frontend")));
 
 app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(process.cwd(), "../frontend", "index.html")
-  );
+  res.sendFile(path.join(__dirname, "../../frontend/index.html"));
 });
-
 /* =========================
    START SERVER
 ========================= */
