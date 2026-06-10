@@ -14,22 +14,137 @@ body{background:#0b1220;color:#fff;overflow-x:hidden}
 /* NAV */
 nav{
 display:flex;justify-content:space-between;align-items:center;
-padding:15px 6%;background:#0f1a2e;position:sticky;top:0;z-index:1000
+padding:15px 6%;background:#0f1a2e;position:sticky;top:0;z-index:1000;
+border-bottom:1px solid rgba(255,255,255,0.05);
 }
-.logo{font-weight:700;color:#00d4ff;font-size:20px}
+.logo{font-weight:700;color:#00d4ff;font-size:20px;letter-spacing:1px}
 .nav-right button{
 background:#00d4ff;border:none;padding:8px 14px;border-radius:8px;
-cursor:pointer;font-weight:600
+cursor:pointer;font-weight:600;color:#001018;
 }
 
 /* LANDING */
 .hero{
 min-height:90vh;display:flex;flex-direction:column;
 align-items:center;justify-content:center;text-align:center;
-padding:40px
+padding:40px;
 }
+
 .hero h1{font-size:45px}
-.hero p{color:#9fb3c8;margin-top:10px;max-width:600px}
-.cta{margin-top:25px}
+.hero p{color:#9fb3c8;margin-top:10px;max-width:600px;line-height:1.6}
+
+.cta{margin-top:25px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
 .cta button{
-padding:12px 20
+padding:12px 20px;
+border-radius:10px;
+border:none;
+font-weight:600;
+cursor:pointer;
+transition:0.2s;
+}
+
+.cta .primary{
+background:#00d4ff;
+color:#001018;
+}
+
+.cta .primary:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(0,212,255,0.2);
+}
+
+.cta .secondary{
+background:transparent;
+border:1px solid #00d4ff;
+color:#00d4ff;
+}
+
+.cta .secondary:hover{
+background:#00d4ff;
+color:#001018;
+}
+
+/* FEATURES */
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:60px 6%;
+}
+
+.card{
+background:#111c33;
+padding:20px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,0.05);
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+border-color:#00d4ff;
+box-shadow:0 10px 25px rgba(0,212,255,0.1);
+}
+
+.card h3{color:#00d4ff;margin-bottom:8px}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+color:#7f93ad;
+font-size:14px;
+border-top:1px solid rgba(255,255,255,0.05);
+}
+</style>
+
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">HPTRADERS</div>
+  <div class="nav-right">
+    <button>Login</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Trade Smarter with HPTraders</h1>
+  <p>Automated trading bots, real-time analytics, and AI-powered market insights built for modern traders.</p>
+
+  <div class="cta">
+    <button class="primary">Start Trading</button>
+    <button class="secondary">View Demo</button>
+  </div>
+</section>
+
+<section class="features">
+  <div class="card">
+    <h3>AI Bots</h3>
+    <p>Automate trades using intelligent strategies.</p>
+  </div>
+
+  <div class="card">
+    <h3>Live Charts</h3>
+    <p>Track market movement in real-time.</p>
+  </div>
+
+  <div class="card">
+    <h3>Risk Tools</h3>
+    <p>Control exposure and protect your capital.</p>
+  </div>
+
+  <div class="card">
+    <h3>Copy Trading</h3>
+    <p>Follow top-performing traders instantly.</p>
+  </div>
+</section>
+
+<footer>
+  © 2026 HPTraders. All rights reserved.
+</footer>
+
+</body>
+</html>
