@@ -118,14 +118,17 @@ app.post("/api/trade", async (req, res) => {
 
   const { amount, contract_type } = req.body;
 
-  const response = await fetch(
-    "https://api.derivws.com/trading/v1/buy",
-    {
-      method: "POST",
-     headers: {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json"
-}
+  const response = await fetch("https://api.derivws.com/trading/v1/buy", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${global.userToken}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    amount,
+    contract_type
+  })
+});
       body: JSON.stringify({
         price: amount,
         parameters: {
