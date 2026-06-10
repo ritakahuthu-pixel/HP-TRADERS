@@ -72,37 +72,40 @@ app.get("/api/price-stream", (req, res) => {
    OAUTH CALLBACK
 ========================= */
 app.get("/callback", async (req, res) => {
+  try {
+    const { code, state } = req.query;
 
-  const { code, state } = req.query;
+    if (!code) {
+      return res.status(400).send("Missing authorization code");
+    }
 
-  const response = await fetch(
-    "https://auth.deriv.com/oauth2/token",
-    {
+    const response = await fetch("https://auth.deriv.com/oauth2/token", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-  grant_type: "authorization_code",
-  client_id: process.env.DERIV_CLIENT_ID,
-  code,
-  code_verifier: state,
-  redirect_uri: process.env.REDIRECT_URI
-})
-}
-);
+        grant_type: "authorization_code",
+        client_id: process.env.DERIV_CLIENT_ID,
+        code: code.toString(),
+        code_verifier: state, // ⚠️ only correct if you stored verifier in state
+        redirect_uri: process.env.REDIRECT_URI,
+      }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  userToken = data.access_token;
+    if (!response.ok) {
+      return res.status(400).json(data);
+    }
 
-  res.redirect("/dashboard.html");
+    global.userToken = data.access_token; // safer than undeclared variable
 
-});
-  const data = await response.json();
-  userToken = data.access_token;
-
-  res.send("Login successful ✔ You can close this tab.");
+    return res.redirect("/dashboard.html");
+  } catch (err) {
+    console.error("Callback error:", err);
+    return res.status(500).send("Server error");
+  }
 });
 
 /* =========================
