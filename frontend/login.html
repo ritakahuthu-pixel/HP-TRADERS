@@ -52,11 +52,15 @@ function loginDeriv() {
 
   const redirectUri = "https://hp-traders-v5ey.onrender.com/callback";
 
+  const state = crypto.randomUUID();
+
   window.location.href =
-    `https://oauth.deriv.com/oauth2/authorize?` +
-    `app_id=${clientId}` +
+    `https://auth.deriv.com/oauth2/auth?` +
+    `response_type=code` +
+    `&client_id=${clientId}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-    `&response_type=code`;
+    `&state=${state}` +
+    `&scope=trade+account_manage`;
 }
 </script>
 
