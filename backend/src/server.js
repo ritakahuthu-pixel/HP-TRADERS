@@ -1,52 +1,101 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-import deriv from "../routes/deriv.routes.js";
-import trade from "../routes/trade.routes.js";
-import bot from "../routes/bot.routes.js";
-import mpesa from "../routes/mpesa.routes.js";
-import ai from "../routes/ai.routes.js";
+import WebSocket from "ws";
 
 dotenv.config();
 
 const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// ✅ FIXED FRONTEND PATH (absolute-safe)
-const frontendPath = path.resolve(__dirname, "../../frontend");
-
-app.use(cors({
-  origin: [
-    "https://hp-traders.vercel.app",
-    "http://localhost:3000"
-  ],
-  credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend correctly
-app.use(express.static(frontendPath));
+// ============================
+// DERIV WEB SOCKET CONNECTION
+// ============================
+const DERIV_WS = "wss://ws.derivws.com/websockets/v3?app_id=" + process.env.DERIV_APP_ID;
 
-// API routes
-app.use("/api/deriv", deriv);
-app.use("/api/trade", trade);
-app.use("/api/bot", bot);
-app.use("/api/mpesa", mpesa);
-app.use("/api/ai", ai);
+let ws;
+let priceSubscribers = [];
 
-// ✅ SPA fallback (safe)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+function connectDeriv() {
+  ws = new WebSocket(DERIV_WS);
+
+  ws.on("open", () => {
+    console.log("✅ Connected to Deriv");
+
+    // subscribe to market
+    ws.send(JSON.stringify({
+      ticks: "R_100",
+      subscribe: 1
+    }));
+  });
+
+  ws.on("message", (data) => {
+    const msg = JSON.parse(data);
+
+    if (msg.tick) {
+      const price = msg.tick.quote;
+
+      // broadcast to frontend clients
+      priceSubscribers.forEach(fn => fn(price));
+    }
+  });
+
+  ws.on("close", () => {
+    console.log("❌ Deriv disconnected, reconnecting...");
+    setTimeout(connectDeriv, 3000);
+  });
+}
+
+connectDeriv();
+
+// ============================
+// API: LIVE PRICE STREAM
+// ============================
+app.get("/api/price-stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+
+  const send = (price) => {
+    res.write(`data: ${JSON.stringify({ price })}\n\n`);
+  };
+
+  priceSubscribers.push(send);
+
+  req.on("close", () => {
+    priceSubscribers = priceSubscribers.filter(fn => fn !== send);
+  });
 });
 
-const PORT = process.env.PORT || 5000;
+// ============================
+// API: PLACE TRADE
+// ============================
+app.post("/api/trade", (req, res) => {
+  const { amount, contract_type } = req.body;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+  const payload = {
+    buy: 1,
+    price: amount,
+    parameters: {
+      amount,
+      basis: "stake",
+      contract_type, // CALL or PUT
+      currency: "USD",
+      duration: 5,
+      duration_unit: "t",
+      symbol: "R_100"
+    }
+  };
+
+  ws.send(JSON.stringify(payload));
+
+  res.json({
+    success: true,
+    message: "Trade sent to Deriv"
+  });
+});
+
+// ============================
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log("🚀 Trading server running on port", PORT);
 });
