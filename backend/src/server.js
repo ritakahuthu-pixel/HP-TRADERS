@@ -101,7 +101,7 @@ app.get("/callback", async (req, res) => {
 
     global.userToken = data.access_token; // safer than undeclared variable
 
-    return res.redirect("/dashboard.html");
+    res.redirect("https://hp-traders-v5ey.onrender.com/dashboard.html");
   } catch (err) {
     console.error("Callback error:", err);
     return res.status(500).send("Server error");
