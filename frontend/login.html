@@ -1,34 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>HP Traders Login</title>
 
 <style>
-body{
-background:#041122;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-font-family:Arial;
+body {
+  margin: 0;
+  background: #041122;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
 }
 
-.card{
-background:#081a33;
-padding:40px;
-border-radius:20px;
-text-align:center;
-color:white;
+.card {
+  background: #081a33;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: center;
+  width: 320px;
+  border: 1px solid #00ff88;
 }
 
-button{
-padding:15px 30px;
-border:none;
-border-radius:20px;
-background:#00ff88;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
+h2 {
+  margin-bottom: 20px;
+  color: #00ff88;
+}
+
+p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  background: #00ff88;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00cc6a;
+}
+
+.small {
+  margin-top: 15px;
+  font-size: 12px;
+  opacity: 0.6;
 }
 </style>
 </head>
@@ -37,29 +67,40 @@ cursor:pointer;
 
 <div class="card">
 
-<h2>Login with Deriv</h2>
+<h2>🚀 HP Traders</h2>
+
+<p>Connect your Deriv account to start trading with AI-powered signals.</p>
 
 <button onclick="loginDeriv()">
 Connect Deriv Account
 </button>
 
+<div class="small">
+Secure OAuth Login via Deriv
+</div>
+
 </div>
 
 <script>
-
 function loginDeriv() {
-  const appId = "1089";
-  const redirectUri = "https://hp-traders-v5ey.onrender.com/callback";
+  // IMPORTANT: must match your Deriv developer app
+  const clientId = "1089";
+
+  const redirectUri =
+    "https://hp-traders-v5ey.onrender.com/callback";
+
+  // security state (prevents CSRF attacks)
   const state = crypto.randomUUID();
+  localStorage.setItem("deriv_oauth_state", state);
 
-  localStorage.setItem("deriv_state", state);
-
-  window.location.href =
-    `https://auth.deriv.com/oauth2/authorize?` +
-    `response_type=code` +
-    `&app_id=${appId}` +
+  const authUrl =
+    `https://auth.deriv.com/oauth2/auth` +
+    `?response_type=code` +
+    `&client_id=${clientId}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&state=${state}`;
+
+  window.location.href = authUrl;
 }
 </script>
 
