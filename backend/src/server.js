@@ -122,10 +122,10 @@ app.post("/api/trade", async (req, res) => {
     "https://api.derivws.com/trading/v1/buy",
     {
       method: "POST",
-      headers: {
-       Authorization: `Bearer ${global.userToken}`
-        "Content-Type": "application/json"
-      },
+     headers: {
+  Authorization: `Bearer ${token}`,
+  "Content-Type": "application/json"
+}
       body: JSON.stringify({
         price: amount,
         parameters: {
