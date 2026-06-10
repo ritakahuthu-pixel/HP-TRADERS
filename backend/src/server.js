@@ -9,49 +9,38 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ============================
-// DERIV WEB SOCKET CONNECTION
-// ============================
-const DERIV_WS = "wss://ws.derivws.com/websockets/v3?app_id=" + process.env.DERIV_APP_ID;
+let userToken = null;
+let priceClients = [];
 
-let ws;
-let priceSubscribers = [];
+/* =========================
+   DERIV MARKET STREAM
+========================= */
+const ws = new WebSocket(
+  `wss://ws.derivws.com/websockets/v3?app_id=${process.env.DERIV_APP_ID}`
+);
 
-function connectDeriv() {
-  ws = new WebSocket(DERIV_WS);
+ws.on("open", () => {
+  console.log("✅ Connected to Deriv market");
 
-  ws.on("open", () => {
-    console.log("✅ Connected to Deriv");
+  ws.send(JSON.stringify({
+    ticks: "R_100",
+    subscribe: 1
+  }));
+});
 
-    // subscribe to market
-    ws.send(JSON.stringify({
-      ticks: "R_100",
-      subscribe: 1
-    }));
-  });
+ws.on("message", (data) => {
+  const msg = JSON.parse(data);
 
-  ws.on("message", (data) => {
-    const msg = JSON.parse(data);
+  if (msg.tick) {
+    const price = msg.tick.quote;
 
-    if (msg.tick) {
-      const price = msg.tick.quote;
+    priceClients.forEach(fn => fn(price));
+  }
+});
 
-      // broadcast to frontend clients
-      priceSubscribers.forEach(fn => fn(price));
-    }
-  });
-
-  ws.on("close", () => {
-    console.log("❌ Deriv disconnected, reconnecting...");
-    setTimeout(connectDeriv, 3000);
-  });
-}
-
-connectDeriv();
-
-// ============================
-// API: LIVE PRICE STREAM
-// ============================
+/* =========================
+   PRICE STREAM (FRONTEND)
+========================= */
 app.get("/api/price-stream", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
 
@@ -59,43 +48,73 @@ app.get("/api/price-stream", (req, res) => {
     res.write(`data: ${JSON.stringify({ price })}\n\n`);
   };
 
-  priceSubscribers.push(send);
+  priceClients.push(send);
 
   req.on("close", () => {
-    priceSubscribers = priceSubscribers.filter(fn => fn !== send);
+    priceClients = priceClients.filter(f => f !== send);
   });
 });
 
-// ============================
-// API: PLACE TRADE
-// ============================
-app.post("/api/trade", (req, res) => {
+/* =========================
+   OAUTH CALLBACK
+========================= */
+app.get("/callback", async (req, res) => {
+  const { code, state } = req.query;
+
+  const response = await fetch("https://auth.deriv.com/oauth2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: process.env.DERIV_CLIENT_ID,
+      code,
+      code_verifier: state,
+      redirect_uri: process.env.REDIRECT_URI
+    })
+  });
+
+  const data = await response.json();
+  userToken = data.access_token;
+
+  res.send("Login successful ✔ You can close this tab.");
+});
+
+/* =========================
+   REAL TRADE EXECUTION
+========================= */
+app.post("/api/trade", async (req, res) => {
+  if (!userToken) {
+    return res.json({ error: "User not logged in" });
+  }
+
   const { amount, contract_type } = req.body;
 
-  const payload = {
-    buy: 1,
-    price: amount,
-    parameters: {
-      amount,
-      basis: "stake",
-      contract_type, // CALL or PUT
-      currency: "USD",
-      duration: 5,
-      duration_unit: "t",
-      symbol: "R_100"
+  const response = await fetch(
+    "https://api.derivws.com/trading/v1/buy",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        price: amount,
+        parameters: {
+          amount,
+          basis: "stake",
+          contract_type,
+          currency: "USD",
+          duration: 5,
+          duration_unit: "t",
+          symbol: "R_100"
+        }
+      })
     }
-  };
+  );
 
-  ws.send(JSON.stringify(payload));
-
-  res.json({
-    success: true,
-    message: "Trade sent to Deriv"
-  });
+  const data = await response.json();
+  res.json(data);
 });
 
-// ============================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("🚀 Trading server running on port", PORT);
-});
+app.listen(PORT, () => console.log("🚀 IQ Engine running on", PORT));
