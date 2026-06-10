@@ -17,7 +17,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(cors({
-  origin: ['https://hp-traders.vercel.app', 'http://localhost:3000'],
+  origin: [
+    'https://hp-traders.vercel.app',
+    'https://hp-traders-v5ey.onrender.com',
+    'http://localhost:3000'
+  ],
   credentials: true
 }));
 app.use(express.json());
