@@ -10,17 +10,16 @@ import aiRoutes from "../routes/ai.routes.js";
 import tradeRoutes from "../routes/trade.routes.js";
 import mpesaRoutes from "../routes/mpesa.routes.js";
 
-app.use("/api/deriv", derivRoutes);
-app.use("/api/bot", botRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/trade", tradeRoutes);
-app.use("/api/mpesa", mpesaRoutes);
-
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use("/api/deriv", derivRoutes);
+app.use("/api/bot", botRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/trade", tradeRoutes);
+app.use("/api/mpesa", mpesaRoutes);
 app.use(express.json());
 
 let userToken = null;
