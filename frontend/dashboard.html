@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>HP Traders Dashboard</title>
+
+<style>
+
+body{
+margin:0;
+background:#041122;
+color:white;
+font-family:Arial;
+}
+
+.topbar{
+height:70px;
+background:#081a33;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+}
+
+.logo{
+font-size:30px;
+font-weight:bold;
+color:#00ff88;
+}
+
+.balance{
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.card{
+background:#081a33;
+padding:20px;
+border-radius:15px;
+}
+
+button{
+background:#00ff88;
+padding:10px 20px;
+border:none;
+border-radius:15px;
+font-weight:bold;
+cursor:pointer;
+}
+
+table{
+width:100%;
+margin-top:30px;
+border-collapse:collapse;
+}
+
+td,th{
+padding:10px;
+border-bottom:1px solid #222;
+}
+
+.price{
+font-size:30px;
+color:#00ff88;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+<div class="logo">
+HP Traders
+</div>
+
+<div class="balance" id="balance">
+Loading...
+</div>
+
+</div>
+
+<div class="container">
+
+<h1 id="account">
+Loading Account...
+</h1>
+
+<div class="price" id="price">
+0.00
+</div>
+
+<br>
+
+<button onclick="startBot()">
+Start Bot
+</button>
+
+<button onclick="stopBot()">
+Stop Bot
+</button>
+
+<br><br>
+
+<div class="cards">
+
+<div class="card">
+<h3>Bot Status</h3>
+<p id="botStatus"></p>
+</div>
+
+<div class="card">
+<h3>AI Signal</h3>
+<p id="signal"></p>
+</div>
+
+<div class="card">
+<h3>Confidence</h3>
+<p id="confidence"></p>
+</div>
+
+<div class="card">
+<h3>Market</h3>
+<p id="market"></p>
+</div>
+
+</div>
+
+<h2>Trade History</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Time</th>
+<th>Asset</th>
+<th>Type</th>
+<th>Stake</th>
+<th>Result</th>
+</tr>
+</thead>
+
+<tbody id="trades">
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+async function loadDashboard(){
+
+const deriv =
+await fetch('/api/deriv');
+
+const account =
+await deriv.json();
+
+document.getElementById("balance")
+.innerHTML=
+account.balance + " " + account.currency;
+
+document.getElementById("account")
+.innerHTML=
+account.account;
+
+const bot =
+await fetch('/api/bot/status');
+
+const botData =
+await bot.json();
+
+document.getElementById("botStatus")
+.innerHTML=
+botData.status;
+
+const ai =
+await fetch('/api/ai');
+
+const aiData =
+await ai.json();
+
+document.getElementById("signal")
+.innerHTML=
+aiData.signal;
+
+document.getElementById("confidence")
+.innerHTML=
+aiData.confidence;
+
+document.getElementById("market")
+.innerHTML=
+aiData.market;
+
+const trades =
+await fetch('/api/trade');
+
+const tradeData =
+await trades.json();
+
+let html="";
+
+tradeData.forEach(t=>{
+
+html += `
+<tr>
+<td>${t.time}</td>
+<td>${t.asset}</td>
+<td>${t.type}</td>
+<td>${t.stake}</td>
+<td>${t.result}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("trades").innerHTML =
+html;
+
+}
+
+loadDashboard();
+
+const evt =
+new EventSource('/api/price-stream');
+
+evt.onmessage = (e)=>{
+
+const data = JSON.parse(e.data);
+
+document.getElementById("price")
+.innerHTML =
+data.price;
+
+};
+
+async function startBot(){
+
+await fetch('/api/bot/start',{
+method:'POST'
+});
+
+loadDashboard();
+
+}
+
+async function stopBot(){
+
+await fetch('/api/bot/stop',{
+method:'POST'
+});
+
+loadDashboard();
+
+}
+
+</script>
+
+</body>
+</html>
