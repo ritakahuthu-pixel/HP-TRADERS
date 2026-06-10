@@ -74,6 +74,27 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
+   CALLBACK ROUTE (FIX ADDED)
+========================= */
+app.get("/callback", (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).send("Missing authorization code");
+  }
+
+  res.send(`
+    <html>
+      <body style="background:#041122;color:white;text-align:center;padding:50px">
+        <h1>Login Successful 🚀</h1>
+        <p>Deriv authentication completed.</p>
+        <a href="/" style="color:#00ff88">Go to Dashboard</a>
+      </body>
+    </html>
+  `);
+});
+
+/* =========================
    HEALTH CHECK
 ========================= */
 app.get("/health", (req, res) => {
