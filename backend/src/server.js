@@ -5,14 +5,6 @@ import WebSocket from "ws";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve frontend
-app.use(express.static(path.join(process.cwd(), "../frontend")));
-app.get("*", (_, res) => {
-  res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
-});
 
 dotenv.config();
 
@@ -126,6 +118,15 @@ app.post("/api/trade", async (req, res) => {
   const data = await response.json();
   res.json(data);
 });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve frontend
+app.use(express.static(path.join(process.cwd(), "../frontend")));
+app.get("*", (_, res) => {
+  res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log("🚀 IQ Engine running on", PORT));
