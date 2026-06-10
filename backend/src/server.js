@@ -4,6 +4,17 @@ import dotenv from "dotenv";
 import WebSocket from "ws";
 import path from "path";
 import { fileURLToPath } from "url";
+import derivRoutes from "../routes/deriv.routes.js";
+import botRoutes from "../routes/bot.routes.js";
+import aiRoutes from "../routes/ai.routes.js";
+import tradeRoutes from "../routes/trade.routes.js";
+import mpesaRoutes from "../routes/mpesa.routes.js";
+
+app.use("/api/deriv", derivRoutes);
+app.use("/api/bot", botRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/trade", tradeRoutes);
+app.use("/api/mpesa", mpesaRoutes);
 
 
 dotenv.config();
