@@ -47,15 +47,17 @@ Connect Deriv Account
 
 <script>
 
-function loginDeriv(){
+function loginDeriv() {
+  const clientId = "YOUR_DERIV_CLIENT_ID";
 
-const clientId = "YOUR_DERIV_CLIENT_ID";
+  const redirectUri = "https://hp-traders-v5ey.onrender.com/callback";
 
-window.location.href=
-`https://oauth.deriv.com/oauth2/authorize?app_id=${clientId}`;
-
+  window.location.href =
+    `https://oauth.deriv.com/oauth2/authorize?` +
+    `app_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_type=code`;
 }
-
 </script>
 
 </body>
