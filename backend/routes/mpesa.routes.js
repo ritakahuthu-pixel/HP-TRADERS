@@ -1,8 +1,27 @@
 import express from "express";
+
 const router = express.Router();
 
-router.post("/pay", (req, res) => {
-  res.json({ status: "mpesa payment initiated" });
+router.post("/deposit", (req, res) => {
+  const { phone, amount } = req.body;
+
+  res.json({
+    success: true,
+    phone,
+    amount,
+    message: "STK Push Sent"
+  });
+});
+
+router.post("/withdraw", (req, res) => {
+  const { phone, amount } = req.body;
+
+  res.json({
+    success: true,
+    phone,
+    amount,
+    message: "Withdrawal Request Received"
+  });
 });
 
 export default router;
