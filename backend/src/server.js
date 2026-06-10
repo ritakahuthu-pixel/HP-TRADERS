@@ -10,12 +10,13 @@ dotenv.config();
 const app = express();
 
 /* =========================
-   PATH RESOLUTION
+   PATH SETUP
 ========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const rootDir = path.join(__dirname, "..");
+const frontendDir = path.join(rootDir, "frontend");
 const routesDir = path.join(rootDir, "routes");
 const servicesDir = path.join(rootDir, "services");
 
@@ -23,26 +24,34 @@ const servicesDir = path.join(rootDir, "services");
    GLOBAL ERROR HANDLERS
 ========================= */
 process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCAUGHT EXCEPTION:");
-  console.error(err.stack || err);
+  console.error("🔥 UNCAUGHT EXCEPTION:", err);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.error("🔥 UNHANDLED REJECTION:");
-  console.error(err.stack || err);
+  console.error("🔥 UNHANDLED REJECTION:", err);
 });
 
 /* =========================
-   FILE DEBUG (SAFE)
+   SAFE DEBUG (REMOVE LATER IF YOU WANT)
 ========================= */
 try {
-  console.log("📁 ROOT DIR:", fs.readdirSync(rootDir));
+  console.log("📁 ROOT:", fs.readdirSync(rootDir));
   console.log("📁 ROUTES:", fs.readdirSync(routesDir));
   console.log("📁 SERVICES:", fs.readdirSync(servicesDir));
 } catch (err) {
-  console.error("🔥 FILE STRUCTURE ERROR:");
-  console.error(err.message);
+  console.error("🔥 FILE STRUCTURE ERROR:", err.message);
 }
+
+/* =========================
+   MIDDLEWARE
+========================= */
+app.use(cors());
+app.use(express.json());
+
+/* =========================
+   STATIC FRONTEND (IMPORTANT FIX)
+========================= */
+app.use(express.static(frontendDir));
 
 /* =========================
    IMPORT ROUTES
@@ -54,15 +63,9 @@ import aiRoutes from "../routes/ai.routes.js";
 import mpesaRoutes from "../routes/mpesa.routes.js";
 
 /* =========================
-   IMPORT SERVICES
+   SERVICES
 ========================= */
 import { startDerivStream } from "../services/derivMarket.js";
-
-/* =========================
-   MIDDLEWARE
-========================= */
-app.use(cors());
-app.use(express.json());
 
 /* =========================
    API ROUTES
@@ -74,7 +77,21 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
-   CALLBACK ROUTE
+   PAGES ROUTES (FRONTEND)
+========================= */
+
+// Landing page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(frontendDir, "index.html"));
+});
+
+// Dashboard page
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(frontendDir, "dashboard.html"));
+});
+
+/* =========================
+   CALLBACK ROUTE (DERIV LOGIN)
 ========================= */
 app.get("/callback", (req, res) => {
   const { code } = req.query;
@@ -88,7 +105,7 @@ app.get("/callback", (req, res) => {
       <body style="background:#041122;color:white;text-align:center;padding:50px">
         <h1>Login Successful 🚀</h1>
         <p>Deriv authentication completed.</p>
-        <a href="/" style="color:#00ff88">Go to Dashboard</a>
+        <a href="/dashboard" style="color:#00ff88">Go to Dashboard</a>
       </body>
     </html>
   `);
@@ -116,34 +133,17 @@ try {
   startDerivStream();
   console.log("🔄 Deriv stream initializing...");
 } catch (err) {
-  console.error("🔥 Failed to start Deriv stream:");
-  console.error(err.stack || err);
+  console.error("🔥 Failed to start Deriv stream:", err);
 }
 
 /* =========================
-   SERVER START
+   START SERVER
 ========================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("🚀 Server running on port:", PORT);
-
   console.log("🔍 ENV CHECK:");
-  console.log(
-    "DERIV_APP_ID:",
-    process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌"
-  );
-
-  console.log(
-    "DERIV_API_TOKEN:",
-    process.env.DERIV_API_TOKEN ? "SET ⚠️ (DO NOT EXPOSE)" : "MISSING ❌"
-  );
-});
-
-/* =========================
-   FIX: CATCH-ALL ROUTE (IMPORTANT)
-   MUST BE LAST
-========================= */
-app.get("*", (req, res) => {
-  res.redirect("/");
+  console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
+  console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ⚠️ (DO NOT EXPOSE)" : "MISSING ❌");
 });
