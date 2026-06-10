@@ -112,7 +112,7 @@ app.get("/callback", async (req, res) => {
    REAL TRADE EXECUTION
 ========================= */
 app.post("/api/trade", async (req, res) => {
-  if (!userToken) {
+  if (!global.userToken) {
     return res.json({ error: "User not logged in" });
   }
 
@@ -123,7 +123,7 @@ app.post("/api/trade", async (req, res) => {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${userToken}`,
+       Authorization: `Bearer ${global.userToken}`
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
