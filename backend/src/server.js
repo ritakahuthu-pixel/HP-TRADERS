@@ -22,6 +22,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// ✅ Static files FIRST — so styles.css and app.js load correctly
+app.use(express.static(path.join(process.cwd(), "../frontend")));
+
 // API routes
 app.use("/api/deriv", deriv);
 app.use("/api/trade", trade);
@@ -29,12 +32,11 @@ app.use("/api/bot", bot);
 app.use("/api/mpesa", mpesa);
 app.use("/api/ai", ai);
 
-// Serve frontend static files
-// Serve frontend static files
-app.use(express.static(path.join(process.cwd(), "../frontend")));
+// Catch-all — serves index.html for any unknown route
 app.get("*", (_, res) => {
   res.sendFile(path.join(process.cwd(), "../frontend", "index.html"));
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
