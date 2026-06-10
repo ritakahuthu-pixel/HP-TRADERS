@@ -1,4 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HP Traders</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
+
+<canvas id="particles"></canvas>
 
 <header class="navbar">
   <div class="logo">
@@ -15,10 +29,12 @@
 
   <div class="ledger">
     <span></span>
+
     <div>
       <p>THE LEDGER</p>
       <p>THE LEDGER</p>
     </div>
+
     <span></span>
   </div>
 
@@ -42,7 +58,10 @@
 <div class="layout">
 
   <div class="chart">
-    <iframe src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1"></iframe>
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1"
+      loading="lazy">
+    </iframe>
   </div>
 
   <div class="panel">
@@ -51,13 +70,23 @@
 
     <h3 id="status">Live Market</h3>
 
-    <div class="price" id="price">Loading...</div>
+    <div class="price" id="price">
+      Loading...
+    </div>
 
-    <button class="buy" onclick="trade('CALL')">BUY</button>
-    <button class="sell" onclick="trade('PUT')">SELL</button>
+    <button class="buy" onclick="trade('CALL')">
+      BUY
+    </button>
+
+    <button class="sell" onclick="trade('PUT')">
+      SELL
+    </button>
 
   </div>
 
 </div>
 
+<script src="app.js"></script>
+
 </body>
+</html>
