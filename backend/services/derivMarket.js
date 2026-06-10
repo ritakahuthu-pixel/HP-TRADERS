@@ -1,8 +1,9 @@
-iimport WebSocket from "ws";
+import WebSocket from "ws";
 
 let subscribers = [];
 let ws = null;
 let reconnectAttempts = 0;
+let reconnectTimer = null;
 
 /**
  * Start Deriv Market Stream
@@ -11,7 +12,13 @@ export function startDerivStream() {
   const appId = process.env.DERIV_APP_ID;
 
   if (!appId) {
-    console.error("❌ DERIV_APP_ID missing");
+    console.error("❌ DERIV_APP_ID is missing");
+    return;
+  }
+
+  // Prevent duplicate connections
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.log("ℹ️ Deriv stream already running");
     return;
   }
 
@@ -22,6 +29,8 @@ export function startDerivStream() {
  * Connect to Deriv
  */
 function connect(appId) {
+  console.log("🔄 Connecting to Deriv...");
+
   ws = new WebSocket(
     `wss://ws.derivws.com/websockets/v3?app_id=${appId}`
   );
@@ -43,11 +52,17 @@ function connect(appId) {
     try {
       const msg = JSON.parse(data.toString());
 
+      // Deriv API error
+      if (msg.error) {
+        console.error("❌ Deriv API Error:", msg.error);
+        return;
+      }
+
       if (msg.tick?.quote) {
         broadcastPrice(msg.tick.quote);
       }
     } catch (err) {
-      console.error("Tick parse error:", err.message);
+      console.error("❌ Tick parse error:", err.message);
     }
   });
 
@@ -55,7 +70,11 @@ function connect(appId) {
     console.error("❌ WebSocket Error:", err.message);
   });
 
-  ws.on("close", () => {
+  ws.on("close", (code, reason) => {
+    console.warn(
+      `⚠️ Deriv disconnected | Code: ${code} | Reason: ${reason}`
+    );
+
     reconnectAttempts++;
 
     const delay = Math.min(
@@ -63,11 +82,11 @@ function connect(appId) {
       15000
     );
 
-    console.log(
-      `⚠️ Reconnecting in ${delay}ms`
-    );
+    console.log(`🔄 Reconnecting in ${delay}ms`);
 
-    setTimeout(() => {
+    clearTimeout(reconnectTimer);
+
+    reconnectTimer = setTimeout(() => {
       connect(appId);
     }, delay);
   });
@@ -78,6 +97,10 @@ function connect(appId) {
  */
 export function addPriceSubscriber(res) {
   subscribers.push(res);
+
+  console.log(
+    `📈 Subscriber connected (${subscribers.length})`
+  );
 }
 
 /**
@@ -85,21 +108,27 @@ export function addPriceSubscriber(res) {
  */
 export function removePriceSubscriber(res) {
   subscribers = subscribers.filter(
-    (s) => s !== res
+    (client) => client !== res
+  );
+
+  console.log(
+    `📉 Subscriber removed (${subscribers.length})`
   );
 }
 
 /**
- * Broadcast tick
+ * Broadcast tick price
  */
 function broadcastPrice(price) {
-  const payload =
-    `data: ${JSON.stringify({ price })}\n\n`;
+  const payload = `data: ${JSON.stringify({
+    price,
+    timestamp: Date.now(),
+  })}\n\n`;
 
   subscribers.forEach((res) => {
     try {
       res.write(payload);
-    } catch {
+    } catch (err) {
       removePriceSubscriber(res);
     }
   });
