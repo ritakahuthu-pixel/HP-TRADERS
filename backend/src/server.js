@@ -5,30 +5,15 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import derivRoutes from "./routes/deriv.routes.js";
-import tradeRoutes from "./routes/trade.routes.js";
-import botRoutes from "./routes/bot.routes.js";
-import aiRoutes from "./routes/ai.routes.js";
-import mpesaRoutes from "./routes/mpesa.routes.js";
+import derivRoutes from "../routes/deriv.routes.js";
+import tradeRoutes from "../routes/trade.routes.js";
+import botRoutes from "../routes/bot.routes.js";
+import aiRoutes from "../routes/ai.routes.js";
+import mpesaRoutes from "../routes/mpesa.routes.js";
 
-import { startDerivStream } from "./services/derivMarket.js";
+import { startDerivStream } from "../services/derivMarket.js";
 
 dotenv.config();
-
-/* =========================
-   DEBUG FILE STRUCTURE (NEW)
-========================= */
-try {
-  console.log("📁 SRC CONTENT:");
-  console.log(fs.readdirSync("./src"));
-
-  console.log("📁 ROUTES CONTENT:");
-  console.log(fs.readdirSync("./src/routes"));
-} catch (err) {
-  console.error("🔥 FILE STRUCTURE DEBUG ERROR:");
-  console.error(err.message);
-}
-/* ========================= */
 
 const app = express();
 
@@ -37,33 +22,44 @@ const app = express();
 ========================= */
 
 process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCUGHT EXCEPTION (server crash reason):");
+  console.error("🔥 UNCAUGHT EXCEPTION:");
   console.error(err);
-  console.error(err.stack);
 });
 
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("🔥 UNHANDLED PROMISE REJECTION:");
-  console.error("Promise:", promise);
-  console.error("Reason:", reason);
+process.on("unhandledRejection", (reason) => {
+  console.error("🔥 UNHANDLED REJECTION:");
+  console.error(reason);
 });
 
 process.on("warning", (warning) => {
-  console.warn("⚠️ NODE WARNING:");
+  console.warn("⚠️ WARNING:");
   console.warn(warning.name);
   console.warn(warning.message);
-  console.warn(warning.stack);
 });
+
+/* =========================
+   DEBUG FILE STRUCTURE (SAFE)
+========================= */
+
+try {
+  console.log("📁 CURRENT DIR FILES:", fs.readdirSync("."));
+  console.log("📁 ROUTES DIR:", fs.readdirSync("../routes"));
+} catch (err) {
+  console.error("🔥 FILE STRUCTURE ERROR:");
+  console.error(err.message);
+}
 
 /* =========================
    MIDDLEWARE
 ========================= */
+
 app.use(cors());
 app.use(express.json());
 
 /* =========================
    ROUTES
 ========================= */
+
 app.use("/api/deriv", derivRoutes);
 app.use("/api/trade", tradeRoutes);
 app.use("/api/bot", botRoutes);
@@ -73,12 +69,12 @@ app.use("/api/mpesa", mpesaRoutes);
 /* =========================
    HEALTH CHECK
 ========================= */
+
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
     uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    env_check: {
+    env: {
       DERIV_APP_ID: !!process.env.DERIV_APP_ID,
       DERIV_API_TOKEN: !!process.env.DERIV_API_TOKEN,
     },
@@ -88,6 +84,7 @@ app.get("/health", (req, res) => {
 /* =========================
    STATIC FRONTEND
 ========================= */
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -98,8 +95,9 @@ app.get("*", (req, res) => {
 });
 
 /* =========================
-   SAFE SERVER START
+   START SERVER SAFELY
 ========================= */
+
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
@@ -112,10 +110,14 @@ const server = app.listen(PORT, () => {
   try {
     startDerivStream();
   } catch (err) {
-    console.error("🔥 Failed to start Deriv stream:");
+    console.error("🔥 Deriv stream failed to start:");
     console.error(err);
   }
 });
+
+/* =========================
+   SERVER ERROR HANDLING
+========================= */
 
 server.on("error", (err) => {
   console.error("🔥 SERVER ERROR:");
