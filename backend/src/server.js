@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -14,27 +15,39 @@ import { startDerivStream } from "./services/derivMarket.js";
 
 dotenv.config();
 
+/* =========================
+   DEBUG FILE STRUCTURE (NEW)
+========================= */
+try {
+  console.log("📁 SRC CONTENT:");
+  console.log(fs.readdirSync("./src"));
+
+  console.log("📁 ROUTES CONTENT:");
+  console.log(fs.readdirSync("./src/routes"));
+} catch (err) {
+  console.error("🔥 FILE STRUCTURE DEBUG ERROR:");
+  console.error(err.message);
+}
+/* ========================= */
+
 const app = express();
 
 /* =========================
    GLOBAL ERROR MONITORING
 ========================= */
 
-// Catches sync crashes
 process.on("uncaughtException", (err) => {
   console.error("🔥 UNCUGHT EXCEPTION (server crash reason):");
   console.error(err);
   console.error(err.stack);
 });
 
-// Catches async crashes
 process.on("unhandledRejection", (reason, promise) => {
   console.error("🔥 UNHANDLED PROMISE REJECTION:");
   console.error("Promise:", promise);
   console.error("Reason:", reason);
 });
 
-// WebSocket safety logs (VERY IMPORTANT for your case)
 process.on("warning", (warning) => {
   console.warn("⚠️ NODE WARNING:");
   console.warn(warning.name);
@@ -58,7 +71,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
-   HEALTH CHECK (Render)
+   HEALTH CHECK
 ========================= */
 app.get("/health", (req, res) => {
   res.json({
@@ -96,9 +109,6 @@ const server = app.listen(PORT, () => {
   console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
   console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ✅" : "MISSING ❌");
 
-  /* =========================
-     START DERIV STREAM SAFELY
-  ========================= */
   try {
     startDerivStream();
   } catch (err) {
@@ -107,11 +117,6 @@ const server = app.listen(PORT, () => {
   }
 });
 
-/* =========================
-   SERVER ERROR HANDLING
-========================= */
-
-// Handles server-level crashes
 server.on("error", (err) => {
   console.error("🔥 SERVER ERROR:");
   console.error(err);
