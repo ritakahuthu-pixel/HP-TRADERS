@@ -1,36 +1,117 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>HP Traders Live</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #0f172a;
+      color: white;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .buy { background: green; color: white; }
+    .sell { background: red; color: white; }
+    .login { background: #2563eb; color: white; }
+
+    #price {
+      font-size: 32px;
+      margin: 20px;
+      color: #22c55e;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>📊 Deriv Live Trading</h1>
+<div class="container">
 
-<h2 id="price">Loading price...</h2>
+  <h1>📊 HP Traders Live Trading</h1>
 
-<button onclick="trade('CALL')">BUY (CALL)</button>
-<button onclick="trade('PUT')">SELL (PUT)</button>
+  <!-- LOGIN -->
+  <button class="login" onclick="login()">Login with Deriv</button>
+
+  <h2 id="status">Not logged in</h2>
+
+  <!-- LIVE PRICE -->
+  <h2 id="price">Loading price...</h2>
+
+  <!-- TRADE BUTTONS -->
+  <button class="buy" onclick="trade('CALL')">BUY (CALL)</button>
+  <button class="sell" onclick="trade('PUT')">SELL (PUT)</button>
+
+</div>
 
 <script>
-const eventSource = new EventSource("https://hp-traders-v5ey.onrender.com/api/price-stream");
+const BASE_URL = "https://hp-traders-v5ey.onrender.com";
+const CLIENT_ID = "YOUR_CLIENT_ID"; // 🔴 REPLACE THIS
+
+// ========================
+// LOGIN WITH DERIV OAUTH
+// ========================
+function login() {
+  const verifier = crypto.randomUUID();
+  sessionStorage.setItem("verifier", verifier);
+
+  const challenge = btoa(verifier).replace(/\W/g, "");
+
+  const url =
+    `https://auth.deriv.com/oauth2/auth` +
+    `?response_type=code` +
+    `&client_id=${CLIENT_ID}` +
+    `&redirect_uri=${BASE_URL}/callback` +
+    `&scope=trade+account_manage` +
+    `&state=${verifier}` +
+    `&code_challenge=${challenge}` +
+    `&code_challenge_method=S256`;
+
+  window.location.href = url;
+}
+
+// ========================
+// LIVE PRICE STREAM
+// ========================
+const eventSource = new EventSource(`${BASE_URL}/api/price-stream`);
 
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
   document.getElementById("price").innerText = "Price: " + data.price;
 };
 
+// ========================
+// TRADE FUNCTION
+// ========================
 function trade(type) {
-  fetch("https://hp-traders-v5ey.onrender.com/api/trade", {
+  fetch(`${BASE_URL}/api/trade`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       amount: 10,
       contract_type: type
     })
-  }).then(res => res.json())
-    .then(data => alert(data.message));
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || data.error || "Trade executed");
+  })
+  .catch(() => {
+    alert("Trade failed");
+  });
 }
 </script>
 
