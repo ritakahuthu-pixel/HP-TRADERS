@@ -1,112 +1,106 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+iimport WebSocket from "ws";
 
-import derivRoutes from "../routes/deriv.routes.js";
-import tradeRoutes from "../routes/trade.routes.js";
-import botRoutes from "../routes/bot.routes.js";
-import aiRoutes from "../routes/ai.routes.js";
-import mpesaRoutes from "../routes/mpesa.routes.js";
+let subscribers = [];
+let ws = null;
+let reconnectAttempts = 0;
 
-import { startDerivStream } from "../services/derivMarket.js";
+/**
+ * Start Deriv Market Stream
+ */
+export function startDerivStream() {
+  const appId = process.env.DERIV_APP_ID;
 
-dotenv.config();
+  if (!appId) {
+    console.error("❌ DERIV_APP_ID missing");
+    return;
+  }
 
-const app = express();
-
-/* =========================
-   GLOBAL ERROR HANDLERS
-========================= */
-
-process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCAUGHT EXCEPTION:");
-  console.error(err);
-});
-
-process.on("unhandledRejection", (err) => {
-  console.error("🔥 UNHANDLED REJECTION:");
-  console.error(err);
-});
-
-/* =========================
-   DEBUG FILE STRUCTURE (SAFE)
-========================= */
-
-try {
-  console.log("📁 ROOT:", fs.readdirSync("."));
-  console.log("📁 ROUTES:", fs.readdirSync("./routes"));
-  console.log("📁 SERVICES:", fs.readdirSync("./services"));
-} catch (err) {
-  console.error("🔥 FILE STRUCTURE ERROR:");
-  console.error(err.message);
+  connect(appId);
 }
 
-/* =========================
-   MIDDLEWARE
-========================= */
+/**
+ * Connect to Deriv
+ */
+function connect(appId) {
+  ws = new WebSocket(
+    `wss://ws.derivws.com/websockets/v3?app_id=${appId}`
+  );
 
-app.use(cors());
-app.use(express.json());
+  ws.on("open", () => {
+    console.log("✅ Deriv market connected");
 
-/* =========================
-   API ROUTES
-========================= */
+    reconnectAttempts = 0;
 
-app.use("/api/deriv", derivRoutes);
-app.use("/api/trade", tradeRoutes);
-app.use("/api/bot", botRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/mpesa", mpesaRoutes);
-
-/* =========================
-   HEALTH CHECK (Render)
-========================= */
-
-app.get("/health", (req, res) => {
-  res.json({
-    status: "OK",
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    env: {
-      DERIV_APP_ID: !!process.env.DERIV_APP_ID,
-      DERIV_API_TOKEN: !!process.env.DERIV_API_TOKEN,
-    },
+    ws.send(
+      JSON.stringify({
+        ticks: "R_100",
+        subscribe: 1,
+      })
+    );
   });
-});
 
-/* =========================
-   START DERIV STREAM SAFELY
-========================= */
+  ws.on("message", (data) => {
+    try {
+      const msg = JSON.parse(data.toString());
 
-try {
-  startDerivStream();
-} catch (err) {
-  console.error("🔥 Failed to start Deriv stream:");
-  console.error(err);
+      if (msg.tick?.quote) {
+        broadcastPrice(msg.tick.quote);
+      }
+    } catch (err) {
+      console.error("Tick parse error:", err.message);
+    }
+  });
+
+  ws.on("error", (err) => {
+    console.error("❌ WebSocket Error:", err.message);
+  });
+
+  ws.on("close", () => {
+    reconnectAttempts++;
+
+    const delay = Math.min(
+      reconnectAttempts * 1000,
+      15000
+    );
+
+    console.log(
+      `⚠️ Reconnecting in ${delay}ms`
+    );
+
+    setTimeout(() => {
+      connect(appId);
+    }, delay);
+  });
 }
 
-/* =========================
-   SERVER START
-========================= */
+/**
+ * Add SSE client
+ */
+export function addPriceSubscriber(res) {
+  subscribers.push(res);
+}
 
-const PORT = process.env.PORT || 5000;
+/**
+ * Remove SSE client
+ */
+export function removePriceSubscriber(res) {
+  subscribers = subscribers.filter(
+    (s) => s !== res
+  );
+}
 
-const server = app.listen(PORT, () => {
-  console.log("🚀 Server running on port:", PORT);
+/**
+ * Broadcast tick
+ */
+function broadcastPrice(price) {
+  const payload =
+    `data: ${JSON.stringify({ price })}\n\n`;
 
-  console.log("🔍 ENV CHECK:");
-  console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
-  console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ✅" : "MISSING ❌");
-});
-
-/* =========================
-   SERVER ERROR HANDLING
-========================= */
-
-server.on("error", (err) => {
-  console.error("🔥 SERVER ERROR:");
-  console.error(err);
-});
+  subscribers.forEach((res) => {
+    try {
+      res.write(payload);
+    } catch {
+      removePriceSubscriber(res);
+    }
+  });
+}
