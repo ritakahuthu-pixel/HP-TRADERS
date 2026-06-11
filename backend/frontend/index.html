@@ -7,115 +7,117 @@
 <title>HP TRADERS | AI Trading Platform</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
-body {
-  background: #041122;
-  color: white;
-  overflow-x: hidden;
+body{
+  background:#041122;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* NAVBAR */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
-  background: #081a33;
-  border-bottom: 1px solid #00ff88;
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 50px;
+  background:#081a33;
+  border-bottom:1px solid #00ff88;
 }
 
-.logo {
-  font-size: 30px;
-  font-weight: bold;
-  color: #00ff88;
+.logo{
+  font-size:30px;
+  font-weight:bold;
+  color:#00ff88;
 }
 
-.btn {
-  padding: 12px 25px;
-  background: #00ff88;
-  color: black;
-  border: none;
-  border-radius: 25px;
-  font-weight: bold;
-  cursor: pointer;
+.btn{
+  padding:12px 25px;
+  background:#00ff88;
+  color:black;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-/* HERO */
-.hero {
-  min-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
+.btn:hover{
+  transform:scale(1.05);
 }
 
-.hero h1 {
-  font-size: 65px;
-  color: #00ff88;
-  margin-bottom: 10px;
+.hero{
+  min-height:90vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
 }
 
-.hero h2 {
-  font-size: 30px;
-  margin-bottom: 20px;
+.hero h1{
+  font-size:65px;
+  color:#00ff88;
+  margin-bottom:10px;
 }
 
-.hero p {
-  max-width: 750px;
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 30px;
+.hero h2{
+  font-size:30px;
+  margin-bottom:20px;
 }
 
-/* FEATURES */
-.features {
-  padding: 60px 20px;
-  text-align: center;
+.hero p{
+  max-width:750px;
+  font-size:18px;
+  line-height:1.6;
+  margin-bottom:30px;
 }
 
-.features h2 {
-  color: #00ff88;
-  margin-bottom: 30px;
+.features{
+  padding:60px 20px;
+  text-align:center;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+.features h2{
+  color:#00ff88;
+  margin-bottom:30px;
 }
 
-.card {
-  background: #081a33;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #00ff88;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
 }
 
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 30px;
-  background: #081a33;
-  margin-top: 40px;
+.card{
+  background:#081a33;
+  padding:25px;
+  border-radius:12px;
+  border:1px solid #00ff88;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  background:#081a33;
+  margin-top:40px;
+}
+
+.status{
+  margin-top:15px;
+  color:#00ff88;
+  font-size:14px;
 }
 </style>
 
 <script>
-function login() {
-  const clientId = "33v14eEMV3YTKjPu9KNQk";
-
-  const redirectUri = "https://hp-traders-v5ey.onrender.com/callback";
-
-  window.location.href =
-    `https://auth.deriv.com/oauth2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+function openDashboard() {
+  window.location.href = "/dashboard.html";
 }
 </script>
 
@@ -126,48 +128,56 @@ function login() {
 <nav>
   <div class="logo">🚀 HP TRADERS</div>
 
-  <button class="btn" onclick="login()">
-    Connect Deriv
+  <button class="btn" onclick="openDashboard()">
+    Open Dashboard
   </button>
 </nav>
 
 <section class="hero">
   <h1>HP TRADERS</h1>
+
   <h2>AI POWERED TRADING PLATFORM</h2>
 
   <p>
-    Trade smarter using AI signals, live market data, volatility indices tracking,
-    and automated trading tools built for speed and accuracy.
+    Monitor volatility indices, receive AI-generated market insights,
+    view live market movements, and manage your trading activity from
+    a powerful dashboard.
   </p>
 
-  <button class="btn" onclick="login()">
+  <button class="btn" onclick="openDashboard()">
     START TRADING
   </button>
+
+  <div class="status">
+    Guest Mode Enabled • No Deriv Login Required
+  </div>
 </section>
 
 <section class="features">
   <h2>Why Choose HP Traders?</h2>
 
   <div class="grid">
+
     <div class="card">
       <h3>🤖 AI Signals</h3>
-      <p>Smart trading insights powered by AI.</p>
+      <p>Market insights generated using AI analysis.</p>
     </div>
 
     <div class="card">
       <h3>📊 Live Markets</h3>
-      <p>Real-time volatility index monitoring.</p>
+      <p>Track volatility indices and market activity in real time.</p>
     </div>
 
     <div class="card">
-      <h3>⚡ Fast Execution</h3>
-      <p>Instant trade execution with low latency.</p>
+      <h3>⚡ Fast Dashboard</h3>
+      <p>Instant access without waiting for authentication.</p>
     </div>
 
     <div class="card">
-      <h3>🔒 Secure Login</h3>
-      <p>Protected Deriv OAuth authentication.</p>
+      <h3>🔒 Secure Platform</h3>
+      <p>Optional Deriv account connection can be added later.</p>
     </div>
+
   </div>
 </section>
 
