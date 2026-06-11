@@ -32,14 +32,16 @@ process.on("unhandledRejection", (err) => {
 });
 
 /* =========================
-   SAFE DEBUG (OPTIONAL)
-   REMOVE IN PRODUCTION LATER
+   SAFE DEBUG
 ========================= */
 try {
   console.log("📁 ROOT:", fs.readdirSync(rootDir));
   console.log("📁 ROUTES:", fs.readdirSync(routesDir));
   console.log("📁 SERVICES:", fs.readdirSync(servicesDir));
-  console.log("📁 FRONTEND:", fs.readdirSync(frontendDir));
+
+  if (fs.existsSync(frontendDir)) {
+    console.log("📁 FRONTEND:", fs.readdirSync(frontendDir));
+  }
 } catch (err) {
   console.error("🔥 FILE STRUCTURE ERROR:", err.message);
 }
@@ -49,11 +51,14 @@ try {
 ========================= */
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* =========================
-   STATIC FRONTEND (IMPORTANT)
+   STATIC FRONTEND
 ========================= */
-app.use(express.static(frontendDir));
+if (fs.existsSync(frontendDir)) {
+  app.use(express.static(frontendDir));
+}
 
 /* =========================
    IMPORT ROUTES
@@ -79,38 +84,92 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/mpesa", mpesaRoutes);
 
 /* =========================
-   FRONTEND ROUTES
+   ROOT
 ========================= */
-
-// Landing page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendDir, "index.html"));
-});
+  if (fs.existsSync(path.join(frontendDir, "index.html"))) {
+    return res.sendFile(path.join(frontendDir, "index.html"));
+  }
 
-// Dashboard page
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(frontendDir, "dashboard.html"));
+  res.json({
+    status: "HP TRADERS API RUNNING 🚀",
+    version: "1.0.0",
+  });
 });
 
 /* =========================
-   CALLBACK ROUTE (DERIV OAUTH)
+   DASHBOARD
 ========================= */
-app.get("/callback", (req, res) => {
-  const { code } = req.query;
+app.get("/dashboard", (req, res) => {
+  const dashboardFile = path.join(frontendDir, "dashboard.html");
 
-  if (!code) {
-    return res.status(400).send("Missing authorization code");
+  if (fs.existsSync(dashboardFile)) {
+    return res.sendFile(dashboardFile);
   }
 
-  return res.send(`
-    <html>
-      <body style="background:#041122;color:white;text-align:center;padding:50px">
-        <h1>Login Successful 🚀</h1>
-        <p>Deriv authentication completed.</p>
-        <a href="/dashboard" style="color:#00ff88">Go to Dashboard</a>
-      </body>
-    </html>
-  `);
+  res.send("Dashboard not found");
+});
+
+/* =========================
+   DERIV OAUTH CALLBACK
+========================= */
+app.get("/callback", async (req, res) => {
+  try {
+    console.log("=================================");
+    console.log("🔐 DERIV CALLBACK RECEIVED");
+    console.log("Query:", req.query);
+    console.log("URL:", req.originalUrl);
+    console.log("=================================");
+
+    const {
+      code,
+      token,
+      account,
+      state,
+      error,
+      error_description,
+    } = req.query;
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error,
+        error_description,
+      });
+    }
+
+    if (code) {
+      return res.json({
+        success: true,
+        type: "authorization_code",
+        code,
+        state,
+      });
+    }
+
+    if (token) {
+      return res.json({
+        success: true,
+        type: "token",
+        token,
+        account,
+        state,
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: "Response missing authorization code or token",
+      received: req.query,
+    });
+  } catch (err) {
+    console.error("🔥 CALLBACK ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
 });
 
 /* =========================
@@ -120,6 +179,7 @@ app.get("/health", (req, res) => {
   res.json({
     status: "OK",
     uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
     memory: process.memoryUsage(),
     env: {
       DERIV_APP_ID: !!process.env.DERIV_APP_ID,
@@ -133,10 +193,33 @@ app.get("/health", (req, res) => {
 ========================= */
 try {
   startDerivStream();
-  console.log("🔄 Deriv stream initializing...");
+  console.log("🔄 Deriv Market Stream Started");
 } catch (err) {
   console.error("🔥 Failed to start Deriv stream:", err);
 }
+
+/* =========================
+   404 HANDLER
+========================= */
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.originalUrl,
+  });
+});
+
+/* =========================
+   ERROR HANDLER
+========================= */
+app.use((err, req, res, next) => {
+  console.error("🔥 EXPRESS ERROR:", err);
+
+  res.status(500).json({
+    success: false,
+    error: err.message,
+  });
+});
 
 /* =========================
    START SERVER
@@ -144,9 +227,19 @@ try {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log("🚀 Server running on port:", PORT);
+  console.log("🚀 HP TRADERS SERVER STARTED");
+  console.log(`🌍 PORT: ${PORT}`);
 
-  console.log("🔍 ENV CHECK:");
-  console.log("DERIV_APP_ID:", process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌");
-  console.log("DERIV_API_TOKEN:", process.env.DERIV_API_TOKEN ? "SET ⚠️ (DO NOT EXPOSE)" : "MISSING ❌");
+  console.log("🔍 ENV CHECK");
+  console.log(
+    "DERIV_APP_ID:",
+    process.env.DERIV_APP_ID ? "SET ✅" : "MISSING ❌"
+  );
+
+  console.log(
+    "DERIV_API_TOKEN:",
+    process.env.DERIV_API_TOKEN
+      ? "SET ✅"
+      : "MISSING ❌"
+  );
 });
