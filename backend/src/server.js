@@ -17,8 +17,6 @@ const __dirname = path.dirname(__filename);
 
 const rootDir = path.join(__dirname, "..");
 const frontendDir = path.join(rootDir, "frontend");
-const routesDir = path.join(rootDir, "routes");
-const servicesDir = path.join(rootDir, "services");
 
 /* =========================
    MIDDLEWARE
@@ -27,23 +25,26 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (fs.existsSync(frontendDir)) {
-  app.use(express.static(frontendDir));
-}
+// Serve frontend files (HTML, CSS, JS)
+app.use(express.static(frontendDir));
 
 /* =========================
-   SAFE DEBUG
+   ROOT → INDEX.HTML
 ========================= */
-try {
-  console.log("📁 ROOT:", fs.readdirSync(rootDir));
-  console.log("📁 ROUTES:", fs.readdirSync(routesDir));
-  console.log("📁 SERVICES:", fs.readdirSync(servicesDir));
-} catch (err) {
-  console.error("🔥 FILE ERROR:", err.message);
-}
+app.get("/", (req, res) => {
+  const file = path.join(frontendDir, "index.html");
+
+  if (fs.existsSync(file)) {
+    return res.sendFile(file);
+  }
+
+  return res.json({
+    error: "index.html not found in /frontend"
+  });
+});
 
 /* =========================
-   DEMO ACCOUNT (IN-MEMORY)
+   DEMO ACCOUNT
 ========================= */
 let demoAccount = {
   balance: 10000,
@@ -51,9 +52,6 @@ let demoAccount = {
   trades: []
 };
 
-/* =========================
-   DEMO TRADE ENGINE
-========================= */
 function demoTrade({ asset, type, stake }) {
   const win = Math.random() > 0.5;
   const result = win ? "WIN" : "LOSS";
@@ -75,15 +73,12 @@ function demoTrade({ asset, type, stake }) {
 }
 
 /* =========================
-   API: DEMO ACCOUNT
+   API ROUTES
 ========================= */
 app.get("/api/demo/account", (req, res) => {
   res.json(demoAccount);
 });
 
-/* =========================
-   API: DEMO TRADE
-========================= */
 app.post("/api/demo/trade", (req, res) => {
   try {
     const result = demoTrade(req.body);
@@ -94,8 +89,7 @@ app.post("/api/demo/trade", (req, res) => {
 });
 
 /* =========================
-   LIVE PRICE STREAM (FAKE SAFE STREAM)
-   (prevents frontend breaking)
+   PRICE STREAM (SSE)
 ========================= */
 app.get("/api/price-stream", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -115,58 +109,17 @@ app.get("/api/price-stream", (req, res) => {
 });
 
 /* =========================
-   ROOT
-========================= */
-app.get("/", (req, res) => {
-  const file = path.join(frontendDir, "index.html");
-  if (fs.existsSync(file)) return res.sendFile(file);
-
-  res.json({ status: "HP TRADERS RUNNING 🚀" });
-});
-
-/* =========================
-   DASHBOARD
-========================= */
-app.get("/dashboard", (req, res) => {
-  const file = path.join(frontendDir, "dashboard.html");
-
-  if (fs.existsSync(file)) return res.sendFile(file);
-
-  res.send("Dashboard not found");
-});
-
-/* =========================
-   OPTIONAL DERIV STREAM (SAFE)
-========================= */
-import { startDerivStream } from "../services/derivMarket.js";
-
-try {
-  startDerivStream();
-  console.log("🔄 Deriv Stream Started");
-} catch (err) {
-  console.log("⚠️ Deriv Stream Skipped:", err.message);
-}
-
-/* =========================
    HEALTH CHECK
 ========================= */
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
-    demo_balance: demoAccount.balance
+    balance: demoAccount.balance
   });
 });
 
 /* =========================
-   ERROR HANDLER
-========================= */
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: err.message });
-});
-
-/* =========================
-   404
+   404 HANDLER
 ========================= */
 app.use((req, res) => {
   res.status(404).json({
