@@ -10,12 +10,13 @@ dotenv.config();
 const app = express();
 
 /* =========================
-   PATH SETUP
+   PATH SETUP (FIXED)
 ========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const rootDir = path.join(__dirname, "..");
+// IMPORTANT FIX: go up TWO levels (backend/src → project root)
+const rootDir = path.join(__dirname, "../../");
 const frontendDir = path.join(rootDir, "frontend");
 
 /* =========================
@@ -25,11 +26,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend files (HTML, CSS, JS)
+// Serve frontend (CSS/JS/images)
 app.use(express.static(frontendDir));
 
 /* =========================
-   ROOT → INDEX.HTML
+   ROOT → INDEX.HTML (FIXED)
 ========================= */
 app.get("/", (req, res) => {
   const file = path.join(frontendDir, "index.html");
@@ -38,8 +39,9 @@ app.get("/", (req, res) => {
     return res.sendFile(file);
   }
 
-  return res.json({
-    error: "index.html not found in /frontend"
+  return res.status(404).json({
+    error: "index.html not found",
+    expectedPath: file
   });
 });
 
