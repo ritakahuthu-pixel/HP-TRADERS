@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>HP Traders Dashboard</title>
 
 <style>
 
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
 background:#041122;
 color:white;
-font-family:Arial;
 }
 
 .topbar{
@@ -19,63 +26,102 @@ background:#081a33;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:0 20px;
+padding:0 25px;
+border-bottom:1px solid #00ff88;
 }
 
 .logo{
-font-size:30px;
+font-size:28px;
 font-weight:bold;
 color:#00ff88;
 }
 
 .balance{
-font-size:22px;
+font-size:20px;
 font-weight:bold;
+color:#00ff88;
 }
 
 .container{
-padding:30px;
+padding:25px;
+}
+
+h1{
+margin-bottom:15px;
+}
+
+.price{
+font-size:50px;
+font-weight:bold;
+color:#00ff88;
+margin:20px 0;
+}
+
+.buttons{
+display:flex;
+gap:15px;
+margin-bottom:30px;
+}
+
+button{
+background:#00ff88;
+color:black;
+padding:12px 25px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
 }
 
 .cards{
 display:grid;
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:20px;
+margin-top:20px;
 }
 
 .card{
 background:#081a33;
 padding:20px;
 border-radius:15px;
+border:1px solid rgba(0,255,136,0.2);
 }
 
-button{
-background:#00ff88;
-padding:10px 20px;
-border:none;
-border-radius:15px;
-font-weight:bold;
-cursor:pointer;
+.card h3{
+margin-bottom:10px;
+color:#00ff88;
 }
 
 table{
 width:100%;
-margin-top:30px;
+margin-top:25px;
 border-collapse:collapse;
+background:#081a33;
+border-radius:12px;
+overflow:hidden;
 }
 
-td,th{
-padding:10px;
-border-bottom:1px solid #222;
-}
-
-.price{
-font-size:30px;
+th{
+background:#0d2344;
 color:#00ff88;
 }
 
-</style>
+th,td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid #1a2e4d;
+}
 
+.status{
+color:#00ff88;
+margin-bottom:20px;
+}
+
+</style>
 </head>
 
 <body>
@@ -83,11 +129,11 @@ color:#00ff88;
 <div class="topbar">
 
 <div class="logo">
-HP Traders
+🚀 HP TRADERS
 </div>
 
 <div class="balance" id="balance">
-Loading...
+Guest Mode
 </div>
 
 </div>
@@ -95,50 +141,60 @@ Loading...
 <div class="container">
 
 <h1 id="account">
-Loading Account...
+HP Traders Dashboard
 </h1>
+
+<p class="status">
+Live Market Monitoring & AI Analysis
+</p>
 
 <div class="price" id="price">
 0.00
 </div>
 
-<br>
+<div class="buttons">
 
 <button onclick="startBot()">
-Start Bot
+▶ Start Bot
 </button>
 
 <button onclick="stopBot()">
-Stop Bot
+⏹ Stop Bot
 </button>
 
-<br><br>
+<button onclick="loadDashboard()">
+🔄 Refresh
+</button>
+
+</div>
 
 <div class="cards">
 
 <div class="card">
 <h3>Bot Status</h3>
-<p id="botStatus"></p>
+<p id="botStatus">Loading...</p>
 </div>
 
 <div class="card">
 <h3>AI Signal</h3>
-<p id="signal"></p>
+<p id="signal">Loading...</p>
 </div>
 
 <div class="card">
 <h3>Confidence</h3>
-<p id="confidence"></p>
+<p id="confidence">Loading...</p>
 </div>
 
 <div class="card">
 <h3>Market</h3>
-<p id="market"></p>
+<p id="market">Loading...</p>
 </div>
 
 </div>
 
-<h2>Trade History</h2>
+<h2 style="margin-top:40px;">
+Trade History
+</h2>
 
 <table>
 
@@ -153,6 +209,13 @@ Stop Bot
 </thead>
 
 <tbody id="trades">
+
+<tr>
+<td colspan="5">
+Loading...
+</td>
+</tr>
+
 </tbody>
 
 </table>
@@ -163,91 +226,176 @@ Stop Bot
 
 async function loadDashboard(){
 
-const deriv =
-await fetch('/api/deriv');
+/* DERIV */
 
-const account =
-await deriv.json();
+try{
 
-document.getElementById("balance")
-.innerHTML=
-account.balance + " " + account.currency;
+const deriv = await fetch('/api/deriv');
+const account = await deriv.json();
 
-document.getElementById("account")
-.innerHTML=
-account.account;
+if(account.success === false){
 
-const bot =
-await fetch('/api/bot/status');
+document.getElementById("balance").innerHTML =
+"Guest Mode";
 
-const botData =
-await bot.json();
+document.getElementById("account").innerHTML =
+"HP Traders Dashboard";
 
-document.getElementById("botStatus")
-.innerHTML=
-botData.status;
+}else{
 
-const ai =
-await fetch('/api/ai');
+document.getElementById("balance").innerHTML =
+(account.balance || 0) + " " + (account.currency || "");
 
-const aiData =
-await ai.json();
+document.getElementById("account").innerHTML =
+account.account || "Connected Account";
 
-document.getElementById("signal")
-.innerHTML=
-aiData.signal;
+}
 
-document.getElementById("confidence")
-.innerHTML=
-aiData.confidence;
+}catch(err){
 
-document.getElementById("market")
-.innerHTML=
-aiData.market;
+console.error(err);
 
-const trades =
-await fetch('/api/trade');
+document.getElementById("balance").innerHTML =
+"Guest Mode";
 
-const tradeData =
-await trades.json();
+}
 
-let html="";
+/* BOT STATUS */
+
+try{
+
+const bot = await fetch('/api/bot/status');
+const botData = await bot.json();
+
+document.getElementById("botStatus").innerHTML =
+botData.status || "Offline";
+
+}catch{
+
+document.getElementById("botStatus").innerHTML =
+"Offline";
+
+}
+
+/* AI DATA */
+
+try{
+
+const ai = await fetch('/api/ai');
+const aiData = await ai.json();
+
+document.getElementById("signal").innerHTML =
+aiData.signal || "WAIT";
+
+document.getElementById("confidence").innerHTML =
+aiData.confidence || "0%";
+
+document.getElementById("market").innerHTML =
+aiData.market || "No Data";
+
+}catch{
+
+document.getElementById("signal").innerHTML =
+"WAIT";
+
+document.getElementById("confidence").innerHTML =
+"0%";
+
+document.getElementById("market").innerHTML =
+"No Data";
+
+}
+
+/* TRADE HISTORY */
+
+try{
+
+const trades = await fetch('/api/trade');
+const tradeData = await trades.json();
+
+let html = "";
+
+if(Array.isArray(tradeData) && tradeData.length){
 
 tradeData.forEach(t=>{
 
 html += `
 <tr>
-<td>${t.time}</td>
-<td>${t.asset}</td>
-<td>${t.type}</td>
-<td>${t.stake}</td>
-<td>${t.result}</td>
+<td>${t.time || "-"}</td>
+<td>${t.asset || "-"}</td>
+<td>${t.type || "-"}</td>
+<td>${t.stake || "-"}</td>
+<td>${t.result || "-"}</td>
 </tr>
 `;
 
 });
 
+}else{
+
+html = `
+<tr>
+<td colspan="5">
+No trades available
+</td>
+</tr>
+`;
+
+}
+
 document.getElementById("trades").innerHTML =
 html;
+
+}catch{
+
+document.getElementById("trades").innerHTML =
+`
+<tr>
+<td colspan="5">
+Unable to load trade history
+</td>
+</tr>
+`;
+
+}
 
 }
 
 loadDashboard();
 
-const evt =
-new EventSource('/api/price-stream');
+/* LIVE PRICE STREAM */
+
+try{
+
+const evt = new EventSource('/api/price-stream');
 
 evt.onmessage = (e)=>{
 
 const data = JSON.parse(e.data);
 
-document.getElementById("price")
-.innerHTML =
-data.price;
+document.getElementById("price").innerHTML =
+data.price || "0.00";
 
 };
 
+evt.onerror = ()=>{
+
+document.getElementById("price").innerHTML =
+"Waiting...";
+
+};
+
+}catch(err){
+
+console.error(err);
+
+}
+
+/* BOT CONTROLS */
+
 async function startBot(){
+
+try{
 
 await fetch('/api/bot/start',{
 method:'POST'
@@ -255,15 +403,29 @@ method:'POST'
 
 loadDashboard();
 
+}catch(err){
+
+console.error(err);
+
+}
+
 }
 
 async function stopBot(){
+
+try{
 
 await fetch('/api/bot/stop',{
 method:'POST'
 });
 
 loadDashboard();
+
+}catch(err){
+
+console.error(err);
+
+}
 
 }
 
