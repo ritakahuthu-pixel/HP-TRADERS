@@ -1,0 +1,1023 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP Traders - The Future of Automated Trading</title>
+<style>
+:root{--bg:#080d18;--bg2:#0b1220;--bg3:#0e1628;--card:#111c2e;--card2:#0d1726;--green:#00e5b0;--red:#ff4d6d;--blue:#00b4ff;--yellow:#ffd700;--purple:#a855f7;--white:#fff;--grey:#8892a4;--muted:#3d4f6a;--border:#1a2740;--nav:#060c17;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden}
+#landing{display:block}#app{display:none}
+.lnav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,12,23,.97);backdrop-filter:blur(12px);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:1px;font-size:1.35rem;font-weight:900;letter-spacing:-.5px}
+.lhp{color:var(--green)}.ltr{color:var(--red)}
+.btn-login{background:#fff;color:#000;border:none;padding:9px 24px;border-radius:24px;font-weight:800;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.btn-login:hover{background:var(--green);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,229,176,.3)}
+.hero{min-height:100vh;padding:96px 64px 48px;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(0,180,255,.07) 0,transparent 60%),radial-gradient(ellipse 60% 50% at 10% 80%,rgba(0,229,176,.05) 0,transparent 55%),var(--bg);position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,180,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,255,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:6px 16px;font-size:.78rem;color:var(--grey);margin-bottom:28px;width:fit-content}
+.bdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pls 2s infinite}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hero-brand{font-size:clamp(3.2rem,8vw,6rem);font-weight:900;line-height:1;margin-bottom:14px}
+.hero-sub{font-size:clamp(1.2rem,2.5vw,1.75rem);font-weight:700;margin-bottom:18px}
+.hero-desc{max-width:600px;color:var(--grey);line-height:1.75;margin-bottom:26px;font-size:.95rem}
+.hero-bullets{display:flex;flex-direction:column;gap:10px;margin-bottom:38px}
+.bullet{border-left:3px solid var(--green);padding:9px 18px;background:rgba(0,229,176,.04);border-radius:0 8px 8px 0;font-size:.86rem;color:var(--grey);max-width:600px;line-height:1.55}
+.btn-start{background:var(--green);color:#000;border:none;padding:15px 32px;border-radius:9px;font-weight:800;font-size:.98rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.2s}
+.btn-start:hover{background:#00ffcc;transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,229,176,.35)}
+.perks{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
+.perk{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--grey)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 64px 72px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 26px}
+.stat-n{font-size:2rem;font-weight:900}.stat-l{font-size:.78rem;color:var(--grey);margin-top:5px}
+.feat-sec{padding:88px 64px;background:var(--bg2)}
+.eyebrow{font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+.sec-title{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:900;margin-bottom:14px}
+.sec-desc{color:var(--grey);max-width:520px;line-height:1.7;margin-bottom:52px;font-size:.92rem}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px}
+.fcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;transition:.3s}
+.fcard:hover{border-color:var(--green);transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.ficon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px}
+.ftitle{font-size:1rem;font-weight:700;margin-bottom:8px}
+.fdesc{font-size:.83rem;color:var(--grey);line-height:1.65}
+.cta-sec{padding:90px 64px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(0,229,176,.1) 0,transparent 70%),var(--bg)}
+.cta-sec h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:16px}
+.cta-sec p{color:var(--grey);margin-bottom:38px;font-size:1rem}
+footer{background:var(--nav);border-top:1px solid var(--border);padding:28px 64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer p{font-size:.8rem;color:var(--muted)}
+#splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:none;align-items:center;justify-content:center}
+.splash-box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:52px 60px;text-align:center;width:90%;max-width:560px;position:relative;overflow:hidden}
+.splash-logo{font-size:2.9rem;font-weight:900;letter-spacing:2px;margin-bottom:4px;position:relative;z-index:1}
+.splash-hub{font-size:.68rem;letter-spacing:4px;color:var(--grey);text-transform:uppercase;margin-bottom:6px;position:relative;z-index:1}
+.live-pill{display:inline-block;background:var(--green);color:#000;font-size:.62rem;font-weight:800;padding:3px 9px;border-radius:5px;letter-spacing:1px;margin-bottom:30px;position:relative;z-index:1}
+.splash-title{font-size:1.35rem;font-weight:800;margin-bottom:6px;position:relative;z-index:1}
+.splash-tag{color:var(--grey);font-size:.86rem;margin-bottom:26px;position:relative;z-index:1}
+.prog-wrap{background:var(--border);border-radius:6px;height:6px;margin-bottom:7px;overflow:hidden;position:relative;z-index:1}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--red));border-radius:6px;width:0%;transition:width .08s linear}
+.prog-pct{font-size:.76rem;color:var(--grey);text-align:right;margin-bottom:18px;position:relative;z-index:1}
+.splash-status{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--grey);justify-content:center;margin-bottom:26px;position:relative;z-index:1}
+.spin{width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:sp .8s linear infinite;flex-shrink:0}
+.s-dots{display:flex;justify-content:center;gap:7px;margin-bottom:30px;position:relative;z-index:1}
+.s-dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:.3s}
+.s-dot.on{background:var(--green)}
+.s-mods{display:flex;justify-content:center;gap:32px;position:relative;z-index:1}
+.s-mod{display:flex;flex-direction:column;align-items:center;gap:9px}
+.s-mod-icon{width:54px;height:54px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.35rem}
+.s-mod-label{font-size:.7rem;color:var(--grey)}
+.s-prep{font-size:.76rem;color:var(--muted);font-style:italic;margin-top:18px;position:relative;z-index:1}
+.app-nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 12px;gap:0}
+.nav-logo{display:flex;align-items:center;gap:7px;margin-right:14px;flex-shrink:0}
+.nav-logo-sq{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.72rem;color:#000}
+.nav-logo-txt{font-size:.98rem;font-weight:900}
+.nav-logo-txt .hp{color:var(--green)}.nav-logo-txt .tr{color:var(--red)}
+.nav-list{display:flex;align-items:center;gap:1px;overflow-x:auto;flex:1;scrollbar-width:none}
+.nav-list::-webkit-scrollbar{display:none}
+.ni{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--grey);transition:.15s;border:none;background:none}
+.ni:hover{background:rgba(255,255,255,.05);color:#fff}
+.ni.on{background:rgba(0,180,255,.12);color:var(--blue)}
+.ni .nic{font-size:.82rem;flex-shrink:0}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.bal-btn{display:flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--green);background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);padding:5px 12px;border-radius:7px;cursor:pointer;white-space:nowrap}
+.rpt-btn{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--grey);cursor:pointer;padding:5px 10px;border-radius:6px;background:none;border:none;white-space:nowrap}
+.rpt-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
+.app-body{display:flex;height:100vh;padding-top:52px}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:80px}
+.rpanel{width:276px;min-width:276px;background:var(--nav);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.rp-tabs{display:flex;border-bottom:1px solid var(--border)}
+.rpt2{flex:1;padding:11px 6px;font-size:.74rem;font-weight:600;color:var(--muted);cursor:pointer;text-align:center;border:none;background:none;border-bottom:2px solid transparent;transition:.15s}
+.rpt2.on{color:#fff;border-bottom-color:var(--blue)}
+.rp-body{padding:16px 13px;flex:1}
+.rp-hint{font-size:.8rem;color:var(--grey);line-height:1.55;text-align:center;margin:24px 0}
+.rp-hint strong{color:#fff}
+.rp-divider{border-top:1px solid var(--border);padding-top:13px;margin-top:4px}
+.rp-what{font-size:.66rem;color:var(--muted);text-align:right;margin-bottom:9px;cursor:pointer}
+.rp-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.rp-stat-l{font-size:.66rem;color:var(--muted);margin-bottom:2px}
+.rp-stat-v{font-size:.78rem;font-weight:700;color:#fff}
+.rp-stat-v.g{color:var(--green)}.rp-stat-v.r{color:var(--red)}
+.btn-reset{width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:none;color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:9px}
+.btn-reset:hover{background:rgba(255,255,255,.05)}
+.page{display:none;padding:20px}
+.page.on{display:block}
+.ptitle{font-size:1.2rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.run-bar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:30px;overflow:hidden;z-index:100;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.btn-run{display:flex;align-items:center;gap:8px;background:var(--green);color:#000;border:none;padding:12px 26px;font-weight:900;font-size:.9rem;cursor:pointer;transition:.15s}
+.btn-run:hover{background:#00ffcc}
+.run-spd{padding:0 16px;display:flex;flex-direction:column;gap:2px}
+.rs-lbl{font-size:.6rem;color:var(--grey)}
+.rs-val{font-size:.7rem;font-weight:700;color:#fff;letter-spacing:.5px}
+.tgl-w{position:relative;margin-right:6px}
+.tgl-i{display:none}
+.tgl-l{display:flex;align-items:center;width:36px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;position:relative;transition:.2s}
+.tgl-i:checked+.tgl-l{background:var(--yellow)}
+.tgl-l::after{content:'';width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;left:3px;transition:.2s}
+.tgl-i:checked+.tgl-l::after{left:19px}
+.risk-disc{position:fixed;bottom:76px;left:14px;background:var(--yellow);color:#000;font-size:.7rem;font-weight:800;padding:6px 12px;border-radius:5px;z-index:50;cursor:pointer}
+.ai-fab{position:fixed;bottom:76px;right:14px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;cursor:pointer;box-shadow:0 4px 18px rgba(0,180,255,.4);z-index:50;border:none;color:#fff}
+/* DASHBOARD */
+.dash-greet{text-align:center;margin-bottom:28px;padding-top:6px}
+.dash-greet h2{font-size:1.5rem;font-weight:800}
+.dash-greet p{color:var(--grey);font-style:italic;margin-top:5px;font-size:.86rem}
+.qa-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:12px}
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px;margin-bottom:22px}
+.qac{background:var(--card);border:2px solid var(--border);border-radius:13px;padding:18px;cursor:pointer;transition:.2s}
+.qac:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.qac:nth-child(1){border-color:rgba(0,180,255,.45)}
+.qac:nth-child(2){border-color:rgba(0,229,176,.45)}
+.qac:nth-child(3){border-color:rgba(168,85,247,.45)}
+.qac:nth-child(4){border-color:rgba(255,215,0,.45)}
+.qac-icon{font-size:1.6rem;margin-bottom:10px}
+.qac-title{font-size:.9rem;font-weight:700;margin-bottom:5px}
+.qac-desc{font-size:.74rem;color:var(--grey);line-height:1.5;margin-bottom:11px}
+.qac-link{font-size:.76rem;color:var(--blue);font-weight:600}
+/* BOT BUILDER */
+.bb-layout{display:flex;height:calc(100vh - 52px);overflow:hidden}
+.bb-side{width:210px;min-width:210px;background:var(--nav);border-right:1px solid var(--border);padding:10px 0;overflow-y:auto;flex-shrink:0}
+.bb-side-hdr{font-size:.82rem;font-weight:700;padding:8px 14px 12px;display:flex;align-items:center;justify-content:space-between}
+.bb-search-inp{width:calc(100% - 20px);margin:0 10px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-size:.76rem;color:#fff;outline:none}
+.bb-cat{padding:8px 14px;font-size:.78rem;color:var(--grey);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:.15s}
+.bb-cat:hover{background:rgba(255,255,255,.04);color:#fff}
+.bb-canvas{flex:1;background:#050b12;overflow:auto;padding:16px;position:relative}
+.bb-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:14px;background:var(--card);padding:7px 12px;border-radius:8px;border:1px solid var(--border);flex-wrap:wrap}
+.bb-qs{background:var(--blue);color:#000;border:none;padding:6px 14px;border-radius:5px;font-weight:800;font-size:.74rem;cursor:pointer}
+.bb-sep{width:1px;height:20px;background:var(--border)}
+.bb-tb{width:28px;height:28px;border-radius:5px;border:none;background:none;color:var(--grey);cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center;transition:.15s}
+.bb-tb:hover{background:rgba(255,255,255,.07);color:#fff}
+.bb-blocks{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.bb-blk{background:var(--blue);border-radius:10px;padding:15px;min-width:260px;max-width:330px;flex-shrink:0}
+.bb-blk.green{background:rgba(0,180,60,.8);border:1.5px solid var(--green)}
+.bb-blk.purple{background:rgba(100,30,180,.8);border:1.5px solid var(--purple)}
+.bb-blk-hdr{font-size:.76rem;font-weight:800;color:#fff;margin-bottom:11px;display:flex;align-items:center;gap:5px}
+.bb-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.bb-lbl{font-size:.7rem;color:rgba(255,255,255,.75);white-space:nowrap}
+.bb-sel{background:#000;color:#fff;border:none;border-radius:13px;padding:4px 9px;font-size:.7rem;font-weight:600;cursor:pointer;outline:none}
+.bb-chk{width:14px;height:14px;cursor:pointer}
+.bb-num{background:#000;color:#fff;border:none;border-radius:7px;padding:4px 7px;font-size:.7rem;width:44px;outline:none;text-align:center}
+.bb-inline{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border-radius:6px;padding:8px 12px;font-size:.76rem;color:#fff}
+/* FREE BOTS */
+.fb-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
+.fb-tab{flex:1;padding:11px;text-align:center;font-size:.81rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;transition:.15s}
+.fb-tab.on{color:#fff;border-bottom-color:var(--blue);background:rgba(0,180,255,.04)}
+.bots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:13px}
+.bcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:.2s}
+.bcard:hover{border-color:var(--blue);transform:translateY(-2px)}
+.bcard-hdr{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.bico{width:35px;height:35px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:.92rem;flex-shrink:0}
+.bico.auto{background:linear-gradient(135deg,var(--red),var(--yellow))}
+.bname{font-size:.83rem;font-weight:700;line-height:1.3}
+.bauto{display:inline-block;font-size:.57rem;font-weight:800;padding:2px 5px;border-radius:3px;background:var(--yellow);color:#000;margin-top:3px}
+.bdesc{font-size:.72rem;color:var(--grey);line-height:1.5;margin-bottom:11px}
+.btn-rb{width:100%;padding:7px;border-radius:6px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--yellow);font-size:.74rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-rb:hover{background:rgba(255,215,0,.2)}
+.btn-lb{width:100%;padding:7px;border-radius:6px;background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.3);color:var(--blue);font-size:.74rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-lb:hover{background:rgba(0,180,255,.2)}
+/* AI SOFTWARE */
+.ai-tabs2{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
+.ai-tab2{padding:11px 20px;font-size:.81rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;transition:.15s}
+.ai-tab2.on{color:#fff;border-bottom-color:var(--green)}
+.ai-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px}
+.ai-card2{background:var(--card);border:1px solid var(--green);border-radius:12px;padding:19px;transition:.2s}
+.ai-card2.blue{border-color:var(--blue)}
+.ai-card2:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.ai-title2{font-size:.96rem;font-weight:700;margin-bottom:7px}
+.ai-desc2{font-size:.77rem;color:var(--grey);line-height:1.55;margin-bottom:13px}
+.ai-tags2{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
+.ai-tag2{padding:3px 9px;border-radius:4px;font-size:.67rem;font-weight:700;background:rgba(0,229,176,.1);color:var(--green)}
+.ai-tag2.b{background:rgba(0,180,255,.1);color:var(--blue)}
+.ai-footer2{font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.btn-ob{background:var(--green);color:#000;border:none;padding:7px 16px;border-radius:6px;font-weight:800;font-size:.74rem;cursor:pointer}
+.btn-ob:hover{background:#00ffcc}
+.btn-ob.b{background:var(--blue);color:#fff}
+/* ANALYSIS */
+.an-tabs2{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
+.an-tab2{flex:1;padding:11px;text-align:center;font-size:.81rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;transition:.15s}
+.an-tab2.on{color:var(--blue);border-bottom-color:var(--blue)}
+.an-toolbar2{display:flex;align-items:center;gap:9px;margin-bottom:20px;flex-wrap:wrap}
+.an-sel{background:var(--card);border:1px solid var(--border);color:#fff;padding:8px 12px;border-radius:6px;font-size:.78rem;outline:none;cursor:pointer}
+.an-tick{background:var(--card);border:1px solid var(--border);color:#fff;padding:8px 12px;border-radius:6px;font-size:.78rem;outline:none;width:78px}
+.live-p-wrap{margin-left:auto;text-align:right}
+.live-p-lbl{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.live-p-val{font-size:1.75rem;font-weight:900;color:var(--blue)}
+.digi-circles{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-bottom:28px}
+.dc{width:70px;height:70px;border-radius:50%;border:2.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.4s}
+.dc .dn{font-size:1.05rem;font-weight:800}
+.dc .dp{font-size:.58rem;color:var(--grey)}
+.an-panels2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.an-panel2{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px}
+.an-panel-hdr2{font-size:.74rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:13px;display:flex;justify-content:space-between;align-items:center}
+.an-live-badge{font-size:.64rem;color:var(--green);background:rgba(0,229,176,.08);padding:2px 7px;border-radius:4px}
+.digi-sel2{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.dsb{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--grey);font-size:.72rem;cursor:pointer;transition:.15s}
+.dsb.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.an-bar-row2{margin-bottom:9px}
+.an-bar-lbl2{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px;font-weight:600}
+.an-track2{height:9px;border-radius:5px;overflow:hidden}
+.an-fill2{height:100%;border-radius:5px;transition:width .5s}
+.an-more2{font-size:.72rem;color:var(--blue);cursor:pointer;margin-top:5px;display:inline-block}
+/* BULK TRADER */
+.bulk-cols{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+.bf{display:flex;flex-direction:column;gap:5px}
+.bf label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.bulk-sel{background:var(--card);border:1px solid var(--border);color:#fff;padding:9px 12px;border-radius:7px;font-size:.81rem;outline:none;cursor:pointer}
+.bulk-range{width:100%;accent-color:var(--blue)}
+.cur-tick{text-align:center;margin:12px 0}
+.cur-tick-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.cur-tick-val{font-size:2.5rem;font-weight:900;color:var(--blue)}
+.meter-row{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.met{text-align:center}
+.met-ring{width:64px;height:64px;border-radius:50%;border:3px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.3s}
+.met-ring .mn{font-size:.98rem;font-weight:800}
+.met-ring .mp{font-size:.57rem;color:var(--grey)}
+.last-tks{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.tk-badge{width:30px;height:30px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;transition:.2s}
+.tk-e{background:rgba(0,229,176,.14);color:var(--green);border:1px solid rgba(0,229,176,.25)}
+.tk-o{background:rgba(255,77,109,.14);color:var(--red);border:1px solid rgba(255,77,109,.25)}
+.bulk-inp-row{display:flex;gap:9px;margin-bottom:13px}
+.bulk-inp-f{flex:1}
+.bulk-inp-f label{display:block;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.bulk-inp-f input{width:100%;background:var(--card);border:1px solid var(--border);color:#fff;padding:9px;border-radius:7px;font-size:.88rem;text-align:center;outline:none}
+.bulk-btns{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.btn-even-t{background:var(--green);color:#000;border:none;padding:18px;border-radius:9px;font-weight:900;font-size:.98rem;cursor:pointer;transition:.15s}
+.btn-even-t:hover{background:#00ffcc}
+.btn-odd-t{background:var(--red);color:#fff;border:none;padding:18px;border-radius:9px;font-weight:900;font-size:.98rem;cursor:pointer;transition:.15s}
+.btn-odd-t:hover{filter:brightness(1.15)}
+.pct-note{font-size:.74rem;font-weight:500;display:block;margin-top:4px}
+/* CHARTS */
+.chart-top{display:flex;justify-content:flex-end;margin-bottom:12px}
+.btn-tv{background:var(--blue);color:#fff;border:none;padding:9px 18px;border-radius:7px;font-weight:800;font-size:.8rem;cursor:pointer}
+.chart-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:52vh;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.chart-spin{width:42px;height:42px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite}
+.tv-embed{display:none;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+/* APEX */
+.apex-wrap{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;overflow:auto}
+.apex-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:9px}
+.apex-tf-row{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.apex-mname{font-size:.78rem;font-weight:700;color:var(--grey);margin-right:7px}
+.apex-tf{background:none;border:1px solid var(--border);color:var(--grey);padding:4px 9px;border-radius:4px;font-size:.7rem;font-weight:600;cursor:pointer;transition:.15s}
+.apex-tf.on{background:rgba(0,229,176,.1);color:var(--green);border-color:var(--green)}
+.apex-r{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.apex-copy-btn{background:var(--yellow);color:#000;font-weight:800;padding:7px 13px;border-radius:6px;font-size:.74rem;cursor:pointer;border:none}
+.apex-mode-toggle{display:flex;align-items:center;gap:6px;font-size:.74rem}
+.apex-tgl{position:relative;width:32px;height:17px}
+.apex-tgl input{display:none}
+.apex-tgl label{display:block;width:100%;height:100%;background:var(--border);border-radius:8px;cursor:pointer;position:relative;transition:.2s}
+.apex-tgl input:checked+label{background:var(--green)}
+.apex-tgl label::after{content:'';width:11px;height:11px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.2s}
+.apex-tgl input:checked+label::after{left:18px}
+.apex-bal{text-align:right}
+.apex-bal-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.apex-bal-val{font-size:.98rem;font-weight:800;color:var(--green)}
+.apex-pills{display:flex;gap:5px}
+.apex-pill{font-size:.6rem;font-weight:800;padding:3px 7px;border-radius:4px}
+.apex-pill.auth{background:rgba(255,77,109,.18);color:var(--red)}
+.apex-pill.conn{background:rgba(0,229,176,.13);color:var(--green)}
+.apex-chart-canvas{width:100%;height:300px;border-radius:10px;display:block;background:#040a10;margin-bottom:13px}
+.apex-bottom{display:flex;gap:11px;flex-wrap:wrap}
+.apex-trade-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:15px;flex:2;min-width:190px}
+.apex-price-big{font-size:1.15rem;font-weight:900;color:var(--white);margin-bottom:11px}
+.apex-inputs-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
+.apex-field label{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+.apex-inp{width:100%;background:var(--card);border:1px solid var(--border);color:#fff;padding:7px 10px;border-radius:6px;font-size:.82rem;outline:none}
+.apex-dur-row{display:flex;gap:4px}
+.apex-dur-sel{background:var(--card);border:1px solid var(--border);color:#fff;padding:6px 7px;border-radius:6px;font-size:.78rem;outline:none;flex:1}
+.apex-dur-num{background:var(--card);border:1px solid var(--border);color:#fff;padding:6px 7px;border-radius:6px;font-size:.78rem;width:52px;outline:none;text-align:center}
+.apex-trade-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.btn-sell-a{background:rgba(255,77,109,.1);border:1px solid var(--red);color:var(--red);padding:10px;border-radius:7px;font-weight:800;font-size:.78rem;cursor:pointer;transition:.15s}
+.btn-sell-a:hover{background:rgba(255,77,109,.2)}
+.btn-buy-a{background:rgba(0,229,176,.1);border:1px solid var(--green);color:var(--green);padding:10px;border-radius:7px;font-weight:800;font-size:.78rem;cursor:pointer;transition:.15s}
+.btn-buy-a:hover{background:rgba(0,229,176,.2)}
+.apex-trades-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:15px;flex:1;min-width:170px;display:flex;flex-direction:column}
+.apex-trades-empty{font-size:.76rem;color:var(--muted);margin-top:16px}
+.apex-trades-realized{font-size:.68rem;color:var(--muted);margin-top:auto;padding-top:11px;border-top:1px solid var(--border)}
+/* COPY TRADER */
+.ct-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:11px}
+.demo-pill{background:rgba(0,180,255,.1);border:1px solid var(--blue);color:var(--blue);font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:4px}
+.ct-btns{display:flex;gap:7px}
+.btn-tut{background:var(--red);color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:.74rem;font-weight:800;cursor:pointer}
+.btn-start-c{background:var(--green);color:#000;border:none;padding:8px 12px;border-radius:6px;font-size:.74rem;font-weight:800;cursor:pointer}
+.ct-sec-lbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:13px}
+.ct-start-row{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.btn-sct{background:var(--green);color:#000;border:none;padding:8px 17px;border-radius:6px;font-size:.78rem;font-weight:800;cursor:pointer}
+.ct-count-lbl{font-size:.74rem;color:var(--muted)}
+.ct-inp-row{display:flex;gap:7px;margin-bottom:13px}
+.ct-inp{flex:1;background:var(--card);border:1px solid var(--border);color:#fff;padding:9px 12px;border-radius:6px;font-size:.78rem;outline:none;font-family:monospace}
+.ct-inp::placeholder{color:var(--muted)}
+.btn-add{background:var(--blue);color:#fff;border:none;padding:9px 13px;border-radius:6px;font-weight:800;cursor:pointer;font-size:.78rem}
+.btn-sync-ct{background:none;border:1px solid var(--border);color:var(--grey);padding:9px 12px;border-radius:6px;font-size:.78rem;cursor:pointer}
+.btn-guide-ct{background:var(--red);color:#fff;border:none;padding:9px 12px;border-radius:6px;font-size:.74rem;font-weight:800;cursor:pointer}
+.ct-empty{text-align:center;padding:52px 20px;color:var(--muted)}
+.ct-empty-ico{font-size:2.8rem;margin-bottom:11px;opacity:.3;display:block}
+/* RISK CALC */
+.rc-wrap{max-width:560px}
+.rc-field{margin-bottom:16px}
+.rc-label{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
+.rc-inp{width:100%;background:var(--card);border:1px solid var(--border);color:#fff;padding:10px 12px;border-radius:7px;font-size:.88rem;outline:none;transition:.15s}
+.rc-inp:focus{border-color:var(--blue)}
+.btn-calc{background:var(--green);color:#000;border:none;padding:12px 26px;border-radius:8px;font-weight:900;font-size:.88rem;cursor:pointer;margin-top:13px}
+.rc-result{background:var(--card);border:1.5px solid var(--green);border-radius:12px;padding:18px;margin-top:20px;display:none}
+.rc-res-hdr{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:13px}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.rc-item-lbl{font-size:.7rem;color:var(--muted);margin-bottom:3px}
+.rc-item-val{font-size:1.15rem;font-weight:900;color:var(--green)}
+.rc-item-val.red{color:var(--red)}
+/* TRADE ACADEMY */
+.acad-hero{background:linear-gradient(135deg,var(--bg2),#18234a);border-radius:15px;padding:38px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.acad-hero h2{font-size:1.75rem;font-weight:900;margin-bottom:7px}
+.acad-hero p{color:var(--grey);max-width:470px;line-height:1.65;margin-bottom:17px;font-size:.86rem}
+.btn-learn{background:var(--yellow);color:#000;border:none;padding:12px 22px;border-radius:8px;font-weight:900;font-size:.86rem;cursor:pointer}
+.acad-books{font-size:4.5rem}
+.acad-stats-row{display:flex;gap:26px;border-top:1px solid var(--border);padding-top:16px;margin-bottom:26px;flex-wrap:wrap}
+.acad-s{text-align:center}
+.acad-sn{font-size:1.5rem;font-weight:900}
+.acad-sl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.acad-tabs{display:flex;gap:4px;margin-bottom:20px}
+.acad-tab{padding:8px 17px;border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);transition:.15s}
+.acad-tab.on{background:var(--yellow);color:#000;border-color:var(--yellow)}
+.chaps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(242px,1fr));gap:13px}
+.chap-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.2s}
+.chap-card:hover{border-color:var(--yellow)}
+.chap-n{font-size:.66rem;color:var(--yellow);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.chap-t{font-size:.91rem;font-weight:700;margin-bottom:6px}
+.chap-d{font-size:.76rem;color:var(--grey);line-height:1.55}
+/* REPORTS */
+.rep-tabs{display:flex;gap:7px;margin-bottom:20px}
+.rep-tab{flex:1;padding:10px;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);transition:.15s;text-align:center}
+.rep-tab.on{background:rgba(0,180,255,.1);color:var(--blue);border-color:var(--blue)}
+.rep-empty{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:30px;text-align:center}
+/* TOAST */
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+/* RESPONSIVE */
+@media(max-width:960px){.rpanel{display:none}.stats-grid{grid-template-columns:1fr 1fr;padding:0 22px 42px}.hero{padding:88px 22px 38px}.feat-sec,.cta-sec{padding:52px 22px}footer{padding:20px 22px}.an-panels2{grid-template-columns:1fr}.bulk-cols{grid-template-columns:1fr}}
+@media(max-width:620px){.stats-grid{grid-template-columns:1fr 1fr}.bots-grid{grid-template-columns:1fr 1fr}.ai-grid2{grid-template-columns:1fr}.qa-grid{grid-template-columns:1fr 1fr}.ni span{display:none}.lnav{padding:0 14px}.bulk-btns{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LANDING PAGE -->
+<div id="landing">
+  <nav class="lnav">
+    <div class="logo"><span class="lhp">HP</span><span class="ltr">Traders</span></div>
+    <button class="btn-login" onclick="showSplash()">Login Now &rarr;</button>
+  </nav>
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.7" viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 400 Q360 200 720 350 Q1080 500 1440 300" stroke="#00e5b022" stroke-width="2" fill="none"/>
+      <path d="M0 500 Q400 260 800 430 Q1100 580 1440 380" stroke="#00b4ff16" stroke-width="1.5" fill="none"/>
+      <path d="M0 600 Q500 300 900 500 Q1200 650 1440 450" stroke="#ff4d6d0d" stroke-width="1" fill="none"/>
+    </svg>
+    <div class="badge"><span class="bdot"></span> Trusted by 50,000+ Traders Worldwide</div>
+    <div class="hero-brand"><span style="color:var(--green)">HP</span><span style="color:var(--red)">Traders</span></div>
+    <div class="hero-sub">The Future of Automated Trading</div>
+    <p class="hero-desc">Harness the power of AI-driven bots, real-time analytics, and copy trading to maximize your profits. Join the revolution today.</p>
+    <div class="hero-bullets">
+      <div class="bullet">Build, test, and launch automated strategies from one clean workspace. HPTraders brings market scanning, bot automation, account tools, and trading insights together so you can move faster with more confidence.</div>
+      <div class="bullet">Start with a virtual account, learn the platform, then scale your approach when you are ready. You stay in control of risk, stake size, trade settings, and every bot you run.</div>
+    </div>
+    <button class="btn-start" onclick="showSplash()">Start Trading Now &rarr;</button>
+    <div class="perks">
+      <span class="perk">&#10003; No Credit Card Required</span>
+      <span class="perk">&#10003; $10,000 Virtual Account</span>
+    </div>
+  </section>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-n">50.0K++</div><div class="stat-l">Active Traders</div></div>
+    <div class="stat"><div class="stat-n">$2.5B++</div><div class="stat-l">Trading Volume</div></div>
+    <div class="stat"><div class="stat-n">99.9%</div><div class="stat-l">Uptime</div></div>
+    <div class="stat"><div class="stat-n">150++</div><div class="stat-l">Trading Pairs</div></div>
+  </div>
+  <section class="feat-sec">
+    <div class="eyebrow">Why HP Traders</div>
+    <div class="sec-title">Everything You Need to Trade Smarter</div>
+    <p class="sec-desc">From bot building to copy trading &mdash; HP Traders puts professional-grade tools in your hands from day one.</p>
+    <div class="feat-grid">
+      <div class="fcard"><div class="ficon" style="background:rgba(0,180,255,.15)">&#129302;</div><div class="ftitle">Bot Builder</div><div class="fdesc">Drag-and-drop visual strategy builder. Configure trade parameters, purchase conditions, sell rules, and restart logic without writing code.</div></div>
+      <div class="fcard"><div class="ficon" style="background:rgba(0,229,176,.15)">&#9889;</div><div class="ftitle">Free Bots Library</div><div class="fdesc">Access professional-grade bots including Infinity Algo, Novaswitch, Even/Odd strategies, and more &mdash; all ready to run instantly.</div></div>
+      <div class="fcard"><div class="ficon" style="background:rgba(168,85,247,.15)">&#129504;</div><div class="ftitle">AI Software</div><div class="fdesc">AI Robots with smart edge detection for Over/Under, Even/Odd, and Dual Edge strategies with real-time pattern analysis.</div></div>
+      <div class="fcard"><div class="ficon" style="background:rgba(255,215,0,.15)">&#128202;</div><div class="ftitle">Analysis Tool</div><div class="fdesc">Real-time digit distribution, Over/Under, Match/Differ, Even/Odd, and Rise/Fall statistics across up to 5000 ticks.</div></div>
+      <div class="fcard"><div class="ficon" style="background:rgba(255,77,109,.15)">&#128101;</div><div class="ftitle">Copy Trader</div><div class="fdesc">Mirror demo account trades on real accounts. Add multiple client tokens and sync their portfolios automatically.</div></div>
+      <div class="fcard"><div class="ficon" style="background:rgba(0,229,176,.15)">&#128200;</div><div class="ftitle">Advanced Charts</div><div class="fdesc">TradingView-powered charts with MA indicators, candlestick patterns, and multi-timeframe views across all volatility indices.</div></div>
+    </div>
+  </section>
+  <section class="cta-sec">
+    <h2>Ready to Trade Smarter?</h2>
+    <p>Join 50,000+ traders who trust HP Traders for automated, AI-powered trading every day.</p>
+    <button class="btn-start" onclick="showSplash()" style="margin:0 auto;display:inline-flex">Start for Free &rarr;</button>
+  </section>
+  <footer>
+    <div class="logo" style="font-size:1.1rem"><span class="lhp">HP</span><span class="ltr">Traders</span></div>
+    <p>&copy; 2026 HP Traders. All rights reserved. Trading involves risk. Trade responsibly.</p>
+  </footer>
+</div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-box">
+    <canvas id="splash-c" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.12;border-radius:22px"></canvas>
+    <div class="splash-logo"><span style="color:var(--green)">HP</span><span style="color:var(--red)">TRADERS</span></div>
+    <div class="splash-hub">TRADING HUB</div>
+    <span class="live-pill">&#9679; LIVE</span>
+    <div class="splash-title">Welcome to HP Traders</div>
+    <div class="splash-tag">Empowering your financial journey.</div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+    <div class="prog-pct" id="prog-pct">0%</div>
+    <div class="splash-status"><div class="spin"></div><span id="splash-txt">Connecting to Volatility Markets...</span></div>
+    <div class="s-dots" id="s-dots">
+      <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+    </div>
+    <div class="s-mods">
+      <div class="s-mod"><div class="s-mod-icon">&#128202;</div><div class="s-mod-label">Advanced Charts</div></div>
+      <div class="s-mod"><div class="s-mod-icon">&#129302;</div><div class="s-mod-label">Trading Bots</div></div>
+      <div class="s-mod"><div class="s-mod-icon">&#128101;</div><div class="s-mod-label">Copy Trading</div></div>
+    </div>
+    <div class="s-prep">Preparing a seamless trading experience for you</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav class="app-nav">
+    <div class="nav-logo">
+      <div class="nav-logo-sq">HP</div>
+      <div class="nav-logo-txt"><span class="hp">HP</span><span class="tr">Traders</span></div>
+    </div>
+    <button class="rpt-btn" onclick="nav('reports')">&#128203; Reports</button>
+    <div class="nav-list">
+      <button class="ni on" onclick="nav('dashboard')" data-p="dashboard"><span class="nic">&#127968;</span><span>Dashboard</span></button>
+      <button class="ni" onclick="nav('bot-builder')" data-p="bot-builder"><span class="nic">&#129513;</span><span>Bot Builder</span></button>
+      <button class="ni" onclick="nav('free-bots')" data-p="free-bots"><span class="nic">&#9889;</span><span>Free Bots</span></button>
+      <button class="ni" onclick="nav('ai-software')" data-p="ai-software"><span class="nic">&#129504;</span><span>AI Software</span></button>
+      <button class="ni" onclick="nav('analysis')" data-p="analysis"><span class="nic">&#128269;</span><span>Analysis Tool</span></button>
+      <button class="ni" onclick="nav('manual')" data-p="manual"><span class="nic">&#128200;</span><span>Manual Trader</span></button>
+      <button class="ni" onclick="nav('bulk')" data-p="bulk"><span class="nic">&#128230;</span><span>Bulk Trader</span></button>
+      <button class="ni" onclick="nav('charts')" data-p="charts"><span class="nic">&#128202;</span><span>Charts</span></button>
+      <button class="ni" onclick="nav('apex')" data-p="apex"><span class="nic">&#127963;</span><span>Apex Market</span></button>
+      <button class="ni" onclick="nav('copy-trader')" data-p="copy-trader"><span class="nic">&#128101;</span><span>Copy Trader</span></button>
+      <button class="ni" onclick="nav('risk-calc')" data-p="risk-calc"><span class="nic">&#128737;</span><span>Risk Calculator</span></button>
+      <button class="ni" onclick="nav('academy')" data-p="academy"><span class="nic">&#127891;</span><span>Trade Academy</span></button>
+    </div>
+    <div class="nav-right">
+      <div class="bal-btn">&#128176; <span id="balance-display">10,000.00</span> USD &#9660;</div>
+    </div>
+  </nav>
+
+  <div class="app-body">
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="p-dashboard">
+        <div class="dash-greet">
+          <h2>Hello HPT_USER &#128075;</h2>
+          <p>&ldquo;Cut your losses short. Let your profits run.&rdquo;</p>
+        </div>
+        <div class="qa-label">QUICK ACTIONS</div>
+        <div class="qa-grid">
+          <div class="qac" onclick="nav('bot-builder')"><div class="qac-icon">&#128193;</div><div class="qac-title">Upload Bot</div><div class="qac-desc">Import an XML bot from your computer</div><div class="qac-link">Open &rarr;</div></div>
+          <div class="qac" onclick="nav('free-bots')"><div class="qac-icon">&#129302;</div><div class="qac-title">Free Bots</div><div class="qac-desc">Browse ready-made trading strategies</div><div class="qac-link">Open &rarr;</div></div>
+          <div class="qac" onclick="nav('bot-builder')"><div class="qac-icon">&#129513;</div><div class="qac-title">Bot Editor</div><div class="qac-desc">Build a custom bot with the visual editor</div><div class="qac-link">Open &rarr;</div></div>
+          <div class="qac" onclick="nav('bot-builder')"><div class="qac-icon">&#9889;</div><div class="qac-title">Quick Strategy</div><div class="qac-desc">Start fast with a pre-built strategy template</div><div class="qac-link">Open &rarr;</div></div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px">
+          <div style="font-size:.76rem;font-weight:700;color:var(--grey);margin-bottom:13px;text-transform:uppercase;letter-spacing:1px">&#128308; Live Market Snapshot</div>
+          <div id="mkt-snap" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:9px"></div>
+        </div>
+      </div>
+
+      <!-- BOT BUILDER -->
+      <div class="page" id="p-bot-builder" style="padding:0">
+        <div class="bb-layout">
+          <div class="bb-side">
+            <div class="bb-side-hdr">Blocks menu &#9650;</div>
+            <input class="bb-search-inp" placeholder="Search blocks..." />
+            <div class="bb-cat">&#128293; Logics</div>
+            <div class="bb-cat">Trade parameters</div>
+            <div class="bb-cat">Purchase conditions</div>
+            <div class="bb-cat">Sell conditions (optional)</div>
+            <div class="bb-cat">Restart trading conditions</div>
+            <div class="bb-cat">Analysis &#9660;</div>
+            <div class="bb-cat">Utility &#9660;</div>
+            <div class="bb-cat">Virtual Hook Switcher</div>
+            <div class="bb-cat">Custom Notification</div>
+            <div class="bb-cat">Binarytools</div>
+            <div class="bb-cat">Contract modifiers</div>
+            <div class="bb-cat">Barrier Settings</div>
+          </div>
+          <div class="bb-canvas">
+            <div class="bb-toolbar">
+              <button class="bb-qs">Quick strategy</button>
+              <div class="bb-sep"></div>
+              <button class="bb-tb" title="Reset">&#128260;</button>
+              <button class="bb-tb" title="Load">&#128194;</button>
+              <button class="bb-tb" title="Save">&#128190;</button>
+              <button class="bb-tb" title="Chart view">&#128202;</button>
+              <button class="bb-tb" title="Download">&#11015;</button>
+              <div class="bb-sep"></div>
+              <button class="bb-tb" title="Undo">&#8617;</button>
+              <button class="bb-tb" title="Redo">&#8618;</button>
+              <div class="bb-sep"></div>
+              <button class="bb-tb" title="Zoom in">&#128269;</button>
+              <button class="bb-tb" title="Zoom out">&#128270;</button>
+            </div>
+            <div class="bb-blocks">
+              <div style="display:flex;flex-direction:column;gap:13px">
+                <div class="bb-blk">
+                  <div class="bb-blk-hdr">&#9881; 1. Trade parameters</div>
+                  <div class="bb-row"><span class="bb-lbl">Market:</span><select class="bb-sel"><option>synthetic_index</option></select><select class="bb-sel"><option>random_index</option></select><select class="bb-sel"><option>Volatility 100 (1s) Index</option><option>Volatility 75 (1s) Index</option><option>Volatility 50 (1s) Index</option><option>Volatility 25 (1s) Index</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl">Trade Type:</span><select class="bb-sel"><option>Up/Down</option><option>Digits</option></select><span style="color:rgba(255,255,255,.4)">&rarr;</span><select class="bb-sel"><option>Rise Equals/Fall Equals</option><option>Over/Under</option><option>Even/Odd</option><option>Match/Differ</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl">Contract Type:</span><select class="bb-sel"><option>Both</option><option>Rise</option><option>Fall</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl">Candle Interval:</span><select class="bb-sel"><option>1 minute</option><option>5 minutes</option><option>Ticks</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl" style="font-size:.68rem">Restart buy/sell on error:</span><input type="checkbox" class="bb-chk" /></div>
+                  <div class="bb-row"><span class="bb-lbl" style="font-size:.68rem">Restart last trade on error:</span><input type="checkbox" class="bb-chk" checked /></div>
+                  <div class="bb-row"><span class="bb-lbl">Duration:</span><select class="bb-sel"><option>Ticks</option><option>Minutes</option></select><input type="number" class="bb-num" value="1" /> <span class="bb-lbl">Stake USD</span><input type="number" class="bb-num" value="1" /></div>
+                </div>
+                <div class="bb-blk">
+                  <div class="bb-blk-hdr">&#128722; 2. Purchase conditions</div>
+                  <div class="bb-row"><span class="bb-lbl">Purchase</span><select class="bb-sel"><option>Rise Equals</option><option>Fall Equals</option><option>Over</option><option>Under</option><option>Even</option><option>Odd</option><option>Match</option><option>Differ</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl">Allow Bulk Purchase:</span><select class="bb-sel"><option>No</option><option>Yes</option></select></div>
+                  <div class="bb-row"><span class="bb-lbl">No. of Trades:</span><input type="number" class="bb-num" value="1" /></div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:13px">
+                <div class="bb-blk green">
+                  <div class="bb-blk-hdr">&#128176; 3. Sell conditions</div>
+                  <div class="bb-inline"><span>if</span><select class="bb-sel" style="background:rgba(0,0,0,.4)"><option>Sell is available</option><option>Profit &ge;</option><option>Loss &ge;</option><option>Ticks count &ge;</option></select><span>then</span></div>
+                </div>
+                <div class="bb-blk purple">
+                  <div class="bb-blk-hdr">&#128260; 4. Restart trading conditions</div>
+                  <div class="bb-inline">Trade again</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FREE BOTS -->
+      <div class="page" id="p-free-bots">
+        <div class="ptitle">&#9889; Free Bots</div>
+        <div class="fb-tabs">
+          <button class="fb-tab on" onclick="fbTab(this,'all')">All &#128081;</button>
+          <button class="fb-tab" onclick="fbTab(this,'auto')">Automated &#9889;</button>
+          <button class="fb-tab" onclick="fbTab(this,'normal')">Normal &#127918;</button>
+        </div>
+        <div class="bots-grid" id="bots-grid"></div>
+      </div>
+
+      <!-- AI SOFTWARE -->
+      <div class="page" id="p-ai-software">
+        <div class="ptitle">&#129504; AI Software</div>
+        <div class="ai-tabs2">
+          <button class="ai-tab2 on" onclick="aiTab(this,0)">AI Robots</button>
+          <button class="ai-tab2" onclick="aiTab(this,1)">Dual Edge</button>
+          <button class="ai-tab2" onclick="aiTab(this,2)">Speedbot</button>
+        </div>
+        <div class="ai-grid2" id="ai-grid"></div>
+      </div>
+
+      <!-- ANALYSIS TOOL -->
+      <div class="page" id="p-analysis">
+        <div class="an-tabs2">
+          <button class="an-tab2 on" onclick="anTab(this)">Circles</button>
+          <button class="an-tab2" onclick="anTab(this)">Scanner</button>
+        </div>
+        <div class="an-toolbar2">
+          <button style="background:var(--card);border:1px solid var(--border);color:#fff;padding:8px 13px;border-radius:6px;cursor:pointer;font-size:.78rem">SELECT MARKET</button>
+          <span style="font-size:.74rem;color:var(--muted)">TICKS</span>
+          <input class="an-tick" value="1000" type="number" />
+          <div class="live-p-wrap"><div class="live-p-lbl">LIVE PRICE</div><div class="live-p-val" id="an-price">Loading...</div></div>
+        </div>
+        <div class="digi-circles">
+          <div class="dc" id="dc0"><div class="dn">0</div><div class="dp" id="dp0">--%</div></div>
+          <div class="dc" id="dc1"><div class="dn">1</div><div class="dp" id="dp1">--%</div></div>
+          <div class="dc" id="dc2"><div class="dn">2</div><div class="dp" id="dp2">--%</div></div>
+          <div class="dc" id="dc3"><div class="dn">3</div><div class="dp" id="dp3">--%</div></div>
+          <div class="dc" id="dc4"><div class="dn">4</div><div class="dp" id="dp4">--%</div></div>
+          <div class="dc" id="dc5"><div class="dn">5</div><div class="dp" id="dp5">--%</div></div>
+          <div class="dc" id="dc6"><div class="dn">6</div><div class="dp" id="dp6">--%</div></div>
+          <div class="dc" id="dc7"><div class="dn">7</div><div class="dp" id="dp7">--%</div></div>
+          <div class="dc" id="dc8"><div class="dn">8</div><div class="dp" id="dp8">--%</div></div>
+          <div class="dc" id="dc9"><div class="dn">9</div><div class="dp" id="dp9">--%</div></div>
+        </div>
+        <div class="an-panels2">
+          <div class="an-panel2"><div class="an-panel-hdr2">OVER / UNDER <span class="an-live-badge">&#9679; Live</span></div><div class="digi-sel2"><button class="dsb" onclick="dsb(this)">0</button><button class="dsb" onclick="dsb(this)">1</button><button class="dsb" onclick="dsb(this)">2</button><button class="dsb" onclick="dsb(this)">3</button><button class="dsb" onclick="dsb(this)">4</button><button class="dsb on" onclick="dsb(this)">5</button><button class="dsb" onclick="dsb(this)">6</button><button class="dsb" onclick="dsb(this)">7</button><button class="dsb" onclick="dsb(this)">8</button><button class="dsb" onclick="dsb(this)">9</button></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--green)">OVER</span><span id="over-v">--%</span></div><div class="an-track2" style="background:rgba(0,229,176,.1)"><div class="an-fill2" id="over-fill" style="width:50%;background:linear-gradient(90deg,var(--green),#00ffcc)"></div></div></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--yellow)">UNDER</span><span id="under-v">--%</span></div><div class="an-track2" style="background:rgba(255,215,0,.1)"><div class="an-fill2" id="under-fill" style="width:50%;background:linear-gradient(90deg,var(--yellow),#ffaa00)"></div></div></div><span class="an-more2">+ More</span></div>
+          <div class="an-panel2"><div class="an-panel-hdr2">MATCH / DIFFER <span class="an-live-badge">&#9679; Live</span></div><div class="digi-sel2"><button class="dsb" onclick="dsb(this)">0</button><button class="dsb" onclick="dsb(this)">1</button><button class="dsb" onclick="dsb(this)">2</button><button class="dsb" onclick="dsb(this)">3</button><button class="dsb" onclick="dsb(this)">4</button><button class="dsb on" onclick="dsb(this)">5</button><button class="dsb" onclick="dsb(this)">6</button><button class="dsb" onclick="dsb(this)">7</button><button class="dsb" onclick="dsb(this)">8</button><button class="dsb" onclick="dsb(this)">9</button></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--blue)">MATCH</span><span id="match-v">--%</span></div><div class="an-track2" style="background:rgba(0,180,255,.1)"><div class="an-fill2" id="match-fill" style="width:10%;background:var(--blue)"></div></div></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--purple)">DIFFER</span><span id="differ-v">--%</span></div><div class="an-track2" style="background:rgba(168,85,247,.1)"><div class="an-fill2" id="differ-fill" style="width:90%;background:var(--purple)"></div></div></div><span class="an-more2">+ More</span></div>
+          <div class="an-panel2"><div class="an-panel-hdr2">EVEN / ODD <span class="an-live-badge">&#9679; Live</span></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--blue)">EVEN</span><span id="even-v">--%</span></div><div class="an-track2" style="background:rgba(0,180,255,.1)"><div class="an-fill2" id="even-fill" style="width:50%;background:var(--blue)"></div></div></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--red)">ODD</span><span id="odd-v">--%</span></div><div class="an-track2" style="background:rgba(255,77,109,.1)"><div class="an-fill2" id="odd-fill" style="width:50%;background:var(--red)"></div></div></div><span class="an-more2">+ More</span></div>
+          <div class="an-panel2"><div class="an-panel-hdr2">RISE / FALL <span class="an-live-badge">&#9679; Live</span></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--green)">RISE</span><span id="rise-v">--%</span></div><div class="an-track2" style="background:rgba(0,229,176,.1)"><div class="an-fill2" id="rise-fill" style="width:50%;background:var(--green)"></div></div></div><div class="an-bar-row2"><div class="an-bar-lbl2"><span style="color:var(--red)">FALL</span><span id="fall-v">--%</span></div><div class="an-track2" style="background:rgba(255,77,109,.1)"><div class="an-fill2" id="fall-fill" style="width:50%;background:var(--red)"></div></div></div><span class="an-more2">+ More</span></div>
+        </div>
+      </div>
+
+      <!-- MANUAL TRADER -->
+      <div class="page" id="p-manual">
+        <div id="dt-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:55vh;gap:16px">
+          <div style="width:82px;height:82px;border-radius:50%;border:3px solid transparent;border-top-color:var(--blue);border-right-color:var(--purple);animation:sp 1.2s linear infinite;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.88rem;color:var(--blue)">DT</div>
+          <div style="font-size:.76rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase">D T R A D E R</div>
+          <div style="font-size:.74rem;color:var(--muted)">Manual trading interface</div>
+          <button onclick="openDTrader()" style="background:var(--blue);color:#fff;border:none;padding:11px 26px;border-radius:7px;font-weight:800;cursor:pointer;font-size:.86rem">Open DTrader</button>
+        </div>
+        <div id="dt-open" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div class="ptitle" style="margin:0">&#128200; Manual Trader &mdash; DTrader</div>
+            <button onclick="closeDTrader()" style="background:var(--card);border:1px solid var(--border);color:var(--grey);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78rem">&larr; Back</button>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:11px;padding:26px;text-align:center">
+            <p style="color:var(--grey);margin-bottom:16px;font-size:.86rem">DTrader opens on the Deriv platform for direct manual trading access with all volatility indices.</p>
+            <a href="https://app.deriv.com/dtrader" target="_blank" style="background:var(--blue);color:#fff;padding:12px 26px;border-radius:8px;font-weight:800;text-decoration:none;display:inline-block;font-size:.88rem">Open DTrader on Deriv &#10138;</a>
+            <p style="color:var(--muted);font-size:.74rem;margin-top:13px">Opens in a new tab. Connect your HP Traders API token on the Deriv platform to start trading.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BULK TRADER -->
+      <div class="page" id="p-bulk">
+        <div class="ptitle">&#128230; Bulk Trader</div>
+        <div class="bulk-cols">
+          <div class="bf"><label>MARKET</label><select class="bulk-sel" id="bulk-market"><option>Volatility 100 (1s) Index</option><option>Volatility 75 (1s) Index</option><option>Volatility 50 (1s) Index</option><option>Volatility 25 (1s) Index</option><option>Volatility 10 (1s) Index</option></select></div>
+          <div class="bf"><label>TRADE TYPE</label><select class="bulk-sel" id="bulk-type" onchange="buildBulkBtns()"><option>Even/Odd</option><option>Over/Under</option><option>Match/Differ</option><option>Rise/Fall</option></select></div>
+        </div>
+        <div class="bf" style="margin-bottom:14px"><label>NUMBER OF TICKS &mdash; <span id="ticks-disp">1000</span></label><input type="range" min="100" max="5000" value="1000" class="bulk-range" oninput="document.getElementById('ticks-disp').textContent=this.value" /></div>
+        <div class="cur-tick"><div class="cur-tick-lbl">CURRENT TICK</div><div class="cur-tick-val" id="bulk-tick-v">Loading...</div></div>
+        <div class="meter-row" id="meter-row"></div>
+        <div class="last-tks" id="last-tks"></div>
+        <div class="bulk-inp-row">
+          <div class="bulk-inp-f"><label>TICKS</label><input type="number" value="1" id="bi-ticks" /></div>
+          <div class="bulk-inp-f"><label>STAKE (USD)</label><input type="number" value="0.50" step="0.10" id="bi-stake" /></div>
+        </div>
+        <div class="bulk-btns" id="bulk-btns"></div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="page" id="p-charts">
+        <div class="chart-top"><button class="btn-tv" onclick="loadTV()">&#128202; Open TradingView Chart</button></div>
+        <div class="chart-loading" id="chart-load"><div class="chart-spin"></div><div style="font-size:.8rem;color:var(--grey)">Retrieving Chart Data...</div></div>
+        <div class="tv-embed" id="tv-embed"></div>
+      </div>
+
+      <!-- APEX MARKET -->
+      <div class="page" id="p-apex">
+        <div class="ptitle">&#127963; Apex Market</div>
+        <div class="apex-wrap">
+          <div class="apex-hdr">
+            <div class="apex-tf-row">
+              <span class="apex-mname">VOLATILITY 10 INDEX &#9660;</span>
+              <button class="apex-tf">1s</button><button class="apex-tf">5s</button><button class="apex-tf on">15s</button><button class="apex-tf">30s</button><button class="apex-tf">M1</button><button class="apex-tf">M5</button><button class="apex-tf">M15</button><button class="apex-tf">M30</button><button class="apex-tf">H1</button><button class="apex-tf">H4</button><button class="apex-tf">D1</button>
+            </div>
+            <div class="apex-r">
+              <button class="apex-copy-btn">&#128225; COPY SIGNAL</button>
+              <div class="apex-mode-toggle"><span style="color:var(--muted);font-size:.72rem">DEMO</span><div class="apex-tgl"><input type="checkbox" id="apex-mode"><label for="apex-mode"></label></div><span style="font-size:.72rem">REAL</span></div>
+              <div class="apex-bal"><div class="apex-bal-lbl">BALANCE</div><div class="apex-bal-val">$0.00</div></div>
+              <div class="apex-pills"><span class="apex-pill auth">&#9679; AUTH</span><span class="apex-pill conn">&#9679; CONNECTED</span></div>
+            </div>
+          </div>
+          <canvas id="apex-canvas" class="apex-chart-canvas"></canvas>
+          <div class="apex-bottom">
+            <div class="apex-trade-box">
+              <div class="apex-price-big" id="apex-price-big">4882.48</div>
+              <div class="apex-inputs-row">
+                <div class="apex-field"><label>Amount (USD)</label><input class="apex-inp" type="number" value="50" id="apex-amt" /></div>
+                <div class="apex-field"><label>Duration</label><div class="apex-dur-row"><select class="apex-dur-sel"><option>Minutes</option><option>Ticks</option><option>Hours</option></select><input class="apex-dur-num" type="number" value="1" /></div></div>
+              </div>
+              <div class="apex-trade-btns">
+                <button class="btn-sell-a" onclick="apexTrade('sell')">SELL<br><span id="apex-sell-p" style="font-size:.68rem">4882.48</span></button>
+                <button class="btn-buy-a" onclick="apexTrade('buy')">BUY<br><span id="apex-buy-p" style="font-size:.68rem">4882.48</span></button>
+              </div>
+            </div>
+            <div class="apex-trades-box">
+              <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">OPEN TRADES</div>
+              <div id="apex-trades" class="apex-trades-empty">No open trades</div>
+              <div class="apex-trades-realized">Unrealized: $0.00 &nbsp;|&nbsp; Realized: +$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COPY TRADER -->
+      <div class="page" id="p-copy-trader">
+        <div class="ct-hdr">
+          <div>
+            <div class="ptitle" style="margin-bottom:5px">&#128101; Copy Trader <span style="font-size:.7rem;background:rgba(255,255,255,.05);padding:2px 8px;border-radius:5px;color:var(--muted);font-weight:500">CR***** ------</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="demo-pill">DEMO</span><span style="font-size:.78rem;font-weight:600">Demo &rarr; Real Copy Trading</span><span style="font-size:.74rem;color:var(--muted)">Mirrors your demo account trades on your real account</span></div>
+          </div>
+          <div class="ct-btns"><button class="btn-tut">&#9654; Tutorial</button><button class="btn-start-c">&#9654; Start</button></div>
+        </div>
+        <div class="ct-sec-lbl">CLIENT COPY TRADING</div>
+        <div class="ct-start-row"><button class="btn-sct">&#9654; Start Copy Trading</button><span class="ct-count-lbl" id="ct-active-lbl">0 clients active</span></div>
+        <div class="ct-inp-row"><input class="ct-inp" id="ct-token" placeholder="Enter client API token..." /><button class="btn-add" onclick="addCTClient()">+ Add</button><button class="btn-sync-ct">&#8635; Sync</button><button class="btn-guide-ct">&#9654; Guide</button></div>
+        <div style="font-size:.74rem;color:var(--muted);margin-bottom:16px">Clients: <strong id="ct-n">0</strong></div>
+        <div id="ct-area"><div class="ct-empty"><span class="ct-empty-ico">&#128101;</span><p>No clients added yet. Enter a token above to get started.</p></div></div>
+      </div>
+
+      <!-- RISK CALCULATOR -->
+      <div class="page" id="p-risk-calc">
+        <div class="ptitle">&#128737; Risk Calculator</div>
+        <div class="rc-wrap">
+          <div class="rc-field"><label class="rc-label">Account Balance (USD)</label><input class="rc-inp" type="number" value="10000" id="rc-bal" /></div>
+          <div class="rc-field"><label class="rc-label">Risk Percentage (%)</label><input class="rc-inp" type="number" value="2" step="0.1" id="rc-riskpct" /></div>
+          <div class="rc-field"><label class="rc-label">Initial Stake (USD)</label><input class="rc-inp" type="number" value="1" step="0.1" id="rc-stake" /></div>
+          <div class="rc-field"><label class="rc-label">Martingale Multiplier</label><input class="rc-inp" type="number" value="2" step="0.1" id="rc-mult" /></div>
+          <div class="rc-field"><label class="rc-label">Number of Steps</label><input class="rc-inp" type="number" value="5" id="rc-steps" /></div>
+          <button class="btn-calc" onclick="calcRisk()">Calculate Risk</button>
+          <div class="rc-result" id="rc-result">
+            <div class="rc-res-hdr">RISK ANALYSIS RESULT</div>
+            <div class="rc-grid">
+              <div><div class="rc-item-lbl">Max Total Loss</div><div class="rc-item-val red" id="rc-maxloss">$0.00</div></div>
+              <div><div class="rc-item-lbl">Risk Amount</div><div class="rc-item-val" id="rc-riskamt">$0.00</div></div>
+              <div><div class="rc-item-lbl">Max Stake (Final Step)</div><div class="rc-item-val red" id="rc-maxstake">$0.00</div></div>
+              <div><div class="rc-item-lbl">Recommended Stake</div><div class="rc-item-val" id="rc-rec">$0.00</div></div>
+              <div><div class="rc-item-lbl">Trades Before Bankrupt</div><div class="rc-item-val" id="rc-ttb">0</div></div>
+              <div><div class="rc-item-lbl">Risk Rating</div><div class="rc-item-val" id="rc-rating">--</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRADE ACADEMY -->
+      <div class="page" id="p-academy">
+        <div class="acad-hero">
+          <div>
+            <h2>Introduction to Deriv</h2>
+            <p>A Comprehensive Guide from Beginner to Advanced Trading. Master Deriv trading with this in-depth professional course. From basic concepts to advanced strategies, risk management to psychological mastery.</p>
+            <button class="btn-learn">&#128218; Start Learning Now</button>
+          </div>
+          <div class="acad-books">&#128218;</div>
+        </div>
+        <div class="acad-stats-row">
+          <div class="acad-s"><div class="acad-sn">30</div><div class="acad-sl">Chapters</div></div>
+          <div class="acad-s"><div class="acad-sn">18</div><div class="acad-sl">Major Parts</div></div>
+          <div class="acad-s"><div class="acad-sn" style="font-size:1.1rem;color:var(--green)">Beginner to Advanced</div><div class="acad-sl">Level</div></div>
+          <div class="acad-s"><div class="acad-sn" style="color:var(--yellow)">100%</div><div class="acad-sl">Free</div></div>
+        </div>
+        <div class="acad-tabs"><button class="acad-tab on">Overview</button><button class="acad-tab">All Chapters</button><button class="acad-tab">Resources</button></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px;margin-bottom:20px;text-align:center">
+          <h3 style="font-size:1.3rem;font-weight:900;margin-bottom:7px">Welcome to Your Trading Journey</h3>
+          <p style="color:var(--grey);font-size:.84rem;line-height:1.65;max-width:540px;margin:0 auto">This comprehensive course takes you from zero to confident trader. Each chapter builds on the last, ensuring a solid foundation before advancing to complex strategies.</p>
+        </div>
+        <div class="chaps-grid">
+          <div class="chap-card"><div class="chap-n">Chapter 01</div><div class="chap-t">Introduction to Financial Markets</div><div class="chap-d">Understanding what financial markets are, how they work, and the opportunities they present for traders.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 02</div><div class="chap-t">Understanding the Deriv Platform</div><div class="chap-d">A detailed walkthrough of the Deriv platform, its tools, and how to navigate it effectively.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 03</div><div class="chap-t">Synthetic Indices Explained</div><div class="chap-d">Deep dive into volatility indices, their behavior, and trading opportunities they offer 24/7.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 04</div><div class="chap-t">Risk Management Fundamentals</div><div class="chap-d">Essential risk management techniques to protect your capital and trade sustainably long-term.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 05</div><div class="chap-t">Technical Analysis Basics</div><div class="chap-d">Learn to read charts, identify patterns, and use indicators to make informed trading decisions.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 06</div><div class="chap-t">Bot Building Masterclass</div><div class="chap-d">Step-by-step guide to building your first automated trading bot using the HP Traders visual editor.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 07</div><div class="chap-t">Even/Odd Strategy Deep Dive</div><div class="chap-d">Master the Even/Odd trading strategy, digit analysis, and optimize entry timing for better results.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 08</div><div class="chap-t">Over/Under Trading Strategies</div><div class="chap-d">Understand Over/Under contracts, digit barriers, and when to apply these strategies effectively.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 09</div><div class="chap-t">Martingale &amp; Anti-Martingale</div><div class="chap-d">Explore staking systems, their mathematics, risks, rewards, and how to implement them safely.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 10</div><div class="chap-t">Trading Psychology Mastery</div><div class="chap-d">The mental game of trading &mdash; discipline, fear, greed, and how to stay in control under pressure.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 11</div><div class="chap-t">Copy Trading &amp; Automation</div><div class="chap-d">Set up and manage copy trading systems, manage multiple client accounts, and automate execution.</div></div>
+          <div class="chap-card"><div class="chap-n">Chapter 12</div><div class="chap-t">Advanced Bot Optimization</div><div class="chap-d">Fine-tune your bots with advanced parameters, backtesting concepts, and performance analysis.</div></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="p-reports">
+        <div class="ptitle">&#128203; Reports</div>
+        <div class="rep-tabs"><button class="rep-tab on">Summary</button><button class="rep-tab">Transactions</button><button class="rep-tab">Journal</button></div>
+        <div class="rep-empty"><p style="color:var(--grey);font-size:.84rem">No trading activity yet. Hit <strong>Run</strong> to start tracking your bot&apos;s performance here.</p></div>
+      </div>
+
+    </div><!-- /main -->
+
+    <!-- RIGHT PANEL -->
+    <div class="rpanel">
+      <div class="rp-tabs"><button class="rpt2 on">Summary</button><button class="rpt2">Transactions</button><button class="rpt2">Journal</button></div>
+      <div class="rp-body">
+        <div class="rp-hint">When you&apos;re ready to trade, hit <strong>Run</strong>. You&apos;ll be able to track your bot&apos;s performance here.</div>
+        <div class="rp-divider">
+          <div class="rp-what">What&apos;s this?</div>
+          <div class="rp-grid">
+            <div><div class="rp-stat-l">Total stake</div><div class="rp-stat-v" id="rp-stake">0.00 USD</div></div>
+            <div><div class="rp-stat-l">Total payout</div><div class="rp-stat-v" id="rp-payout">0.00 USD</div></div>
+            <div><div class="rp-stat-l">No. of runs</div><div class="rp-stat-v" id="rp-runs">0</div></div>
+          </div>
+          <div class="rp-grid">
+            <div><div class="rp-stat-l">Contracts lost</div><div class="rp-stat-v r" id="rp-lost">0</div></div>
+            <div><div class="rp-stat-l">Contracts won</div><div class="rp-stat-v g" id="rp-won">0</div></div>
+            <div><div class="rp-stat-l">Total profit/loss</div><div class="rp-stat-v" id="rp-pnl">0.00 USD</div></div>
+          </div>
+          <button class="btn-reset" onclick="resetStats()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RUN BAR -->
+  <div class="run-bar">
+    <button class="btn-run" id="run-btn" onclick="toggleRun()">&#9654; Run</button>
+    <div class="run-spd"><span class="rs-lbl">Execution Speed</span><span class="rs-val" id="speed-val">NORMAL SPEED</span></div>
+    <div class="tgl-w"><input type="checkbox" id="speed-tgl" class="tgl-i" onchange="toggleSpeed()"><label for="speed-tgl" class="tgl-l"></label></div>
+    <div style="width:12px"></div>
+  </div>
+  <div class="risk-disc">&#9888; Risk Disclaimer</div>
+  <button class="ai-fab">AI</button>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const autoBots=[
+  {n:'Infinity Algo',d:'Advanced automated trading strategy: Infinity Algo - Professional-grade bot optimized for consistent performance, risk management, and automated trade execution.'},
+  {n:'The Under 7 8 9 Switcher',d:'Advanced automated: The Under 7 8 9 Switcher - Professional-grade bot optimized for consistent performance and risk management.'},
+  {n:'Differ Switcher Smart Cycle',d:'Advanced automated: Differ Switcher Smart Cycle - Professional-grade bot for consistent performance and automated execution.'},
+  {n:'Even Odd Pattern Analysis',d:'Execute your trades: if Last 5 digits are Even trade Odd and vice versa.'},
+  {n:'Even Odd Percentage Analysis',d:'Execute trades basing on Digit Percentages: trade even if percentage is above 60%.'},
+  {n:'Even Odd { Percentage Pattern Combo }',d:'Combine Even-Odd Digit pattern with percentages to get better entry points.'},
+  {n:'Novaswitch',d:'Advanced automated: Novaswitch - Professional-grade bot optimized for consistent performance and risk management.'},
+  {n:'Over 0 Recovery Over 4',d:'Advanced automated: Over 0 Recovery Over 4 - Professional-grade bot for consistent performance.'},
+  {n:'Over 3 Recovery Over 5',d:'Advanced automated: Over 3 Recovery Over 5 - Professional-grade bot for consistent performance.'},
+];
+const normalBots=[
+  {n:'Meta Switch',d:'Automate your trades with Meta Switch.'},{n:'The even odd bot 1',d:'Automate your trades with The even odd bot 1.'},{n:'Candle Mine Version 3.1',d:'Automate your trades with Candle Mine Version 3.1.'},{n:'Digit Hyper',d:'Automate your trades with Digit Hyper.'},{n:'Dollar Bot',d:'Automate your trades with Dollar Bot.'},{n:'Falcon Bot',d:'Automate your trades with Falcon Bot.'},{n:'Gibu V8 PRO (2024)',d:'Automate your trades with Gibu V8 PRO (2024).'},{n:'Matches and Differs bot',d:'Automate your trades with Matches and Differs bot.'},{n:'TRADE CITY BOT Version 2.0',d:'Automate your trades with TRADE CITY BOT Version 2.0.'},{n:'Test Rise Fall 5TICK',d:'Automate your trades with Test Rise Fall 5TICK.'},{n:'The dollar pro',d:'Automate your trades with The dollar pro.'},{n:'Ultra Ai 2025',d:'Automate your trades with Ultra Ai 2025.'},{n:'malix.ke trading bots',d:'Automate your trades with malix.ke trading bots.'},
+];
+const aiData=[
+  [{t:'Over 1 / Under 8',d:'Trades whichever edge setup appears first between Over 1 and Under 8.',tags:['Over 1','Under 8'],s:'Over 1 / Under 8'},{t:'Over 2 / Under 7',d:'Combines the Over 2 and Under 7 edge triggers into one AI bot.',tags:['Over 2','Under 7'],s:'Over 2 / Under 7'},{t:'Over 3 / Under 6',d:'Combines the Over 3 and Under 6 edge triggers into one AI bot.',tags:['Over 3','Under 6'],s:'Over 3 / Under 6'},{t:'Over 4 / Under 5',d:'Combines the Over 4 and Under 5 edge triggers into one AI bot.',tags:['Over 4','Under 5'],s:'Over 4 / Under 5'},{t:'Even/Odd 3',d:'If last 3 digits sum is even, trade ODD. If odd, trade EVEN.',tags:['Even 3','Odd 3'],s:'Trade odd / Trade even',blue:true},{t:'Even/Odd 4',d:'If last 4 digits sum is even, trade ODD. If odd, trade EVEN.',tags:['Even 4','Odd 4'],s:'Trade odd / Trade even',blue:true},{t:'Even/Odd 5',d:'If last 5 digits sum is even, trade ODD. If odd, trade EVEN.',tags:['Even 5','Odd 5'],s:'Trade odd / Trade even',blue:true},{t:'Even/Odd 6',d:'If last 6 digits sum is even, trade ODD. If odd, trade EVEN.',tags:['Even 6','Odd 6'],s:'Trade odd / Trade even',blue:true}],
+  [{t:'Dual Rise/Fall',d:'Monitors both Rise and Fall edges simultaneously, executing when a clear signal appears.',tags:['Rise','Fall'],s:'Rise / Fall'},{t:'Dual Match/Differ',d:'Trades both Match and Differ contracts using pattern detection across multiple ticks.',tags:['Match','Differ'],s:'Match / Differ'},{t:'Dual Over/Under 5',d:'Simultaneously monitors Over and Under 5 edge triggers for maximum entry opportunities.',tags:['Over 5','Under 5'],s:'Over / Under 5'}],
+  [{t:'Speedbot Turbo',d:'Ultra-fast execution bot designed for 1-tick trading on high-volatility indices.',tags:['1 Tick','Turbo'],s:'1 Tick Speed'},{t:'Speedbot Lite',d:'Lightweight speed bot optimized for low-latency trade execution with minimal stake.',tags:['Fast','Lite'],s:'Speed Trade'}]
+];
+const markets2=[{n:'V10 (1s)',p:4882},{n:'V25 (1s)',p:456.23},{n:'V50 (1s)',p:1832},{n:'V75 (1s)',p:9321},{n:'V100 (1s)',p:4882},{n:'Crash 300',p:7422}];
+const S={price:4882.48,apexPrice:4882.48,runs:0,won:0,lost:0,stake:0,payout:0,running:false,runIv:null,digits:Array(10).fill(10),apexHist:[],lastTks:['E','E','O','E','E','O','E','O'],balance:10000};
+
+/* ===== SPLASH ===== */
+function showSplash(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('splash').style.display='flex';
+  const c=document.getElementById('splash-c');const ctx=c.getContext('2d');c.width=560;c.height=420;
+  for(let i=0;i<32;i++){const x=Math.random()*560,h=18+Math.random()*55,isG=Math.random()>.5;ctx.fillStyle=isG?'#00e5b0':'#ff4d6d';ctx.fillRect(x-4,200-h/2,8,h);ctx.fillRect(x-1,200-h/2-8,2,8);ctx.fillRect(x-1,200+h/2,2,8);}
+  let pct=0,si=0;
+  const sts=['Connecting to Volatility Markets...','Loading Bot Engine...','Initializing AI Analysis...','Syncing Market Data...','Preparing HP Trading Hub...'];
+  const bar=document.getElementById('prog'),pEl=document.getElementById('prog-pct'),tEl=document.getElementById('splash-txt'),dots=document.querySelectorAll('.s-dot');
+  const iv=setInterval(()=>{pct+=Math.random()*6+2;if(pct>100)pct=100;bar.style.width=pct+'%';pEl.textContent=Math.round(pct)+'%';const di=Math.min(4,Math.floor(pct/20));dots.forEach((d,i)=>d.classList.toggle('on',i<=di));const ni=Math.min(4,Math.floor(pct/20));if(ni!==si){si=ni;tEl.textContent=sts[si];}if(pct>=100){clearInterval(iv);setTimeout(launch,500);}},70);
+}
+function launch(){document.getElementById('splash').style.display='none';document.getElementById('app').style.display='block';initApp();}
+
+/* ===== NAV ===== */
+function nav(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));const pg=document.getElementById('p-'+id);if(pg)pg.classList.add('on');const nb=document.querySelector('[data-p="'+id+'"]');if(nb)nb.classList.add('on');}
+
+/* ===== INIT ===== */
+function initApp(){
+  buildBotsGrid();buildAIGrid(0);buildMktSnap();buildApexHist();buildBulkBtns();renderLastTks();
+  startSim();
+}
+
+/* ===== SIMULATION ===== */
+function startSim(){
+  setInterval(()=>{
+    S.price+=(Math.random()-.495)*.38;S.price=Math.round(S.price*100)/100;
+    S.apexPrice+=(Math.random()-.495)*.35;S.apexPrice=Math.round(S.apexPrice*100)/100;
+    S.apexHist.push(S.apexPrice);if(S.apexHist.length>80)S.apexHist.shift();
+    const ap=S.price.toFixed(2);
+    const ae=document.getElementById('an-price');if(ae)ae.textContent=ap;
+    const be=document.getElementById('bulk-tick-v');if(be)be.textContent=ap;
+    const apb=document.getElementById('apex-price-big');if(apb)apb.textContent=S.apexPrice.toFixed(2);
+    const asp=document.getElementById('apex-sell-p');if(asp)asp.textContent=S.apexPrice.toFixed(2);
+    const abp=document.getElementById('apex-buy-p');if(abp)abp.textContent=S.apexPrice.toFixed(2);
+    drawApex();updateDigits();updateMktSnap();
+    const isE=Math.floor(S.price*10)%2===0;S.lastTks.push(isE?'E':'O');if(S.lastTks.length>14)S.lastTks.shift();renderLastTks();
+  },1100);
+}
+
+/* ===== DIGITS ===== */
+function updateDigits(){
+  const r=Array.from({length:10},()=>Math.random());const t=r.reduce((a,b)=>a+b,0);const p=r.map(v=>+(v/t*100).toFixed(1));S.digits=p;
+  p.forEach((v,i)=>{const el=document.getElementById('dp'+i);if(el)el.textContent=v+'%';const dc=document.getElementById('dc'+i);if(dc){if(v>12)dc.style.borderColor='var(--red)';else if(v<8)dc.style.borderColor='var(--green)';else dc.style.borderColor='var(--border)';}});
+  let even=0;[0,2,4,6,8].forEach(i=>even+=p[i]);const odd=+(100-even).toFixed(1);even=+even.toFixed(1);
+  sv('even-v',even+'%');sv('odd-v',odd+'%');sw('even-fill',even);sw('odd-fill',odd);
+  let over=0;[6,7,8,9].forEach(i=>over+=p[i]);const under=+(100-over).toFixed(1);over=+over.toFixed(1);
+  sv('over-v',over+'%');sv('under-v',under+'%');sw('over-fill',over);sw('under-fill',under);
+  const m=+(p[5]).toFixed(1),d=+(100-m).toFixed(1);sv('match-v',m+'%');sv('differ-v',d+'%');sw('match-fill',m);sw('differ-fill',d);
+  const ri=+(45+Math.random()*10).toFixed(1),fa=+(100-ri).toFixed(1);sv('rise-v',ri+'%');sv('fall-v',fa+'%');sw('rise-fill',ri);sw('fall-fill',fa);
+  // update bulk meters
+  const row=document.getElementById('meter-row');
+  if(row)row.innerHTML=p.slice(0,8).map((v,i)=>{let col=v>12?'var(--red)':v<8?'var(--green)':'var(--blue)';return`<div class="met"><div class="met-ring" style="border-color:${col}"><div class="mn">${i}</div><div class="mp">${v}%</div></div></div>`;}).join('');
+}
+function sv(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function sw(id,val){const e=document.getElementById(id);if(e)e.style.width=Math.min(100,Math.max(3,val))+'%';}
+
+/* ===== MARKET SNAPSHOT ===== */
+function buildMktSnap(){
+  const c=document.getElementById('mkt-snap');if(!c)return;
+  c.innerHTML=markets2.map((m,i)=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px"><div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${m.n}</div><div style="font-size:1.05rem;font-weight:800;color:var(--blue)" id="sp-${i}">${m.p.toFixed(2)}</div><div style="font-size:.66rem" id="sc-${i}">--</div></div>`).join('');
+}
+function updateMktSnap(){markets2.forEach((m,i)=>{const prev=m.p;m.p+=(Math.random()-.495)*.28;m.p=Math.round(m.p*100)/100;const d=+(m.p-prev).toFixed(2);const pe=document.getElementById('sp-'+i);if(pe)pe.textContent=m.p.toFixed(2);const ce=document.getElementById('sc-'+i);if(ce){ce.textContent=(d>=0?'+':'')+d;ce.style.color=d>=0?'var(--green)':'var(--red)';}});}
+
+/* ===== FREE BOTS ===== */
+function buildBotsGrid(f='all'){
+  const bots=[...autoBots.map(b=>({...b,auto:true})),...normalBots.map(b=>({...b,auto:false}))].filter(b=>f==='all'||(f==='auto'&&b.auto)||(f==='normal'&&!b.auto));
+  const g=document.getElementById('bots-grid');if(!g)return;
+  g.innerHTML=bots.map(b=>`<div class="bcard"><div class="bcard-hdr"><div class="bico${b.auto?' auto':''}">&#9889;</div><div><div class="bname">${b.n}</div>${b.auto?'<span class="bauto">AUTO</span>':''}</div></div><div class="bdesc">${b.d}</div>${b.auto?`<button class="btn-rb" onclick="runBot('${b.n.replace(/'/g,'&apos;')}')">&#9889; Run Bot</button>`:`<button class="btn-lb" onclick="loadBot('${b.n.replace(/'/g,'&apos;')}')">&#9654; Load Bot</button>`}</div>`).join('');
+}
+function fbTab(el,f){document.querySelectorAll('.fb-tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');buildBotsGrid(f);}
+function runBot(n){toast('Running: '+n,'green');}
+function loadBot(n){toast('Loading: '+n,'blue');nav('bot-builder');}
+
+/* ===== AI SOFTWARE ===== */
+function buildAIGrid(idx){
+  const g=document.getElementById('ai-grid');if(!g)return;
+  g.innerHTML=aiData[idx].map(b=>`<div class="ai-card2${b.blue?' blue':''}"><div class="ai-title2">${b.t}</div><div class="ai-desc2">${b.d}</div><div class="ai-tags2">${b.tags.map(t=>`<span class="ai-tag2${b.blue?' b':''}">${t}</span>`).join('')}</div><div class="ai-footer2"><span>Setup: <strong>${b.s}</strong></span><button class="btn-ob${b.blue?' b':''}" onclick="toast('Opening: ${b.t.replace(/'/g,'&apos;')}','green')">Open bot</button></div></div>`).join('');
+}
+function aiTab(el,i){document.querySelectorAll('.ai-tab2').forEach(t=>t.classList.remove('on'));el.classList.add('on');buildAIGrid(i);}
+
+/* ===== ANALYSIS ===== */
+function anTab(el){document.querySelectorAll('.an-tab2').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+function dsb(el){el.closest('.digi-sel2').querySelectorAll('.dsb').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+
+/* ===== BULK TRADER ===== */
+function buildBulkBtns(){
+  const t=document.getElementById('bulk-type')?.value||'Even/Odd';
+  const c=document.getElementById('bulk-btns');if(!c)return;
+  const map={'Even/Odd':[['Even','even','var(--green)','#000'],['Odd','odd','var(--red)','#fff']],'Over/Under':[['Over','over','var(--green)','#000'],['Under','under','var(--yellow)','#000']],'Match/Differ':[['Match','match','var(--blue)','#fff'],['Differ','differ','var(--purple)','#fff']],'Rise/Fall':[['Rise','rise','var(--green)','#000'],['Fall','fall','var(--red)','#fff']]};
+  const btns=map[t]||map['Even/Odd'];
+  const p=S.digits;let ev=0;[0,2,4,6,8].forEach(i=>ev+=p[i]);ev=+ev.toFixed(1);const od=+(100-ev).toFixed(1);
+  c.innerHTML=btns.map(([lbl,type,bg,fg],idx)=>`<button class="${type==='odd'||type==='under'||type==='differ'||type==='fall'?'btn-odd-t':'btn-even-t'}" style="background:${bg};color:${fg}" onclick="bulkTrade('${type}')">${lbl}<span class="pct-note">${idx===0?ev:od}%</span></button>`).join('');
+}
+function bulkTrade(type){
+  const stake=parseFloat(document.getElementById('bi-stake')?.value)||0.5;
+  S.runs++;S.stake+=stake;const win=Math.random()>.48;
+  if(win){S.won++;S.payout+=stake*1.95;}else{S.lost++;}
+  updateRPanel();toast((win?'Won':'Lost')+' $'+(stake*(win?.95:1)).toFixed(2),win?'green':'red');
+}
+function renderLastTks(){const c=document.getElementById('last-tks');if(!c)return;c.innerHTML=S.lastTks.map(t=>`<div class="tk-badge ${t==='E'?'tk-e':'tk-o'}">${t}</div>`).join('');}
+
+/* ===== MANUAL TRADER ===== */
+function openDTrader(){document.getElementById('dt-loading').style.display='none';document.getElementById('dt-open').style.display='block';}
+function closeDTrader(){document.getElementById('dt-loading').style.display='flex';document.getElementById('dt-open').style.display='none';}
+
+/* ===== CHARTS ===== */
+function loadTV(){
+  const load=document.getElementById('chart-load'),embed=document.getElementById('tv-embed');
+  if(load)load.style.display='none';
+  if(embed){embed.style.display='block';embed.innerHTML='<iframe src="https://s.tradingview.com/widgetembed/?symbol=BMIX:V100_1S&interval=15&theme=dark&style=1&locale=en&toolbar_bg=060c17&enable_publishing=false&withdateranges=1&hide_side_toolbar=0" width="100%" height="580" frameborder="0" style="border-radius:12px" allowtransparency="true" scrolling="no"></iframe>';}
+}
+
+/* ===== APEX MARKET ===== */
+function buildApexHist(){let p=4882;for(let i=0;i<80;i++){p+=(Math.random()-.495)*.4;S.apexHist.push(+p.toFixed(2));}drawApex();}
+function drawApex(){
+  const canvas=document.getElementById('apex-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const W=canvas.offsetWidth||900,H=300;canvas.width=W;canvas.height=H;ctx.clearRect(0,0,W,H);
+  const data=S.apexHist;if(data.length<4)return;
+  const mn=Math.min(...data)-.3,mx=Math.max(...data)+.3,rng=mx-mn;
+  const ty=v=>H-8-((v-mn)/rng)*(H-16);
+  const bw=Math.max(3,Math.floor(W/data.length*1.8));
+  ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=1;
+  for(let i=0;i<6;i++){const y=H*i/5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  for(let i=0;i<data.length-1;i+=2){
+    const o=data[i],c=data[i+1]||data[i];const hi=Math.max(o,c)+Math.random()*.12,lo=Math.min(o,c)-Math.random()*.12;
+    const x=(i/data.length)*W+bw;const isG=c>=o;
+    ctx.fillStyle=isG?'#00e5b0':'#ff4d6d';ctx.strokeStyle=isG?'#00e5b0':'#ff4d6d';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,ty(hi));ctx.lineTo(x,ty(lo));ctx.stroke();
+    const bt=ty(Math.max(o,c)),bh=Math.max(2,Math.abs(ty(o)-ty(c)));ctx.fillRect(x-bw*.38,bt,bw*.76,bh);
+  }
+  const ma=[];for(let i=20;i<data.length;i++){const s=data.slice(i-20,i).reduce((a,b)=>a+b)/20;ma.push({x:(i/data.length)*W,y:ty(s)});}
+  if(ma.length>1){ctx.strokeStyle='#ff9900aa';ctx.lineWidth=1.5;ctx.beginPath();ma.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));ctx.stroke();}
+  const cy=ty(S.apexPrice);ctx.strokeStyle='rgba(0,180,255,.45)';ctx.lineWidth=1;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#00b4ff';ctx.font='bold 11px Segoe UI,system-ui';ctx.fillText(S.apexPrice.toFixed(2),W-62,cy-4);
+}
+function apexTrade(type){const amt=parseFloat(document.getElementById('apex-amt')?.value)||50;S.runs++;S.stake+=amt;const win=Math.random()>.5;if(win){S.won++;S.payout+=amt*1.9;}else{S.lost++;}updateRPanel();toast((type==='buy'?'BUY':'SELL')+' $'+amt+' @ '+S.apexPrice.toFixed(2),type==='buy'?'green':'red');}
+document.querySelectorAll('.apex-tf').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.apex-tf').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+
+/* ===== COPY TRADER ===== */
+let ctClients=[];
+function addCTClient(){const inp=document.getElementById('ct-token');const tok=inp?.value.trim();if(!tok){toast('Enter a valid API token','red');return;}ctClients.push(tok);if(inp)inp.value='';renderCT();toast('Client added: '+tok.slice(0,10)+'...','green');}
+function renderCT(){
+  const n=ctClients.length;sv('ct-active-lbl',n+' clients active');sv('ct-n',n);
+  const a=document.getElementById('ct-area');if(!a)return;
+  if(!n){a.innerHTML='<div class="ct-empty"><span class="ct-empty-ico">&#128101;</span><p>No clients added yet. Enter a token above to get started.</p></div>';return;}
+  a.innerHTML=ctClients.map((t,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 15px;margin-bottom:7px"><div><div style="font-size:.76rem;font-weight:700;color:var(--green)">Client ${i+1}</div><div style="font-size:.7rem;color:var(--muted);font-family:monospace">${t.slice(0,8)}${'*'.repeat(Math.max(0,t.length-8))}</div></div><div style="display:flex;gap:7px"><span style="background:rgba(0,229,176,.1);color:var(--green);font-size:.66rem;padding:3px 8px;border-radius:4px">Active</span><button onclick="removeCT(${i})" style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:var(--red);padding:3px 8px;border-radius:4px;font-size:.66rem;cursor:pointer">Remove</button></div></div>`).join('');
+}
+function removeCT(i){ctClients.splice(i,1);renderCT();}
+
+/* ===== RISK CALC ===== */
+function calcRisk(){
+  const bal=+document.getElementById('rc-bal').value||10000,rp=+document.getElementById('rc-riskpct').value||2,stake=+document.getElementById('rc-stake').value||1,mult=+document.getElementById('rc-mult').value||2,steps=+document.getElementById('rc-steps').value||5;
+  const rAmt=bal*rp/100;let maxL=0,s=stake;for(let i=0;i<steps;i++){maxL+=s;s*=mult;}
+  const maxStk=stake*Math.pow(mult,steps-1),rec=Math.min(stake,rAmt/maxL*stake),ttb=Math.floor(rAmt/stake);
+  let rat='&#128994; Low';if(rp>5)rat='&#128308; High';else if(rp>2)rat='&#128993; Medium';
+  document.getElementById('rc-maxloss').textContent='$'+maxL.toFixed(2);document.getElementById('rc-riskamt').textContent='$'+rAmt.toFixed(2);document.getElementById('rc-maxstake').textContent='$'+maxStk.toFixed(2);document.getElementById('rc-rec').textContent='$'+rec.toFixed(4);document.getElementById('rc-ttb').textContent=ttb;document.getElementById('rc-rating').innerHTML=rat;
+  document.getElementById('rc-result').style.display='block';
+}
+
+/* ===== RUN ===== */
+function toggleRun(){
+  S.running=!S.running;const btn=document.getElementById('run-btn');
+  if(S.running){btn.textContent='&#9646;&#9646; Stop';btn.style.background='var(--red)';S.runIv=setInterval(()=>{const sk=1;S.runs++;S.stake+=sk;const win=Math.random()>.48;if(win){S.won++;S.payout+=sk*1.95;}else{S.lost++;}updateRPanel();},2000);toast('Bot started!','green');}
+  else{btn.innerHTML='&#9654; Run';btn.style.background='var(--green)';clearInterval(S.runIv);toast('Bot stopped','red');}
+}
+function updateRPanel(){
+  const pnl=S.payout-S.stake;
+  sv('rp-stake',S.stake.toFixed(2)+' USD');sv('rp-payout',S.payout.toFixed(2)+' USD');sv('rp-runs',S.runs);sv('rp-lost',S.lost);sv('rp-won',S.won);
+  const el=document.getElementById('rp-pnl');if(el){el.textContent=(pnl>=0?'+':'')+pnl.toFixed(2)+' USD';el.className='rp-stat-v '+(pnl>=0?'g':'r');}
+  S.balance=10000+pnl;const bd=document.getElementById('balance-display');if(bd)bd.textContent=S.balance.toFixed(2);
+}
+function resetStats(){S.runs=0;S.won=0;S.lost=0;S.stake=0;S.payout=0;S.balance=10000;updateRPanel();const bd=document.getElementById('balance-display');if(bd)bd.textContent='10,000.00';}
+function toggleSpeed(){const fast=document.getElementById('speed-tgl').checked;sv('speed-val',fast?'TURBO SPEED':'NORMAL SPEED');}
+
+/* ===== TABS ===== */
+document.querySelectorAll('.rpt2').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.rpt2').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('.rep-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.rep-tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('.acad-tab').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.acad-tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+
+/* ===== TOAST ===== */
+function toast(msg,type='green'){const t=document.createElement('div');const c=type==='green'?'var(--green)':type==='red'?'var(--red)':'var(--blue)';t.style.cssText=`position:fixed;top:64px;right:16px;background:var(--card);border:1px solid ${c};color:#fff;padding:10px 16px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;animation:fadeIn .2s;max-width:270px;word-break:break-word;box-shadow:0 4px 14px rgba(0,0,0,.4)`;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+</script>
+</body>
+</html>
