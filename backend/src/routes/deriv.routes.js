@@ -1,3 +1,11 @@
+import express from "express";
+import WebSocket from "ws";
+
+const router = express.Router();
+
+/* =========================
+   TEST ROUTE
+========================= */
 router.get("/", (req, res) => {
   const appId = process.env.DERIV_APP_ID;
   const token = process.env.DERIV_API_TOKEN;
@@ -18,6 +26,7 @@ router.get("/", (req, res) => {
     if (!responded) {
       responded = true;
       ws.terminate();
+
       return res.status(504).json({
         error: "Deriv timeout",
       });
@@ -25,9 +34,11 @@ router.get("/", (req, res) => {
   }, 10000);
 
   ws.on("open", () => {
-    ws.send(JSON.stringify({
-      authorize: token
-    }));
+    ws.send(
+      JSON.stringify({
+        authorize: token,
+      })
+    );
   });
 
   ws.on("message", (data) => {
@@ -45,7 +56,7 @@ router.get("/", (req, res) => {
         balance: msg.authorize.balance,
         currency: msg.authorize.currency,
         fullname: msg.authorize.fullname,
-        email: msg.authorize.email
+        email: msg.authorize.email,
       });
     }
 
@@ -57,7 +68,7 @@ router.get("/", (req, res) => {
 
       return res.status(400).json({
         success: false,
-        error: msg.error.message
+        error: msg.error.message,
       });
     }
   });
@@ -68,8 +79,13 @@ router.get("/", (req, res) => {
       clearTimeout(timeout);
 
       return res.status(502).json({
-        error: err.message
+        error: err.message,
       });
     }
   });
 });
+
+/* =========================
+   EXPORT (CRITICAL FIX)
+========================= */
+export default router;
