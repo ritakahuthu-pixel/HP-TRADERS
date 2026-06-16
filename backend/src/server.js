@@ -5,17 +5,20 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// ROUTES
+import derivRoutes from "./routes/deriv.routes.js";
+import botRoutes from "./routes/bot.routes.js";
+
 dotenv.config();
 
 const app = express();
 
 /* =========================
-   PATH SETUP (FIXED)
+   PATH SETUP
 ========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// IMPORTANT FIX: go up TWO levels (backend/src → project root)
 const rootDir = path.join(__dirname, "../../");
 const frontendDir = path.join(rootDir, "frontend");
 
@@ -23,14 +26,26 @@ const frontendDir = path.join(rootDir, "frontend");
    MIDDLEWARE
 ========================= */
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend (CSS/JS/images)
+app.use(
+  express.json({
+    limit: "10mb"
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+
+/* =========================
+   STATIC FILES
+========================= */
 app.use(express.static(frontendDir));
 
 /* =========================
-   ROOT → INDEX.HTML (FIXED)
+   ROOT PAGE
 ========================= */
 app.get("/", (req, res) => {
   const file = path.join(frontendDir, "index.html");
@@ -56,27 +71,31 @@ let demoAccount = {
 
 function demoTrade({ asset, type, stake }) {
   const win = Math.random() > 0.5;
-  const result = win ? "WIN" : "LOSS";
-  const profit = win ? stake * 1.85 : -stake;
-
-  demoAccount.balance += profit;
 
   const trade = {
+    id: Date.now(),
     time: new Date().toISOString(),
     asset,
     type,
     stake,
-    result
+    result: win ? "WIN" : "LOSS",
+    profit: win ? stake * 1.85 : -stake
   };
+
+  demoAccount.balance += trade.profit;
 
   demoAccount.trades.unshift(trade);
 
-  return { trade, balance: demoAccount.balance };
+  return {
+    trade,
+    balance: demoAccount.balance
+  };
 }
 
 /* =========================
-   API ROUTES
+   DEMO ROUTES
 ========================= */
+
 app.get("/api/demo/account", (req, res) => {
   res.json(demoAccount);
 });
@@ -86,56 +105,102 @@ app.post("/api/demo/trade", (req, res) => {
     const result = demoTrade(req.body);
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message
+    });
   }
 });
 
 /* =========================
-   PRICE STREAM (SSE)
+   PRICE STREAM (DEMO)
 ========================= */
+
 app.get("/api/price-stream", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
 
   const interval = setInterval(() => {
     const tick = {
-      price: (Math.random() * 100000).toFixed(2),
       symbol: "VOLATILITY",
+      price: (Math.random() * 100000).toFixed(2),
       time: Date.now()
     };
 
     res.write(`data: ${JSON.stringify(tick)}\n\n`);
   }, 1000);
 
-  req.on("close", () => clearInterval(interval));
-});
-
-/* =========================
-   HEALTH CHECK
-========================= */
-app.get("/health", (req, res) => {
-  res.json({
-    status: "OK",
-    balance: demoAccount.balance
+  req.on("close", () => {
+    clearInterval(interval);
   });
 });
 
 /* =========================
-   404 HANDLER
+   DERIV ROUTES
 ========================= */
+
+app.use("/api/deriv", derivRoutes);
+
+/* =========================
+   BOT ROUTES
+========================= */
+
+app.use("/api/bots", botRoutes);
+
+/* =========================
+   HEALTH CHECK
+========================= */
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "OK",
+    environment: process.env.NODE_ENV || "development",
+    deriv_app_id: process.env.DERIV_APP_ID || "NOT SET",
+    demo_balance: demoAccount.balance,
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* =========================
+   404
+========================= */
+
 app.use((req, res) => {
   res.status(404).json({
+    success: false,
     error: "Route not found",
     path: req.originalUrl
   });
 });
 
 /* =========================
+   ERROR HANDLER
+========================= */
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(500).json({
+    success: false,
+    error: err.message
+  });
+});
+
+/* =========================
    START SERVER
 ========================= */
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
+  console.log("================================");
   console.log("🚀 HP TRADERS RUNNING");
-  console.log("PORT:", PORT);
+  console.log(`🌐 PORT: ${PORT}`);
+  console.log(`📂 FRONTEND: ${frontendDir}`);
+  console.log(
+    `🔑 DERIV APP ID: ${
+      process.env.DERIV_APP_ID || "NOT SET"
+    }`
+  );
+  console.log("================================");
 });
