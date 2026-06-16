@@ -1,4 +1,10 @@
 /* =========================
+   CONFIG
+========================= */
+
+const API_BASE = window.location.origin;
+
+/* =========================
    PARTICLE BACKGROUND
 ========================= */
 
@@ -67,48 +73,68 @@ if (canvas) {
 }
 
 /* =========================
-   DERIV LOGIN
+   DERIV OAUTH LOGIN
 ========================= */
 
 function login() {
   const clientId = "33v14eEMV3YTKjPu9KNQk";
 
-  const redirectUri =
-    "https://hp-traders-v5ey.onrender.com/callback";
+  const redirectUri = `${API_BASE}/callback`;
 
-  window.location.href =
-    `https://auth.deriv.com/oauth2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}`;
+  const authUrl =
+    `https://auth.deriv.com/oauth2/auth` +
+    `?response_type=code` +
+    `&client_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+  window.location.href = authUrl;
 }
-
-/* =========================
-   START TRADING
-========================= */
 
 function startTrading() {
   login();
 }
 
 /* =========================
-   LIVE PRICE STREAM
+   HANDLE CALLBACK
+========================= */
+
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  const status = document.getElementById("status");
+
+  if (code) {
+    localStorage.setItem("deriv_code", code);
+
+    if (status) {
+      status.innerText = "🟡 Logging into Deriv...";
+    }
+
+    console.log("OAuth code received:", code);
+  } else {
+    if (status) {
+      status.innerText = "🟢 Live Market Ready";
+    }
+  }
+});
+
+/* =========================
+   PRICE STREAM (FIXED)
 ========================= */
 
 function startPriceStream() {
   const priceElement = document.getElementById("price");
-
   if (!priceElement) return;
 
-  const stream = new EventSource("/api/price-stream");
+  const stream = new EventSource(`${API_BASE}/api/price-stream`);
 
   stream.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-
-      priceElement.innerHTML =
-        Number(data.price).toFixed(2);
+      priceElement.innerText = Number(data.price).toFixed(2);
     } catch (err) {
-      console.error(err);
+      console.error("Stream parse error:", err);
     }
   };
 
@@ -120,45 +146,44 @@ function startPriceStream() {
 startPriceStream();
 
 /* =========================
-   TRADING ACTIONS
+   DEMO TRADING (FIXED)
 ========================= */
 
 async function trade(type) {
   try {
-    const response = await fetch("/api/trade", {
+    const response = await fetch(`${API_BASE}/api/demo/trade`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        amount: 1,
-        contract_type: type
+        asset: "VOLATILITY",
+        type,
+        stake: 1
       })
     });
 
     const result = await response.json();
 
-    console.log(result);
+    console.log("Trade result:", result);
 
     alert(
       result.error
         ? result.error
-        : `${type} order submitted`
+        : `${type.toUpperCase()} trade executed`
     );
+
   } catch (err) {
-    console.error(err);
+    console.error("Trade error:", err);
     alert("Trade failed");
   }
 }
 
 /* =========================
-   DASHBOARD STATUS
+   OPTIONAL: STATUS SETTER
 ========================= */
 
-window.addEventListener("load", () => {
+function setStatus(text) {
   const status = document.getElementById("status");
-
-  if (status) {
-    status.innerText = "🟢 Live Market Connected";
-  }
-});
+  if (status) status.innerText = text;
+}
